@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "preserved_records": {
+    "analyses": 698,
+    "sentiment_analyses": 698,
+    "posts": 698,
+    "reviews": 0,
+    "legacy_favorites": 1
+  },
+  "protocol": "All pre-update completed model rows, post text/board associations, reviews and inactive legacy favorite records retain their original hashes."
+}

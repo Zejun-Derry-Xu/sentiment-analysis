@@ -17,4 +17,4 @@ Endpoints:
 
 Local validation: React/TypeScript build passed, **16 tests passed**, API report/download provenance checked, and browser inspection confirmed all summary metrics, class rows, confusion matrix, and reproducibility details. Existing emotion results remain available below the new section.
 
-Deployment status for this change: **local only**, per the user's instruction while the Jetstream2 instance is powered off. Publish the completed update together after the instance is available and its current identity/address is verified.
+Deployment update: published to the resumed Jetstream2 instance at http://149.165.155.184/ on 2026-10-30. The displayed sentiment quality report remains the original local Apple M5 evaluation, as labeled. See [deployment verification](deployment-2026-10-30.md).

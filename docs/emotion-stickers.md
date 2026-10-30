@@ -6,4 +6,4 @@ Click the sticker / View moods or hold the post text for 480 ms to open a tray c
 
 Pointer movement/scroll cancels a hold. Outside-click, close and Escape dismiss the tray. Buttons support keyboard use and reduced-motion preferences disable animations. A stable analysis ID prevents the three-second polling cycle from repeatedly replaying the sticker; a new completed analysis mounts its own sticker.
 
-Validation: frontend TypeScript/build passed; all 28 mapping keys match the model labels. Browser verified default stickers, opening by click, a real 650 ms long press, and switching between two predicted labels. Changes are local only pending the user's next Jetstream2 startup/deployment.
+Validation: frontend TypeScript/build passed; all 28 mapping keys match the model labels. Browser verified default stickers, opening by click, a real 650 ms long press, and switching between two predicted labels. Published to http://149.165.155.184/ on 2026-10-30. Cloud verification covered real post inference, automatic stickers, and a real long press.
