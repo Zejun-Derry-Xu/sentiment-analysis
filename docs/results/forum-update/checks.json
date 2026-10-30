@@ -1,0 +1,33 @@
+{
+  "local_tests": 15,
+  "cloud_tests": 15,
+  "passed": true,
+  "interface_language": "English",
+  "boards": [
+    "Halloween Haunted House",
+    "Campus Food",
+    "DSAN Feedback"
+  ],
+  "favorites_navigation": false,
+  "favorites_actions": false,
+  "favorites_api": "404; no active filter or response fields",
+  "admin_entry": "Switch to Admin, before the avatar/display name in the top-right user area",
+  "admin_return": "Switch to Student",
+  "public_demo_access_unchanged": true,
+  "real_model_smoke": {
+    "board": "DSAN Feedback",
+    "text": "The DSAN project feedback was clear and encouraging. Thank you for the helpful examples.",
+    "emotion": [
+      "gratitude"
+    ],
+    "sentiment": "positive",
+    "both_completed": true
+  },
+  "browser_checks": [
+    "No My Favorites entry",
+    "Admin toggle precedes display name",
+    "Rendered admin page contains no CJK text",
+    "English post submission and independent real model results",
+    "Student view hides handling/review controls; admin view shows them"
+  ]
+}

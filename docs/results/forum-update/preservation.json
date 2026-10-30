@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "preserved_records": {
+    "analyses": 696,
+    "sentiment_analyses": 696,
+    "posts": 696,
+    "reviews": 0,
+    "legacy_favorites": 1
+  },
+  "protocol": "Restore pre-update database dump into an isolated temporary test database; compare every original post text/board association, completed model analysis, human review, and inactive legacy favorite row against production after migration. All original hashes match."
+}
