@@ -206,3 +206,29 @@ def test_forum_demo_seeds_both_queues_idempotently(client):
         )
     seed_demo()
     assert client.get("/api/comments").json()["total"] == 6
+
+
+def test_saved_sentiment_evaluation_preserves_official_provenance(client):
+    response = client.get("/api/sentiment/evaluation")
+    assert response.status_code == 200
+    report = response.json()
+    m = report["metrics"]
+    assert m["official_full_test"] and m["samples"] == 12284
+    assert (
+        report["dataset"]["configuration"] == "sentiment"
+        and report["dataset"]["split"] == "test"
+    )
+    assert report["runtime"]["revision"] == sw.REVISION
+    assert (
+        report["runtime"]["architecture"] == "aarch64"
+        and "Apple M5" in report["runtime"]["host_label"]
+    )
+    assert m["accuracy"] == pytest.approx(0.7218332790621947)
+    assert m["macro_f1"] == pytest.approx(0.7240497134269231)
+    assert m["macro_recall"] == pytest.approx(0.7349497561715372)
+    classes = [m["classification_report"][l] for l in sw.LABELS]
+    assert sum(c["support"] for c in classes) == 12284
+    assert sum(sum(r) for r in m["confusion_matrix"]) == 12284
+    download = client.get("/api/sentiment/evaluation/download")
+    assert download.status_code == 200 and download.json() == report
+    assert "attachment" in download.headers["content-disposition"]

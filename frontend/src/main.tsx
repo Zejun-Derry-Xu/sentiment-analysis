@@ -100,6 +100,40 @@ type Evaluation = {
     inference_ms: { p50: number; p95: number };
   };
 };
+type SentimentEvaluation = {
+  run_id: string;
+  runtime: {
+    model: string;
+    revision: string;
+    host_label: string;
+    architecture: string;
+    device: string;
+    precision: string;
+    batch_size: number;
+    threads: number;
+    interop_threads: number;
+  };
+  dataset: {
+    repository: string;
+    revision: string;
+    configuration: string;
+    split: string;
+    rows: number;
+  };
+  metrics: {
+    samples: number;
+    official_full_test: boolean;
+    accuracy: number;
+    micro_f1: number;
+    macro_f1: number;
+    macro_recall: number;
+    classification_report: Record<
+      string,
+      { precision: number; recall: number; "f1-score": number; support: number }
+    >;
+    confusion_matrix: number[][];
+  };
+};
 type Distribution = { p50: number; p95: number; max: number; mean: number };
 type Bench = {
   id: string;
@@ -220,6 +254,175 @@ function Mark({ small = false }: { small?: boolean }) {
     </span>
   );
 }
+function SentimentEvaluationReport({
+  report,
+}: {
+  report: SentimentEvaluation | null;
+}) {
+  if (!report)
+    return (
+      <section aria-label="Sentiment evaluation" className="sentiment-report">
+        <h2>Sentiment · Three classes</h2>
+        <p className="muted">Loading the recorded official test report…</p>
+      </section>
+    );
+  const m = report.metrics;
+  const names = ["negative", "neutral", "positive"];
+  return (
+    <section aria-label="Sentiment evaluation" className="sentiment-report">
+      <div className="section-title">
+        <div>
+          <span className="eyebrow">SENTIMENT / THREE CLASSES</span>
+          <h2>Positive, neutral, or negative.</h2>
+        </div>
+        <span className="tag">Recorded local CPU evaluation</span>
+      </div>
+      <div className="evaluation-source">
+        <div>
+          <span className="eyebrow">MODEL</span>
+          <strong>CardiffNLP · Twitter RoBERTa</strong>
+          <span>Pretrained FP32 · Softmax + argmax</span>
+        </div>
+        <div>
+          <span className="eyebrow">TEST DATA</span>
+          <strong>TweetEval sentiment / test</strong>
+          <span>
+            {m.samples.toLocaleString("en-US")} labeled samples · Full official
+            split
+          </span>
+        </div>
+        <a
+          href={"https://huggingface.co/" + report.runtime.model}
+          target="_blank"
+          rel="noreferrer"
+        >
+          View model source ↗
+        </a>
+      </div>
+      <div className="metric-grid">
+        {[
+          ["Accuracy", m.accuracy, "Exactly one sentiment per text"],
+          ["Macro-F1", m.macro_f1, "Equal weight for all three classes"],
+          [
+            "Macro-Recall",
+            m.macro_recall,
+            "Official TweetEval sentiment metric",
+          ],
+        ].map(([label, value, note]) => (
+          <div className="metric-card" key={String(label)}>
+            <span>{label}</span>
+            <strong>{(Number(value) * 100).toFixed(2)}%</strong>
+            <small>{note}</small>
+          </div>
+        ))}
+      </div>
+      <p className="fineprint muted">
+        Micro-F1: {(m.micro_f1 * 100).toFixed(2)}% (equals accuracy for this
+        single-label task). Measured on {report.runtime.host_label}. This is a
+        saved test run, separate from live forum statistics.
+      </p>
+      <div className="table-wrap">
+        <table>
+          <caption className="table-caption">
+            Per-class results · All three classes included
+          </caption>
+          <thead>
+            <tr>
+              <th>Sentiment</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            {names.map((label) => {
+              const c = m.classification_report[label];
+              return (
+                <tr key={label}>
+                  <td>{sentiments[label]}</td>
+                  <td>{c.precision.toFixed(3)}</td>
+                  <td>{c.recall.toFixed(3)}</td>
+                  <td>
+                    <b>{c["f1-score"].toFixed(3)}</b>
+                  </td>
+                  <td>{c.support.toLocaleString("en-US")}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="report-downloads">
+        <a href="/api/sentiment/evaluation/download" download>
+          Download sentiment report ↓
+        </a>
+        <a
+          href="https://github.com/Zejun-Derry-Xu/sentiment-analysis/blob/5d45a4c/docs/results/cardiff-cpu-local/predictions.jsonl"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View saved predictions ↗
+        </a>
+      </div>
+      <details className="evaluation-details">
+        <summary>Confusion matrix and reproducibility</summary>
+        <div className="table-wrap">
+          <table>
+            <caption className="table-caption">
+              Rows: true sentiment · Columns: predicted sentiment
+            </caption>
+            <thead>
+              <tr>
+                <th>True / Predicted</th>
+                {names.map((l) => (
+                  <th key={l}>{sentiments[l]}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {names.map((l, i) => (
+                <tr key={l}>
+                  <td>{sentiments[l]}</td>
+                  {m.confusion_matrix[i].map((n, j) => (
+                    <td key={j}>{n.toLocaleString("en-US")}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <dl className="evaluation-provenance">
+          <dt>Model revision</dt>
+          <dd>
+            <code>{report.runtime.revision}</code>
+          </dd>
+          <dt>Dataset revision</dt>
+          <dd>
+            <code>{report.dataset.revision}</code>
+          </dd>
+          <dt>Evaluation run</dt>
+          <dd>
+            <code>{report.run_id}</code>
+          </dd>
+          <dt>Runtime</dt>
+          <dd>
+            {report.runtime.device.toUpperCase()} · {report.runtime.precision} ·{" "}
+            {report.runtime.architecture} · Batch {report.runtime.batch_size} ·
+            Threads {report.runtime.threads}/{report.runtime.interop_threads}
+          </dd>
+          <dt>Protocol</dt>
+          <dd>
+            All {m.samples.toLocaleString("en-US")} test samples; fixed
+            pretrained weights and author preprocessing; no training, tuning, or
+            sample selection.
+          </dd>
+        </dl>
+      </details>
+    </section>
+  );
+}
+
 function App() {
   const [user, setUser] = useState<User | null>(null),
     [checking, setChecking] = useState(true),
@@ -257,6 +460,8 @@ function App() {
     [reason, setReason] = useState(""),
     [saving, setSaving] = useState(false),
     [history, setHistory] = useState<Note | null>(null);
+  const [sentimentEvaluation, setSentimentEvaluation] =
+    useState<SentimentEvaluation | null>(null);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]),
     [evaluationId, setEvaluationId] = useState(""),
     [benches, setBenches] = useState<Bench[]>([]);
@@ -304,13 +509,15 @@ function App() {
         setEvents(es);
         setStats(ss);
         if (view === "evaluation") {
-          const [ev, bb] = await Promise.all([
+          const [ev, bb, se] = await Promise.all([
             api<Evaluation[]>("/api/evaluations"),
             api<Bench[]>("/api/benchmarks"),
+            api<SentimentEvaluation>("/api/sentiment/evaluation"),
           ]);
           if (active) {
             setEvaluations(ev);
             setBenches(bb);
+            setSentimentEvaluation(se);
           }
         } else if (view !== "events") {
           const q = new URLSearchParams({
@@ -951,19 +1158,18 @@ function App() {
                 performance are reported separately.
               </p>
               <p className="fineprint muted">
-                Below: the 28-label GoEmotions emotion evaluation. Sentiment
-                uses TweetEval official test data: 12,284 local samples,
-                accuracy 72.18%, macro-F1 72.40%. See the{" "}
-                <a
-                  href="https://github.com/Zejun-Derry-Xu/sentiment-analysis/blob/main/docs/cardiff-cpu-validation.md"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  independent sentiment report
-                </a>
-                . These are different tasks; scores are not directly comparable.
-                Live post distributions are not accuracy measurements.
+                Emotion and sentiment use different official datasets and tasks.
+                Their scores are not directly comparable; live forum
+                distributions are not accuracy measurements.
               </p>
+            </div>
+            <SentimentEvaluationReport report={sentimentEvaluation} />
+            <div className="section-title emotion-evaluation-heading">
+              <div>
+                <span className="eyebrow">EMOTION / 28 LABELS</span>
+                <h2>Emotions expressed in text.</h2>
+              </div>
+              <span className="tag">GoEmotions evaluation</span>
             </div>
             <div className="evaluation-source">
               <div>

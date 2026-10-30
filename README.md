@@ -51,7 +51,7 @@ There are no fixed demo passwords. Choose any display name. The cookie lasts up 
 5. Click **Switch to Admin** beside your name.
 6. Inspect distributions, filter negative feedback, and mark a post **Viewed** or **Processed**.
 7. Add a separate **Human review** of emotion labels; original outputs remain unchanged.
-8. Open **Evaluation** to inspect official metrics and download saved predictions.
+8. Open **Evaluation** to inspect separate sentiment and emotion results, per-class metrics, confusion matrices, and downloadable reports. The sentiment report is the recorded local Apple M5 full-test run, clearly labeled by environment.
 9. Click **Switch to Student** to return to discussion.
 
 ## Services and data flow
@@ -90,6 +90,7 @@ Persistent data includes users/sessions, boards, posts, emotion/sentiment jobs a
 | `GET /api/stats` | Global non-benchmark post distributions |
 | `GET /api/model`, `/api/runtime`, `/api/sentiment/runtime` | Fixed configuration and runtime information |
 | `GET /api/evaluations`, `/api/evaluations/{id}` | Official emotion evaluation runs |
+| `GET /api/sentiment/evaluation`, `/api/sentiment/evaluation/download` | Recorded official sentiment report and JSON download |
 | `GET /api/evaluations/{id}/files/{filename}` | Saved metrics, metadata, and predictions |
 | `GET /health`, `/ready` | Process health and database/both-worker readiness |
 

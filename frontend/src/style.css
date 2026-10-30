@@ -2289,3 +2289,62 @@ td b {
     justify-content: flex-end;
   }
 }
+
+.sentiment-report {
+  margin-bottom: 52px;
+}
+.sentiment-report .section-title {
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sentiment-report .evaluation-source {
+  margin-top: 22px;
+}
+.table-caption {
+  text-align: left;
+  padding: 15px 18px;
+  color: #7b8674;
+  font-size: 12px;
+}
+.evaluation-details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 18px;
+  font-size: 12px;
+}
+.evaluation-details summary {
+  cursor: pointer;
+  color: #617356;
+}
+.evaluation-provenance {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+  line-height: 1.7;
+}
+.evaluation-provenance dt {
+  color: #7b8674;
+}
+.evaluation-provenance dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.emotion-evaluation-heading {
+  border-top: 1px solid var(--line);
+  padding-top: 32px;
+}
+@media (max-width: 700px) {
+  .evaluation-provenance {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .evaluation-provenance dd {
+    margin-bottom: 10px;
+  }
+  .sentiment-report .section-title .tag {
+    font-size: 9px;
+  }
+}

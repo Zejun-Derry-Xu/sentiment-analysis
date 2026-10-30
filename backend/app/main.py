@@ -1,4 +1,6 @@
 import hashlib
+import json
+from pathlib import Path
 import os
 import re
 import secrets
@@ -469,6 +471,26 @@ def correct(comment_id: UUID, body: Correction, user=Depends(session_user)):
             "INSERT INTO corrections(id,comment_id,user_id,labels,reason) VALUES (%s,%s,%s,%s,%s) RETURNING *",
             (uuid4(), comment_id, user["id"], Jsonb(body.labels), body.reason),
         ).fetchone()
+
+
+SENTIMENT_EVALUATION_FILE = (
+    Path(__file__).with_name("data") / "sentiment-evaluation.json"
+)
+
+
+@app.get("/api/sentiment/evaluation")
+def sentiment_evaluation():
+    # Recorded official full-test run; never infer a score from live forum posts.
+    return json.loads(SENTIMENT_EVALUATION_FILE.read_text())
+
+
+@app.get("/api/sentiment/evaluation/download")
+def sentiment_evaluation_download():
+    return FileResponse(
+        SENTIMENT_EVALUATION_FILE,
+        media_type="application/json",
+        filename="sentiment-official-test-report.json",
+    )
 
 
 @app.get("/api/evaluations")
