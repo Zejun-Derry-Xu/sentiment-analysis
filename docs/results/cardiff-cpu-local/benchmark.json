@@ -1,0 +1,3612 @@
+{
+  "runtime": {
+    "model": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+    "revision": "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7",
+    "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+    "device": "cpu",
+    "precision": "float32",
+    "batch_size": 1,
+    "threads": 2,
+    "interop_threads": 1,
+    "model_load_ms": 2265.8183339999596,
+    "asset_preparation_ms": 311.64612499969735,
+    "platform": "Linux-6.12.76-linuxkit-aarch64-with-glibc2.41",
+    "architecture": "aarch64",
+    "cpu_count": 10,
+    "cpu_description": "aarch64",
+    "host_label": "Apple M5 / macOS Docker Desktop / local trial, not Jetstream2",
+    "cpu_limit": "200000 100000",
+    "memory_limit": "4294967296",
+    "loading_info": {
+      "missing_keys": [],
+      "unexpected_keys": [
+        "roberta.pooler.dense.bias",
+        "roberta.pooler.dense.weight"
+      ],
+      "mismatched_keys": [],
+      "error_msgs": []
+    },
+    "parameter_count": 124647939,
+    "cuda_available": false,
+    "packages": {
+      "torch": "2.7.1+cpu",
+      "transformers": "4.53.3",
+      "tokenizers": "0.21.4",
+      "numpy": "2.2.6"
+    },
+    "manifest": {
+      "repository": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+      "revision": "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7",
+      "license": "CC-BY-4.0 as declared in model card",
+      "weights": "Author-published float32 PyTorch; no training, conversion or quantization",
+      "files": {
+        "config.json": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/config.json",
+          "bytes": 929,
+          "sha256": "d2fba19997da698157196ba16f5fcb30a97a7551cef6845a0f3d743ee19c6129"
+        },
+        "merges.txt": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/merges.txt",
+          "bytes": 456318,
+          "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+        },
+        "vocab.json": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/vocab.json",
+          "bytes": 898822,
+          "sha256": "06b4d46c8e752d410213d9548eb27a54db70fda0319b6271fb8d59dead5e1cab"
+        },
+        "special_tokens_map.json": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/special_tokens_map.json",
+          "bytes": 239,
+          "sha256": "378eb3bf733eb16e65792d7e3fda5b8a4631387ca04d2015199c4d4f22ae554d"
+        },
+        "README.md": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/README.md",
+          "bytes": 4328,
+          "sha256": "05ad85143ed60f0abe631ab935485db046c24710d9bec50829b017cfc1e12bf7"
+        },
+        "pytorch_model.bin": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/pytorch_model.bin",
+          "bytes": 501045531,
+          "sha256": "4d24a3e32a88ed1c4e5b789fc6644e2e767500554e954b27dccf52a8e762cbae"
+        }
+      }
+    },
+    "first_inference_ms": 42.53441600030783,
+    "startup_warmup_count": 20,
+    "module_entry_to_ready_ms": 3078.4567519999655,
+    "cold_start_definition": "Model load includes torch/transformers imports, tokenizer and weights; first inference is before warmup. Module-entry-to-ready includes asset preparation and 20 warmups, but not preceding module imports/container creation."
+  },
+  "dataset": {
+    "repository": "cardiffnlp/tweet_eval",
+    "revision": "b3a375baf0f409c77e6bc7aa35102b7b3534f8be",
+    "configuration": "sentiment",
+    "split": "test",
+    "rows": 12284,
+    "labels": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "file": {
+      "url": "https://huggingface.co/datasets/cardiffnlp/tweet_eval/resolve/b3a375baf0f409c77e6bc7aa35102b7b3534f8be/sentiment/test-00000-of-00001.parquet",
+      "bytes": 900553,
+      "sha256": "f73aea52d43879223019e733b944780f7e9203ee32459ea006f554011379fcdf"
+    },
+    "license_status": "HF aggregate dataset card says unknown; original task terms require separate verification. Raw test text is not bundled in the repository or exported prediction report."
+  },
+  "samples": 100,
+  "warmup": 20,
+  "batch_size": 1,
+  "inference_ms": {
+    "n": 100,
+    "p50": 62.03870849958548,
+    "p95": 136.31154579952633,
+    "mean": 72.76061043990921,
+    "max": 176.87458300042636
+  },
+  "throughput_per_second": 13.716639092006288,
+  "rss_mb": {
+    "n": 100,
+    "p50": 1003.08984375,
+    "p95": 1003.08984375,
+    "mean": 1003.08984375,
+    "max": 1003.08984375
+  },
+  "process_cpu_percent": {
+    "n": 100,
+    "p50": 196.48075080944227,
+    "p95": 210.66183925713233,
+    "mean": 194.98119228146706,
+    "max": 215.8042924843021
+  },
+  "cpu_definition": "Process CPU time / wall time x100; 100% = one core. RSS sampled after every prediction, not true peak.",
+  "text_characters": {
+    "n": 100,
+    "p50": 88.0,
+    "p95": 135.14999999999998,
+    "mean": 86.38,
+    "max": 140.0
+  },
+  "token_lengths": {
+    "n": 100,
+    "p50": 25.0,
+    "p95": 39.05,
+    "mean": 25.54,
+    "max": 68.0
+  },
+  "api_cases": [
+    {
+      "concurrency": 1,
+      "samples": 100,
+      "throughput_per_second": 12.501687526226332,
+      "results": [
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8047260046005249,
+            "neutral": 0.18728095293045044,
+            "positive": 0.007993027567863464
+          },
+          "inference_ms": 77.06429100016976,
+          "token_count": 29,
+          "input_characters": 96,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 194.64267827982812,
+          "queue_ms": 0.00691700006427709,
+          "handler_completion_ms": 77.2533340004884,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 83.50516600057745
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.04197307303547859,
+            "neutral": 0.8669492602348328,
+            "positive": 0.09107764810323715
+          },
+          "inference_ms": 67.48874999993859,
+          "token_count": 24,
+          "input_characters": 72,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 192.6246967087108,
+          "queue_ms": 0.0015000005078036338,
+          "handler_completion_ms": 67.631667000569,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 69.05904199993529
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.20318157970905304,
+            "neutral": 0.763724148273468,
+            "positive": 0.033094264566898346
+          },
+          "inference_ms": 64.71245800003089,
+          "token_count": 22,
+          "input_characters": 87,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 200.88867587141732,
+          "queue_ms": 0.0010410003596916795,
+          "handler_completion_ms": 64.84399999953894,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 66.25312500000291
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0037119202315807343,
+            "neutral": 0.22224119305610657,
+            "positive": 0.7740468978881836
+          },
+          "inference_ms": 76.49966699955257,
+          "token_count": 27,
+          "input_characters": 83,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 209.15123722145128,
+          "queue_ms": 0.001207999957841821,
+          "handler_completion_ms": 76.7323750005744,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 78.46270800018829
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3033508062362671,
+            "neutral": 0.41639718413352966,
+            "positive": 0.28025195002555847
+          },
+          "inference_ms": 96.94012500040117,
+          "token_count": 32,
+          "input_characters": 133,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 195.99727151091284,
+          "queue_ms": 0.0018750006347545423,
+          "handler_completion_ms": 97.11337499993533,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 99.08175000055053
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.4714508354663849,
+            "neutral": 0.49636951088905334,
+            "positive": 0.03217963129281998
+          },
+          "inference_ms": 101.77262500019424,
+          "token_count": 31,
+          "input_characters": 103,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 206.3423243722323,
+          "queue_ms": 0.0013750004654866643,
+          "handler_completion_ms": 101.93995900044683,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 103.98208400056319
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.23846980929374695,
+            "neutral": 0.46657198667526245,
+            "positive": 0.2949581742286682
+          },
+          "inference_ms": 59.46875000063301,
+          "token_count": 12,
+          "input_characters": 39,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 201.7866526513733,
+          "queue_ms": 0.001207999957841821,
+          "handler_completion_ms": 59.63762500050507,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 61.34741599998961
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.005725219380110502,
+            "neutral": 0.046310536563396454,
+            "positive": 0.9479643106460571
+          },
+          "inference_ms": 69.31320900002902,
+          "token_count": 17,
+          "input_characters": 59,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 201.98170308352258,
+          "queue_ms": 0.0013330000001587905,
+          "handler_completion_ms": 69.48466700032441,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 71.24116700015293
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5159897804260254,
+            "neutral": 0.4352896511554718,
+            "positive": 0.04872056469321251
+          },
+          "inference_ms": 92.22787500038976,
+          "token_count": 27,
+          "input_characters": 112,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 195.16875998639563,
+          "queue_ms": 0.001291999979002867,
+          "handler_completion_ms": 92.41208299954451,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 94.22745800020493
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.24256981909275055,
+            "neutral": 0.6462962627410889,
+            "positive": 0.11113396286964417
+          },
+          "inference_ms": 96.78770900063682,
+          "token_count": 28,
+          "input_characters": 103,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 185.9740269279976,
+          "queue_ms": 0.001499999598308932,
+          "handler_completion_ms": 96.98862499953975,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 98.78208299960534
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.09753695875406265,
+            "neutral": 0.5802544355392456,
+            "positive": 0.3222086727619171
+          },
+          "inference_ms": 67.88079200032371,
+          "token_count": 14,
+          "input_characters": 77,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 191.51220274431859,
+          "queue_ms": 0.001249999513674993,
+          "handler_completion_ms": 68.07449999996606,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 69.82166700072412
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.0063135018572211266,
+            "neutral": 0.7971650958061218,
+            "positive": 0.19652144610881805
+          },
+          "inference_ms": 90.90487499997835,
+          "token_count": 27,
+          "input_characters": 77,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 198.00918267596379,
+          "queue_ms": 0.00145800004247576,
+          "handler_completion_ms": 91.05212499980553,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 92.79145799973776
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0022126752883195877,
+            "neutral": 0.0970422774553299,
+            "positive": 0.9007450342178345
+          },
+          "inference_ms": 60.01254200054973,
+          "token_count": 14,
+          "input_characters": 46,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 199.95820206848035,
+          "queue_ms": 0.001499999598308932,
+          "handler_completion_ms": 60.20062500010681,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 61.70779200056131
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.590688169002533,
+            "neutral": 0.38799986243247986,
+            "positive": 0.02131202258169651
+          },
+          "inference_ms": 109.84958399967581,
+          "token_count": 37,
+          "input_characters": 140,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 200.27385811554512,
+          "queue_ms": 0.001749999682942871,
+          "handler_completion_ms": 110.04187500020635,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 111.67845799991483
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8432441353797913,
+            "neutral": 0.12894447147846222,
+            "positive": 0.027811402454972267
+          },
+          "inference_ms": 86.06133299963403,
+          "token_count": 26,
+          "input_characters": 86,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 197.53354273608065,
+          "queue_ms": 0.0010839994502021,
+          "handler_completion_ms": 86.20012499977747,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 87.90062499974738
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.030454616993665695,
+            "neutral": 0.9275137782096863,
+            "positive": 0.0420316718518734
+          },
+          "inference_ms": 82.27745900057926,
+          "token_count": 25,
+          "input_characters": 93,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 182.30995684833624,
+          "queue_ms": 0.0011669999366858974,
+          "handler_completion_ms": 82.44525000009162,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 84.15279200016812
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5895974636077881,
+            "neutral": 0.382947713136673,
+            "positive": 0.027454806491732597
+          },
+          "inference_ms": 78.2079580003483,
+          "token_count": 21,
+          "input_characters": 51,
+          "rss_mb": 1003.09375,
+          "cpu_percent": 204.58276125732536,
+          "queue_ms": 0.0012909995348309167,
+          "handler_completion_ms": 78.37850000032631,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 80.2376669998921
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8269013166427612,
+            "neutral": 0.16152635216712952,
+            "positive": 0.011572282761335373
+          },
+          "inference_ms": 93.06179200029874,
+          "token_count": 29,
+          "input_characters": 84,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 204.165421615183,
+          "queue_ms": 0.001207999957841821,
+          "handler_completion_ms": 93.21295799963991,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 94.70950000013545
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.4495609998703003,
+            "neutral": 0.5151365995407104,
+            "positive": 0.035302408039569855
+          },
+          "inference_ms": 92.92237499994371,
+          "token_count": 29,
+          "input_characters": 107,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 193.71007252014957,
+          "queue_ms": 0.001291999979002867,
+          "handler_completion_ms": 93.07991700006824,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 94.59229099957156
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.006260457914322615,
+            "neutral": 0.8869540095329285,
+            "positive": 0.10678549110889435
+          },
+          "inference_ms": 86.15166599975055,
+          "token_count": 24,
+          "input_characters": 63,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 197.3264219876665,
+          "queue_ms": 0.0011669999366858974,
+          "handler_completion_ms": 86.30549999998038,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 89.31187500002125
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.011190732009708881,
+            "neutral": 0.7468938231468201,
+            "positive": 0.24191546440124512
+          },
+          "inference_ms": 90.79070900043007,
+          "token_count": 24,
+          "input_characters": 70,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 198.2581719889543,
+          "queue_ms": 0.0012090004020137712,
+          "handler_completion_ms": 90.95700000034412,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 92.53549999993993
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.012507695704698563,
+            "neutral": 0.23352622985839844,
+            "positive": 0.7539660930633545
+          },
+          "inference_ms": 101.59974999987753,
+          "token_count": 35,
+          "input_characters": 125,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 196.85087807823007,
+          "queue_ms": 0.0013750004654866643,
+          "handler_completion_ms": 101.75445800086891,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 103.46587499952875
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0026808367110788822,
+            "neutral": 0.4286029636859894,
+            "positive": 0.5687162280082703
+          },
+          "inference_ms": 70.21020799948019,
+          "token_count": 21,
+          "input_characters": 63,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.40120388321478,
+          "queue_ms": 0.0015000005078036338,
+          "handler_completion_ms": 70.37287500043021,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 71.92783300070005
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.005460698623210192,
+            "neutral": 0.7923485040664673,
+            "positive": 0.20219074189662933
+          },
+          "inference_ms": 98.74400100034109,
+          "token_count": 33,
+          "input_characters": 93,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 192.4167524864607,
+          "queue_ms": 0.0017920001482707448,
+          "handler_completion_ms": 98.92512599981274,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 100.61654199944314
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.006546220276504755,
+            "neutral": 0.6070793867111206,
+            "positive": 0.3863743543624878
+          },
+          "inference_ms": 98.70562499963853,
+          "token_count": 28,
+          "input_characters": 61,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 202.6226975420883,
+          "queue_ms": 0.004333999640948605,
+          "handler_completion_ms": 98.91783399962151,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 100.91479200036702
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.016483064740896225,
+            "neutral": 0.48121708631515503,
+            "positive": 0.5022999048233032
+          },
+          "inference_ms": 67.94524999986606,
+          "token_count": 13,
+          "input_characters": 36,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 191.33051979371336,
+          "queue_ms": 0.002291999408043921,
+          "handler_completion_ms": 68.12683299995115,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 69.83695899998565
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8696168661117554,
+            "neutral": 0.115028016269207,
+            "positive": 0.015355023555457592
+          },
+          "inference_ms": 70.61904200054414,
+          "token_count": 13,
+          "input_characters": 50,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 184.0863261768794,
+          "queue_ms": 0.0011669999366858974,
+          "handler_completion_ms": 70.77512500018202,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 72.4740000005113
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.727867603302002,
+            "neutral": 0.2648146152496338,
+            "positive": 0.007317822892218828
+          },
+          "inference_ms": 77.72133400067105,
+          "token_count": 21,
+          "input_characters": 86,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 205.86368216283196,
+          "queue_ms": 0.0013750004654866643,
+          "handler_completion_ms": 77.87866600028792,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 79.86283299942443
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.4581720530986786,
+            "neutral": 0.5126890540122986,
+            "positive": 0.029138851910829544
+          },
+          "inference_ms": 87.59083399945666,
+          "token_count": 29,
+          "input_characters": 110,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 194.08423488823877,
+          "queue_ms": 0.0013330000001587905,
+          "handler_completion_ms": 87.77679099966917,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 89.51499999966472
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.0054270606487989426,
+            "neutral": 0.6908895969390869,
+            "positive": 0.303683340549469
+          },
+          "inference_ms": 82.4640000000727,
+          "token_count": 31,
+          "input_characters": 92,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 206.15056266967753,
+          "queue_ms": 0.0010829999155248515,
+          "handler_completion_ms": 82.62891599952127,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 84.1154159998041
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.04314912483096123,
+            "neutral": 0.9294456839561462,
+            "positive": 0.027405092492699623
+          },
+          "inference_ms": 48.99670800023159,
+          "token_count": 12,
+          "input_characters": 44,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 183.68581007420485,
+          "queue_ms": 0.001207999957841821,
+          "handler_completion_ms": 49.14108299999498,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 50.50195799958601
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.061876069754362106,
+            "neutral": 0.8369396924972534,
+            "positive": 0.10118426382541656
+          },
+          "inference_ms": 64.99424999947223,
+          "token_count": 21,
+          "input_characters": 89,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 200.01769387471163,
+          "queue_ms": 0.0010410003596916795,
+          "handler_completion_ms": 65.1461659999768,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 66.66291700003057
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.009352813474833965,
+            "neutral": 0.5593967437744141,
+            "positive": 0.4312504231929779
+          },
+          "inference_ms": 45.03008299980138,
+          "token_count": 8,
+          "input_characters": 24,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 177.65901075572103,
+          "queue_ms": 0.0014589995771530084,
+          "handler_completion_ms": 45.15370900026028,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 46.52658400027576
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0017556120874360204,
+            "neutral": 0.01064414344727993,
+            "positive": 0.9876002073287964
+          },
+          "inference_ms": 65.57954199979577,
+          "token_count": 22,
+          "input_characters": 93,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 198.23255246356248,
+          "queue_ms": 0.0015830000847927295,
+          "handler_completion_ms": 65.74799999998504,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 67.2320839994427
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3126053512096405,
+            "neutral": 0.6587749719619751,
+            "positive": 0.02861969918012619
+          },
+          "inference_ms": 76.68683399970178,
+          "token_count": 29,
+          "input_characters": 118,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 195.60072071882234,
+          "queue_ms": 0.0012500004231696948,
+          "handler_completion_ms": 76.83108299988817,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 78.27966700006073
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9260379076004028,
+            "neutral": 0.0664631575345993,
+            "positive": 0.0074989753775298595
+          },
+          "inference_ms": 96.7464999994263,
+          "token_count": 33,
+          "input_characters": 135,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 196.38953347271607,
+          "queue_ms": 0.0009589994078851305,
+          "handler_completion_ms": 96.90124999997352,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 98.34670800046297
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.013658462092280388,
+            "neutral": 0.26684725284576416,
+            "positive": 0.7194942831993103
+          },
+          "inference_ms": 62.31674999980896,
+          "token_count": 16,
+          "input_characters": 48,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 208.6116493563613,
+          "queue_ms": 0.001207999957841821,
+          "handler_completion_ms": 62.55062500076747,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 64.41524999991088
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.1396656036376953,
+            "neutral": 0.8400626182556152,
+            "positive": 0.020271793007850647
+          },
+          "inference_ms": 63.16258300012123,
+          "token_count": 15,
+          "input_characters": 80,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 205.81805528735205,
+          "queue_ms": 0.001249999513674993,
+          "handler_completion_ms": 63.323207999928854,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 65.41712499983987
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3141743242740631,
+            "neutral": 0.6628710627555847,
+            "positive": 0.022954605519771576
+          },
+          "inference_ms": 90.57025000038266,
+          "token_count": 29,
+          "input_characters": 117,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 187.69960334586082,
+          "queue_ms": 0.0012910004443256184,
+          "handler_completion_ms": 90.70616600001813,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 92.19137499985663
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.718696117401123,
+            "neutral": 0.2727249562740326,
+            "positive": 0.008578911423683167
+          },
+          "inference_ms": 60.71120799970231,
+          "token_count": 15,
+          "input_characters": 76,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 197.65707841043002,
+          "queue_ms": 0.0011670008461805992,
+          "handler_completion_ms": 60.85691700081952,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 62.44312499984517
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7910736799240112,
+            "neutral": 0.17505690455436707,
+            "positive": 0.03386944159865379
+          },
+          "inference_ms": 65.6373749998238,
+          "token_count": 16,
+          "input_characters": 78,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 198.05789003667212,
+          "queue_ms": 0.0012500004231696948,
+          "handler_completion_ms": 65.81308299973898,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 67.41445799980283
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.01122868712991476,
+            "neutral": 0.7795421481132507,
+            "positive": 0.20922912657260895
+          },
+          "inference_ms": 77.39062499967986,
+          "token_count": 20,
+          "input_characters": 73,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 206.74338784641725,
+          "queue_ms": 0.0011250003808527254,
+          "handler_completion_ms": 77.57112499984942,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 79.25425000030373
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3949538767337799,
+            "neutral": 0.563069760799408,
+            "positive": 0.04197642579674721
+          },
+          "inference_ms": 74.51783399937995,
+          "token_count": 19,
+          "input_characters": 54,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 201.29409558702295,
+          "queue_ms": 0.0015830000847927295,
+          "handler_completion_ms": 74.6636670000953,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 76.21199999994133
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.05983707681298256,
+            "neutral": 0.16374047100543976,
+            "positive": 0.7764224410057068
+          },
+          "inference_ms": 85.02670799953194,
+          "token_count": 27,
+          "input_characters": 116,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.93717738784923,
+          "queue_ms": 0.0011669999366858974,
+          "handler_completion_ms": 85.20841700010351,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 86.85362500000338
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.013005897402763367,
+            "neutral": 0.16398929059505463,
+            "positive": 0.8230047821998596
+          },
+          "inference_ms": 79.57412500036298,
+          "token_count": 25,
+          "input_characters": 82,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 188.50348652803828,
+          "queue_ms": 0.001041999894368928,
+          "handler_completion_ms": 79.81104200007394,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 81.46441600001708
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.042284827679395676,
+            "neutral": 0.2251920849084854,
+            "positive": 0.7325230836868286
+          },
+          "inference_ms": 55.17562499971973,
+          "token_count": 12,
+          "input_characters": 45,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.36339642856078,
+          "queue_ms": 0.0010000003385357559,
+          "handler_completion_ms": 55.338707999908365,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 56.96654100029264
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0048172008246183395,
+            "neutral": 0.29465675354003906,
+            "positive": 0.7005260586738586
+          },
+          "inference_ms": 88.81112499966548,
+          "token_count": 32,
+          "input_characters": 109,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 202.6773109793557,
+          "queue_ms": 0.0014170000213198364,
+          "handler_completion_ms": 88.97587499996007,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 90.71241700075916
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.00430217944085598,
+            "neutral": 0.032500822097063065,
+            "positive": 0.9631969928741455
+          },
+          "inference_ms": 80.82691699928546,
+          "token_count": 26,
+          "input_characters": 95,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 185.58174129221953,
+          "queue_ms": 0.0012500004231696948,
+          "handler_completion_ms": 80.97554100004345,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 82.44658300009178
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7378408312797546,
+            "neutral": 0.25250500440597534,
+            "positive": 0.00965417642146349
+          },
+          "inference_ms": 96.80550000030053,
+          "token_count": 41,
+          "input_characters": 68,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 196.26984003952742,
+          "queue_ms": 0.0011669999366858974,
+          "handler_completion_ms": 96.96008399987477,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 98.35658300016803
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8171351552009583,
+            "neutral": 0.17615412175655365,
+            "positive": 0.006710803136229515
+          },
+          "inference_ms": 87.05550000013318,
+          "token_count": 35,
+          "input_characters": 112,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 195.27772512889513,
+          "queue_ms": 0.0010000003385357559,
+          "handler_completion_ms": 87.19904200006567,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 88.49637499952223
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.02661423198878765,
+            "neutral": 0.8237316608428955,
+            "positive": 0.14965416491031647
+          },
+          "inference_ms": 82.86791699993046,
+          "token_count": 25,
+          "input_characters": 66,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 217.21313448751795,
+          "queue_ms": 0.001041999894368928,
+          "handler_completion_ms": 83.07083399995463,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 84.88783400025568
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9275963306427002,
+            "neutral": 0.05944017320871353,
+            "positive": 0.012963471934199333
+          },
+          "inference_ms": 91.83170800042717,
+          "token_count": 27,
+          "input_characters": 92,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 196.01072866817023,
+          "queue_ms": 0.0010420008038636297,
+          "handler_completion_ms": 91.98187500078348,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 93.4911659996942
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9088228940963745,
+            "neutral": 0.07986441254615784,
+            "positive": 0.011312635615468025
+          },
+          "inference_ms": 55.10366700036684,
+          "token_count": 10,
+          "input_characters": 21,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.6237382879939,
+          "queue_ms": 0.001291999979002867,
+          "handler_completion_ms": 55.27574999996432,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 56.77079199995205
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.941993772983551,
+            "neutral": 0.05265088006854057,
+            "positive": 0.005355313420295715
+          },
+          "inference_ms": 89.26345899999433,
+          "token_count": 25,
+          "input_characters": 91,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 190.4474707843033,
+          "queue_ms": 0.0013750004654866643,
+          "handler_completion_ms": 89.42845900037355,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 90.99479199994676
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.02986481785774231,
+            "neutral": 0.4853614568710327,
+            "positive": 0.484773725271225
+          },
+          "inference_ms": 98.48604200033151,
+          "token_count": 37,
+          "input_characters": 96,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 203.07446206374328,
+          "queue_ms": 0.0015420000636368059,
+          "handler_completion_ms": 98.63624999979947,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 100.15862499949435
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8852792382240295,
+            "neutral": 0.10583450645208359,
+            "positive": 0.008886219933629036
+          },
+          "inference_ms": 70.38179199935257,
+          "token_count": 23,
+          "input_characters": 102,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 198.91508303903444,
+          "queue_ms": 0.0009159994078800082,
+          "handler_completion_ms": 70.52095799917879,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 71.79937500040978
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.30051782727241516,
+            "neutral": 0.6288517713546753,
+            "positive": 0.07063034176826477
+          },
+          "inference_ms": 88.08591700017132,
+          "token_count": 36,
+          "input_characters": 133,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 192.9933930298326,
+          "queue_ms": 0.001249999513674993,
+          "handler_completion_ms": 88.20987499984767,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 89.62258300016401
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5895342826843262,
+            "neutral": 0.39727339148521423,
+            "positive": 0.01319227833300829
+          },
+          "inference_ms": 88.100084000871,
+          "token_count": 35,
+          "input_characters": 113,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 192.9623585811701,
+          "queue_ms": 0.0010000003385357559,
+          "handler_completion_ms": 88.22870800031524,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 89.65362500021001
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9402272701263428,
+            "neutral": 0.05339884012937546,
+            "positive": 0.0063739074394106865
+          },
+          "inference_ms": 93.82508300041081,
+          "token_count": 37,
+          "input_characters": 133,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 202.50448379458965,
+          "queue_ms": 0.000957999873207882,
+          "handler_completion_ms": 93.94124999926134,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 95.36233300059394
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.33912500739097595,
+            "neutral": 0.6425031423568726,
+            "positive": 0.01837179809808731
+          },
+          "inference_ms": 82.59812500000407,
+          "token_count": 25,
+          "input_characters": 95,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 193.7089976316944,
+          "queue_ms": 0.001333999534836039,
+          "handler_completion_ms": 82.76512499924138,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 84.10162499967555
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.009348035790026188,
+            "neutral": 0.8689859509468079,
+            "positive": 0.12166596949100494
+          },
+          "inference_ms": 89.50995899976988,
+          "token_count": 31,
+          "input_characters": 93,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 201.09494184946107,
+          "queue_ms": 0.0010829999155248515,
+          "handler_completion_ms": 89.69479100051103,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 91.19100000043545
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.6751218438148499,
+            "neutral": 0.2892400622367859,
+            "positive": 0.035638097673654556
+          },
+          "inference_ms": 78.83483299974614,
+          "token_count": 20,
+          "input_characters": 77,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 190.27122185994432,
+          "queue_ms": 0.0013749995559919626,
+          "handler_completion_ms": 78.98924999972223,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 80.74645800024882
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.023255784064531326,
+            "neutral": 0.22287297248840332,
+            "positive": 0.7538712620735168
+          },
+          "inference_ms": 86.97600000050443,
+          "token_count": 13,
+          "input_characters": 29,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 195.45621780616128,
+          "queue_ms": 0.0012090004020137712,
+          "handler_completion_ms": 87.15629200014519,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 88.88616700005514
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8479450941085815,
+            "neutral": 0.14438635110855103,
+            "positive": 0.00766853429377079
+          },
+          "inference_ms": 125.92408299951785,
+          "token_count": 31,
+          "input_characters": 98,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 198.5323172859295,
+          "queue_ms": 0.001708000127109699,
+          "handler_completion_ms": 126.10462500015274,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 128.0742500002816
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7391725778579712,
+            "neutral": 0.25150561332702637,
+            "positive": 0.009321853518486023
+          },
+          "inference_ms": 132.65679199957958,
+          "token_count": 32,
+          "input_characters": 109,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 188.45623826090437,
+          "queue_ms": 0.0016250005501206033,
+          "handler_completion_ms": 132.95491700046114,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 135.0540829998863
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.006995544768869877,
+            "neutral": 0.14771190285682678,
+            "positive": 0.8452925682067871
+          },
+          "inference_ms": 75.07979199999681,
+          "token_count": 12,
+          "input_characters": 43,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.78744746668627,
+          "queue_ms": 0.0015410005289595574,
+          "handler_completion_ms": 75.25008300035552,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 77.48604199969122
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.0041105253621935844,
+            "neutral": 0.8543654680252075,
+            "positive": 0.14152400195598602
+          },
+          "inference_ms": 250.0247500001933,
+          "token_count": 47,
+          "input_characters": 113,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 135.98653733266616,
+          "queue_ms": 0.0013330000001587905,
+          "handler_completion_ms": 250.27870800022356,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 252.48883299991576
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8892825245857239,
+            "neutral": 0.10128863900899887,
+            "positive": 0.009428935125470161
+          },
+          "inference_ms": 135.6455420000202,
+          "token_count": 26,
+          "input_characters": 105,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 147.44310579703065,
+          "queue_ms": 0.0015420000636368059,
+          "handler_completion_ms": 135.80529199953162,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 138.05158299965115
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.2824643850326538,
+            "neutral": 0.6762533187866211,
+            "positive": 0.04128223657608032
+          },
+          "inference_ms": 94.94100000028993,
+          "token_count": 12,
+          "input_characters": 46,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 136.92714422587161,
+          "queue_ms": 0.0018330001694266684,
+          "handler_completion_ms": 95.11929200016311,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 97.1832089999225
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.005889521446079016,
+            "neutral": 0.05904983729124069,
+            "positive": 0.9350606799125671
+          },
+          "inference_ms": 123.55050000041956,
+          "token_count": 38,
+          "input_characters": 127,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 153.78327080781492,
+          "queue_ms": 0.0011670008461805992,
+          "handler_completion_ms": 123.71045800045977,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 125.75491699954
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8469412326812744,
+            "neutral": 0.13933797180652618,
+            "positive": 0.013720800168812275
+          },
+          "inference_ms": 89.67770900017058,
+          "token_count": 31,
+          "input_characters": 105,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 178.41668992656528,
+          "queue_ms": 0.0010839994502021,
+          "handler_completion_ms": 89.81341699927725,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 91.23316699970019
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5062379837036133,
+            "neutral": 0.4630970358848572,
+            "positive": 0.030665021389722824
+          },
+          "inference_ms": 55.64216599941574,
+          "token_count": 13,
+          "input_characters": 53,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 197.69180085666505,
+          "queue_ms": 0.0011250003808527254,
+          "handler_completion_ms": 55.78833300023689,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 57.117958999697294
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.04692624881863594,
+            "neutral": 0.9222263693809509,
+            "positive": 0.030847392976284027
+          },
+          "inference_ms": 57.49754199950985,
+          "token_count": 18,
+          "input_characters": 44,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 208.7045738427239,
+          "queue_ms": 0.0013330000001587905,
+          "handler_completion_ms": 57.64479199933703,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 58.96270799985359
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0062565370462834835,
+            "neutral": 0.36046263575553894,
+            "positive": 0.633280873298645
+          },
+          "inference_ms": 60.29070800013869,
+          "token_count": 14,
+          "input_characters": 38,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 182.44934194444508,
+          "queue_ms": 0.0011250003808527254,
+          "handler_completion_ms": 60.61995799973374,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 61.987666000277386
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.06366778910160065,
+            "neutral": 0.7133181095123291,
+            "positive": 0.22301416099071503
+          },
+          "inference_ms": 60.046040999623074,
+          "token_count": 17,
+          "input_characters": 46,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.84664767635806,
+          "queue_ms": 0.0011250003808527254,
+          "handler_completion_ms": 60.285708000265004,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 61.7978749996837
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.05754653364419937,
+            "neutral": 0.7962917685508728,
+            "positive": 0.1461617648601532
+          },
+          "inference_ms": 68.06520800000726,
+          "token_count": 22,
+          "input_characters": 99,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 205.68511301670856,
+          "queue_ms": 0.0009159994078800082,
+          "handler_completion_ms": 68.20095799957926,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 69.51858299999003
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.03219052776694298,
+            "neutral": 0.908934473991394,
+            "positive": 0.058875057846307755
+          },
+          "inference_ms": 58.62837499989837,
+          "token_count": 21,
+          "input_characters": 76,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 187.62246096760828,
+          "queue_ms": 0.0008329998308909126,
+          "handler_completion_ms": 58.762208000189275,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 60.02704200000153
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7994248270988464,
+            "neutral": 0.18360453844070435,
+            "positive": 0.016970638185739517
+          },
+          "inference_ms": 47.17525000069145,
+          "token_count": 14,
+          "input_characters": 48,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 211.9755592147224,
+          "queue_ms": 0.0008750002962187864,
+          "handler_completion_ms": 47.30187499990279,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 48.555499999565654
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.037009984254837036,
+            "neutral": 0.8831185698509216,
+            "positive": 0.07987146079540253
+          },
+          "inference_ms": 55.81866699958482,
+          "token_count": 20,
+          "input_characters": 59,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 197.06669097086376,
+          "queue_ms": 0.0010829999155248515,
+          "handler_completion_ms": 55.93012499957695,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 57.12291700001515
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0019784457981586456,
+            "neutral": 0.05341402813792229,
+            "positive": 0.9446075558662415
+          },
+          "inference_ms": 50.59129099936399,
+          "token_count": 21,
+          "input_characters": 81,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 197.6624791036983,
+          "queue_ms": 0.0010000003385357559,
+          "handler_completion_ms": 50.692709000031755,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 51.80749999999534
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.006584210321307182,
+            "neutral": 0.03144783899188042,
+            "positive": 0.9619680047035217
+          },
+          "inference_ms": 64.36283299990464,
+          "token_count": 34,
+          "input_characters": 120,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 201.9799221704153,
+          "queue_ms": 0.000791999809734989,
+          "handler_completion_ms": 64.46245899951464,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 65.46745800005738
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9302958846092224,
+            "neutral": 0.0621335543692112,
+            "positive": 0.007570554502308369
+          },
+          "inference_ms": 85.62350000011065,
+          "token_count": 51,
+          "input_characters": 139,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 198.54362412171082,
+          "queue_ms": 0.0008749993867240846,
+          "handler_completion_ms": 85.72970899967913,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 86.69120899958216
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5585435628890991,
+            "neutral": 0.39069098234176636,
+            "positive": 0.05076546221971512
+          },
+          "inference_ms": 50.044292000166024,
+          "token_count": 21,
+          "input_characters": 82,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.8229888032079,
+          "queue_ms": 0.000791999809734989,
+          "handler_completion_ms": 50.156999999671825,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 51.17437500030064
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.023205220699310303,
+            "neutral": 0.8953136205673218,
+            "positive": 0.0814812034368515
+          },
+          "inference_ms": 70.18158299979405,
+          "token_count": 38,
+          "input_characters": 94,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.4825337585838,
+          "queue_ms": 0.0007090002327458933,
+          "handler_completion_ms": 70.29354200039961,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 71.40679200074374
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7152673602104187,
+            "neutral": 0.2757817804813385,
+            "positive": 0.008950840681791306
+          },
+          "inference_ms": 71.29950000035024,
+          "token_count": 39,
+          "input_characters": 138,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 196.35481314653308,
+          "queue_ms": 0.00091600031737471,
+          "handler_completion_ms": 71.40945799983456,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 72.42945799953304
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.01599118486046791,
+            "neutral": 0.4389512836933136,
+            "positive": 0.545057475566864
+          },
+          "inference_ms": 57.38541600021563,
+          "token_count": 27,
+          "input_characters": 98,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 209.11236401848154,
+          "queue_ms": 0.0006249993020901456,
+          "handler_completion_ms": 57.489082999381935,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 58.74554199999693
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.00218397518619895,
+            "neutral": 0.17782019078731537,
+            "positive": 0.8199958205223083
+          },
+          "inference_ms": 65.27866699980223,
+          "token_count": 35,
+          "input_characters": 139,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.14622337570557,
+          "queue_ms": 0.000791999809734989,
+          "handler_completion_ms": 65.39287499981583,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 66.35679099963454
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5504083633422852,
+            "neutral": 0.44011273980140686,
+            "positive": 0.009478841908276081
+          },
+          "inference_ms": 51.93020800015802,
+          "token_count": 24,
+          "input_characters": 84,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 192.56614570002256,
+          "queue_ms": 0.0007500002539018169,
+          "handler_completion_ms": 52.03404100029729,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 53.01383400001214
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8929149508476257,
+            "neutral": 0.0784921869635582,
+            "positive": 0.02859295904636383
+          },
+          "inference_ms": 49.87987500044255,
+          "token_count": 22,
+          "input_characters": 58,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 200.4816571794172,
+          "queue_ms": 0.0006249993020901456,
+          "handler_completion_ms": 49.97645799994643,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 51.036417000432266
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.03511519357562065,
+            "neutral": 0.8894288539886475,
+            "positive": 0.07545601576566696
+          },
+          "inference_ms": 43.04004200002964,
+          "token_count": 16,
+          "input_characters": 57,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 209.1076026368272,
+          "queue_ms": 0.000666000232740771,
+          "handler_completion_ms": 43.14333299953432,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 44.22266700021282
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.6061872839927673,
+            "neutral": 0.37625256180763245,
+            "positive": 0.017560193315148354
+          },
+          "inference_ms": 116.1906249999447,
+          "token_count": 68,
+          "input_characters": 138,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 197.95056614948723,
+          "queue_ms": 0.0007910002750577405,
+          "handler_completion_ms": 116.33441599951766,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 117.52041699946858
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8972033262252808,
+            "neutral": 0.09275654703378677,
+            "positive": 0.01004012580960989
+          },
+          "inference_ms": 73.23816699954477,
+          "token_count": 40,
+          "input_characters": 131,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 191.15715990098835,
+          "queue_ms": 0.0007079997885739431,
+          "handler_completion_ms": 73.34866600012901,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 74.47579200015753
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8037258386611938,
+            "neutral": 0.179098442196846,
+            "positive": 0.01717565767467022
+          },
+          "inference_ms": 57.60400100007246,
+          "token_count": 28,
+          "input_characters": 115,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 208.31886312891234,
+          "queue_ms": 0.000999999429041054,
+          "handler_completion_ms": 57.71266699957778,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 58.77262500052893
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.004069957882165909,
+            "neutral": 0.5987567901611328,
+            "positive": 0.3971731960773468
+          },
+          "inference_ms": 53.810874999726366,
+          "token_count": 27,
+          "input_characters": 74,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 185.83604150725586,
+          "queue_ms": 0.0009589994078851305,
+          "handler_completion_ms": 53.91358399992896,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 55.03324999972392
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.036796003580093384,
+            "neutral": 0.9305431246757507,
+            "positive": 0.03266085311770439
+          },
+          "inference_ms": 38.183000000572065,
+          "token_count": 14,
+          "input_characters": 52,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 183.32765890288238,
+          "queue_ms": 0.0007500002539018169,
+          "handler_completion_ms": 38.29637500075478,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 39.32233300020016
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9423040151596069,
+            "neutral": 0.05155892297625542,
+            "positive": 0.0061371587216854095
+          },
+          "inference_ms": 46.93908399985958,
+          "token_count": 21,
+          "input_characters": 92,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 213.04207811220942,
+          "queue_ms": 0.0007079997885739431,
+          "handler_completion_ms": 47.050707999915176,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 48.115874999894004
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.021760212257504463,
+            "neutral": 0.582135796546936,
+            "positive": 0.39610403776168823
+          },
+          "inference_ms": 62.18704200000502,
+          "token_count": 33,
+          "input_characters": 114,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 192.96624528286966,
+          "queue_ms": 0.0008749993867240846,
+          "handler_completion_ms": 62.2937499992986,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 63.36795799961692
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9411777257919312,
+            "neutral": 0.05452488735318184,
+            "positive": 0.004297364503145218
+          },
+          "inference_ms": 58.950917000402114,
+          "token_count": 30,
+          "input_characters": 116,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 186.59590994891056,
+          "queue_ms": 0.0006659993232460693,
+          "handler_completion_ms": 59.051540999462304,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 60.022667000339425
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8237282633781433,
+            "neutral": 0.16748110949993134,
+            "positive": 0.008790599182248116
+          },
+          "inference_ms": 60.01883399949293,
+          "token_count": 35,
+          "input_characters": 132,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 199.93723970196538,
+          "queue_ms": 0.000666000232740771,
+          "handler_completion_ms": 60.154458000397426,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 61.12970899994252
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9308302998542786,
+            "neutral": 0.06186462566256523,
+            "positive": 0.007305020932108164
+          },
+          "inference_ms": 48.54937500022061,
+          "token_count": 22,
+          "input_characters": 81,
+          "rss_mb": 1003.11328125,
+          "cpu_percent": 185.37828756752597,
+          "queue_ms": 0.0006249993020901456,
+          "handler_completion_ms": 48.66187499919761,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 49.64708300030907
+        }
+      ],
+      "inference_ms": {
+        "n": 100,
+        "p50": 76.59325049962717,
+        "p95": 116.55861874996843,
+        "mean": 78.23430468000879,
+        "max": 250.0247500001933
+      },
+      "queue_ms": {
+        "n": 100,
+        "p50": 0.0011670008461805992,
+        "p95": 0.0017940501493285408,
+        "mean": 0.0012624900045921095,
+        "max": 0.00691700006427709
+      },
+      "handler_completion_ms": {
+        "n": 100,
+        "p50": 76.78172900023128,
+        "p95": 116.70321809956475,
+        "mean": 78.39086372998281,
+        "max": 250.27870800022356
+      },
+      "http_roundtrip_ms": {
+        "n": 100,
+        "p50": 78.3711875001245,
+        "p95": 117.93214199947212,
+        "mean": 79.96147376001318,
+        "max": 252.48883299991576
+      }
+    },
+    {
+      "concurrency": 4,
+      "samples": 100,
+      "throughput_per_second": 16.82679511561846,
+      "results": [
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8047260046005249,
+            "neutral": 0.18728095293045044,
+            "positive": 0.007993027567863464
+          },
+          "inference_ms": 57.06591600028332,
+          "token_count": 29,
+          "input_characters": 96,
+          "rss_mb": 1003.1171875,
+          "cpu_percent": 192.75954494334906,
+          "queue_ms": 0.000957999873207882,
+          "handler_completion_ms": 57.181457999831764,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 58.54620799982513
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.04197307303547859,
+            "neutral": 0.8669492602348328,
+            "positive": 0.09107764810323715
+          },
+          "inference_ms": 51.94183300045552,
+          "token_count": 24,
+          "input_characters": 72,
+          "rss_mb": 1013.39453125,
+          "cpu_percent": 192.5230478471167,
+          "queue_ms": 54.28462500003661,
+          "handler_completion_ms": 106.3512909995552,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 110.11420900013036
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.20318157970905304,
+            "neutral": 0.763724148273468,
+            "positive": 0.033094264566898346
+          },
+          "inference_ms": 49.723665999408695,
+          "token_count": 22,
+          "input_characters": 87,
+          "rss_mb": 1023.5546875,
+          "cpu_percent": 221.22262666877387,
+          "queue_ms": 106.31662499963568,
+          "handler_completion_ms": 156.1506250000093,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 159.60695800004032
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0037119202315807343,
+            "neutral": 0.22224119305610657,
+            "positive": 0.7740468978881836
+          },
+          "inference_ms": 59.830999999576306,
+          "token_count": 27,
+          "input_characters": 83,
+          "rss_mb": 1034.078125,
+          "cpu_percent": 183.85118082712793,
+          "queue_ms": 156.105208999179,
+          "handler_completion_ms": 216.04891699917061,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 219.1121670002758
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3033508062362671,
+            "neutral": 0.41639718413352966,
+            "positive": 0.28025195002555847
+          },
+          "inference_ms": 68.4514169997783,
+          "token_count": 32,
+          "input_characters": 133,
+          "rss_mb": 1034.078125,
+          "cpu_percent": 175.30681651266164,
+          "queue_ms": 160.39366699988022,
+          "handler_completion_ms": 228.95458299990423,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 230.4675830000633
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.4714508354663849,
+            "neutral": 0.49636951088905334,
+            "positive": 0.03217963129281998
+          },
+          "inference_ms": 65.59891699998843,
+          "token_count": 31,
+          "input_characters": 103,
+          "rss_mb": 1034.51953125,
+          "cpu_percent": 198.17400339079484,
+          "queue_ms": 177.19304199999897,
+          "handler_completion_ms": 242.92779200004588,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 244.20787500002916
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.23846980929374695,
+            "neutral": 0.46657198667526245,
+            "positive": 0.2949581742286682
+          },
+          "inference_ms": 39.25729200000205,
+          "token_count": 12,
+          "input_characters": 39,
+          "rss_mb": 1034.51953125,
+          "cpu_percent": 178.3108218472126,
+          "queue_ms": 193.15362500037736,
+          "handler_completion_ms": 232.53487500005576,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 233.6686250000639
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.005725219380110502,
+            "neutral": 0.046310536563396454,
+            "positive": 0.9479643106460571
+          },
+          "inference_ms": 45.034583000415296,
+          "token_count": 17,
+          "input_characters": 59,
+          "rss_mb": 1034.51953125,
+          "cpu_percent": 199.84641580691041,
+          "queue_ms": 172.62316699998337,
+          "handler_completion_ms": 217.76704199965025,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 218.8704999998663
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5159897804260254,
+            "neutral": 0.4352896511554718,
+            "positive": 0.04872056469321251
+          },
+          "inference_ms": 54.399250000642496,
+          "token_count": 27,
+          "input_characters": 112,
+          "rss_mb": 1034.51953125,
+          "cpu_percent": 202.20867015372596,
+          "queue_ms": 149.17574999981298,
+          "handler_completion_ms": 203.6867920005534,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 204.74183399983303
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.24256981909275055,
+            "neutral": 0.6462962627410889,
+            "positive": 0.11113396286964417
+          },
+          "inference_ms": 55.704792000142334,
+          "token_count": 28,
+          "input_characters": 103,
+          "rss_mb": 1034.51953125,
+          "cpu_percent": 197.46954624630186,
+          "queue_ms": 137.78395899953466,
+          "handler_completion_ms": 193.6109589996704,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 194.84566600021935
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.09753695875406265,
+            "neutral": 0.5802544355392456,
+            "positive": 0.3222086727619171
+          },
+          "inference_ms": 44.125707999228325,
+          "token_count": 14,
+          "input_characters": 77,
+          "rss_mb": 1034.51953125,
+          "cpu_percent": 203.96273302060575,
+          "queue_ms": 154.39108299960935,
+          "handler_completion_ms": 198.63033299952804,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 199.70558299974073
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.0063135018572211266,
+            "neutral": 0.7971650958061218,
+            "positive": 0.19652144610881805
+          },
+          "inference_ms": 55.25120800029981,
+          "token_count": 27,
+          "input_characters": 77,
+          "rss_mb": 1034.6015625,
+          "cpu_percent": 199.09066965473485,
+          "queue_ms": 153.49795800011634,
+          "handler_completion_ms": 208.86999999947875,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 210.01950000027136
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0022126752883195877,
+            "neutral": 0.0970422774553299,
+            "positive": 0.9007450342178345
+          },
+          "inference_ms": 39.667500000177824,
+          "token_count": 14,
+          "input_characters": 46,
+          "rss_mb": 1034.6015625,
+          "cpu_percent": 201.67643536791732,
+          "queue_ms": 154.45645899944793,
+          "handler_completion_ms": 194.25087499985239,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 195.31704200016975
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.590688169002533,
+            "neutral": 0.38799986243247986,
+            "positive": 0.02131202258169651
+          },
+          "inference_ms": 68.89995799974713,
+          "token_count": 37,
+          "input_characters": 140,
+          "rss_mb": 1034.90234375,
+          "cpu_percent": 188.6793602985344,
+          "queue_ms": 138.24283299982199,
+          "handler_completion_ms": 207.30079199984175,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 208.47629200034135
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8432441353797913,
+            "neutral": 0.12894447147846222,
+            "positive": 0.027811402454972267
+          },
+          "inference_ms": 60.96900000011374,
+          "token_count": 26,
+          "input_characters": 86,
+          "rss_mb": 1035.359375,
+          "cpu_percent": 180.4195574799031,
+          "queue_ms": 163.2744159996946,
+          "handler_completion_ms": 224.3575829998008,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 225.41104100037046
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.030454616993665695,
+            "neutral": 0.9275137782096863,
+            "positive": 0.0420316718518734
+          },
+          "inference_ms": 55.07949999991979,
+          "token_count": 25,
+          "input_characters": 93,
+          "rss_mb": 1035.359375,
+          "cpu_percent": 199.71132635564985,
+          "queue_ms": 168.84900000059133,
+          "handler_completion_ms": 224.02937500010012,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 225.27841700048157
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5895974636077881,
+            "neutral": 0.382947713136673,
+            "positive": 0.027454806491732597
+          },
+          "inference_ms": 47.921999999744,
+          "token_count": 21,
+          "input_characters": 51,
+          "rss_mb": 1035.359375,
+          "cpu_percent": 187.80518342436937,
+          "queue_ms": 184.09895799959486,
+          "handler_completion_ms": 232.1430000001783,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 233.4252499995273
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8269013166427612,
+            "neutral": 0.16152635216712952,
+            "positive": 0.011572282761335373
+          },
+          "inference_ms": 61.65570800021669,
+          "token_count": 29,
+          "input_characters": 84,
+          "rss_mb": 1035.359375,
+          "cpu_percent": 194.62918177741,
+          "queue_ms": 163.15941699940595,
+          "handler_completion_ms": 224.9229170001854,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 226.40079200027685
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.4495609998703003,
+            "neutral": 0.5151365995407104,
+            "positive": 0.035302408039569855
+          },
+          "inference_ms": 60.51062499955151,
+          "token_count": 29,
+          "input_characters": 107,
+          "rss_mb": 1035.5078125,
+          "cpu_percent": 198.31227986987022,
+          "queue_ms": 163.91645899966534,
+          "handler_completion_ms": 224.55941699990944,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 225.87908300010895
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.006260457914322615,
+            "neutral": 0.8869540095329285,
+            "positive": 0.10678549110889435
+          },
+          "inference_ms": 53.24562500027241,
+          "token_count": 24,
+          "input_characters": 63,
+          "rss_mb": 1035.5078125,
+          "cpu_percent": 187.80885753411184,
+          "queue_ms": 169.22037599942996,
+          "handler_completion_ms": 222.59379199931573,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 223.72683300000062
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.011190732009708881,
+            "neutral": 0.7468938231468201,
+            "positive": 0.24191546440124512
+          },
+          "inference_ms": 52.70600000039849,
+          "token_count": 24,
+          "input_characters": 70,
+          "rss_mb": 1035.5078125,
+          "cpu_percent": 208.70489128238847,
+          "queue_ms": 174.72887500025536,
+          "handler_completion_ms": 227.55154199967365,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 228.71691699947405
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.012507695704698563,
+            "neutral": 0.23352622985839844,
+            "positive": 0.7539660930633545
+          },
+          "inference_ms": 66.40691600023274,
+          "token_count": 35,
+          "input_characters": 125,
+          "rss_mb": 1035.5078125,
+          "cpu_percent": 195.76274254239746,
+          "queue_ms": 165.3347510000458,
+          "handler_completion_ms": 231.8542510001862,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 233.10162500001752
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0026808367110788822,
+            "neutral": 0.4286029636859894,
+            "positive": 0.5687162280082703
+          },
+          "inference_ms": 49.100917000032496,
+          "token_count": 21,
+          "input_characters": 63,
+          "rss_mb": 1035.5078125,
+          "cpu_percent": 203.6621841499271,
+          "queue_ms": 171.40699999981734,
+          "handler_completion_ms": 220.62533299958886,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 221.78012499989563
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.005460698623210192,
+            "neutral": 0.7923485040664673,
+            "positive": 0.20219074189662933
+          },
+          "inference_ms": 64.44483299947024,
+          "token_count": 33,
+          "input_characters": 93,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 201.72292168276363,
+          "queue_ms": 167.50704199967004,
+          "handler_completion_ms": 232.05045800023072,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 233.2695840004817
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.006546220276504755,
+            "neutral": 0.6070793867111206,
+            "positive": 0.3863743543624878
+          },
+          "inference_ms": 57.398750000174914,
+          "token_count": 28,
+          "input_characters": 61,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 191.64180404549705,
+          "queue_ms": 179.1056669999307,
+          "handler_completion_ms": 236.63379200024792,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 237.8722920002474
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.016483064740896225,
+            "neutral": 0.48121708631515503,
+            "positive": 0.5022999048233032
+          },
+          "inference_ms": 43.27412499969796,
+          "token_count": 13,
+          "input_characters": 36,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 207.9764755515535,
+          "queue_ms": 170.25041699980648,
+          "handler_completion_ms": 213.63137500065932,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 214.73962500022026
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8696168661117554,
+            "neutral": 0.115028016269207,
+            "positive": 0.015355023555457592
+          },
+          "inference_ms": 43.095500000163156,
+          "token_count": 13,
+          "input_characters": 50,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 185.63423095131594,
+          "queue_ms": 164.34612500052026,
+          "handler_completion_ms": 207.5704590006353,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 208.78541700039932
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.727867603302002,
+            "neutral": 0.2648146152496338,
+            "positive": 0.007317822892218828
+          },
+          "inference_ms": 49.322916000164696,
+          "token_count": 21,
+          "input_characters": 86,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 202.74551488313287,
+          "queue_ms": 143.05179199982376,
+          "handler_completion_ms": 192.481707999832,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 193.67695799974172
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.4581720530986786,
+            "neutral": 0.5126890540122986,
+            "positive": 0.029138851910829544
+          },
+          "inference_ms": 60.251874999266875,
+          "token_count": 29,
+          "input_characters": 110,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 199.16392643644429,
+          "queue_ms": 134.77216699993733,
+          "handler_completion_ms": 195.15291700008675,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 196.53308400029346
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.0054270606487989426,
+            "neutral": 0.6908895969390869,
+            "positive": 0.303683340549469
+          },
+          "inference_ms": 62.633542000185116,
+          "token_count": 31,
+          "input_characters": 92,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 191.59063365686103,
+          "queue_ms": 151.92224999918835,
+          "handler_completion_ms": 214.67733299959946,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 215.86649999971996
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.04314912483096123,
+            "neutral": 0.9294456839561462,
+            "positive": 0.027405092492699623
+          },
+          "inference_ms": 38.511791000019,
+          "token_count": 12,
+          "input_characters": 44,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 207.72858888882925,
+          "queue_ms": 171.39941599998565,
+          "handler_completion_ms": 210.03758300048503,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 211.23020899995026
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.061876069754362106,
+            "neutral": 0.8369396924972534,
+            "positive": 0.10118426382541656
+          },
+          "inference_ms": 50.390626000080374,
+          "token_count": 21,
+          "input_characters": 89,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 198.44960846437897,
+          "queue_ms": 160.53499999998166,
+          "handler_completion_ms": 211.0585419995914,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 212.23662500051432
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.009352813474833965,
+            "neutral": 0.5593967437744141,
+            "positive": 0.4312504231929779
+          },
+          "inference_ms": 35.820500000227185,
+          "token_count": 8,
+          "input_characters": 24,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 195.41882441476912,
+          "queue_ms": 150.69070899971848,
+          "handler_completion_ms": 186.63970899979176,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 187.81145799948717
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0017556120874360204,
+            "neutral": 0.01064414344727993,
+            "positive": 0.9876002073287964
+          },
+          "inference_ms": 50.78624999987369,
+          "token_count": 22,
+          "input_characters": 93,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 196.90368948364002,
+          "queue_ms": 124.0172089992484,
+          "handler_completion_ms": 174.91412599974865,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 176.05408400049782
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3126053512096405,
+            "neutral": 0.6587749719619751,
+            "positive": 0.02861969918012619
+          },
+          "inference_ms": 63.127124999482476,
+          "token_count": 29,
+          "input_characters": 118,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 190.09261074518227,
+          "queue_ms": 136.28604200039263,
+          "handler_completion_ms": 199.53341700056626,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 200.60775099955208
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9260379076004028,
+            "neutral": 0.0664631575345993,
+            "positive": 0.0074989753775298595
+          },
+          "inference_ms": 65.47725000018545,
+          "token_count": 33,
+          "input_characters": 135,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 198.54224177060115,
+          "queue_ms": 148.99191699987568,
+          "handler_completion_ms": 214.5842089994403,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 215.7152909994693
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.013658462092280388,
+            "neutral": 0.26684725284576416,
+            "positive": 0.7194942831993103
+          },
+          "inference_ms": 43.44575000050099,
+          "token_count": 16,
+          "input_characters": 48,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 184.13768895462667,
+          "queue_ms": 178.61987499964016,
+          "handler_completion_ms": 222.1748749998369,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 223.3818330005306
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.1396656036376953,
+            "neutral": 0.8400626182556152,
+            "positive": 0.020271793007850647
+          },
+          "inference_ms": 44.91554099968198,
+          "token_count": 15,
+          "input_characters": 80,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 200.37607918556017,
+          "queue_ms": 171.31733299993357,
+          "handler_completion_ms": 216.35816599973623,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 217.59162499984086
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3141743242740631,
+            "neutral": 0.6628710627555847,
+            "positive": 0.022954605519771576
+          },
+          "inference_ms": 61.14674999935232,
+          "token_count": 29,
+          "input_characters": 117,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 196.24918740760862,
+          "queue_ms": 153.20429099938337,
+          "handler_completion_ms": 214.4698749998497,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 215.87204200022825
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.718696117401123,
+            "neutral": 0.2727249562740326,
+            "positive": 0.008578911423683167
+          },
+          "inference_ms": 44.7341660001257,
+          "token_count": 15,
+          "input_characters": 76,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 201.18850544719055,
+          "queue_ms": 148.81375000004482,
+          "handler_completion_ms": 193.67766699997446,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 194.86816699918563
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7910736799240112,
+            "neutral": 0.17505690455436707,
+            "positive": 0.03386944159865379
+          },
+          "inference_ms": 44.59720900013053,
+          "token_count": 16,
+          "input_characters": 78,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 201.8063507065702,
+          "queue_ms": 149.95620900026552,
+          "handler_completion_ms": 194.67462500051624,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 195.9415409992289
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.01122868712991476,
+            "neutral": 0.7795421481132507,
+            "positive": 0.20922912657260895
+          },
+          "inference_ms": 51.29520799982856,
+          "token_count": 20,
+          "input_characters": 73,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 194.9499844122735,
+          "queue_ms": 149.53658399917913,
+          "handler_completion_ms": 200.95804199991107,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 202.30987499962794
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.3949538767337799,
+            "neutral": 0.563069760799408,
+            "positive": 0.04197642579674721
+          },
+          "inference_ms": 53.512958000283106,
+          "token_count": 19,
+          "input_characters": 54,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 205.55768940962932,
+          "queue_ms": 139.497833999485,
+          "handler_completion_ms": 193.13645900001575,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 194.52366699988488
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.05983707681298256,
+            "neutral": 0.16374047100543976,
+            "positive": 0.7764224410057068
+          },
+          "inference_ms": 69.07808300002216,
+          "token_count": 27,
+          "input_characters": 116,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 188.19283100233116,
+          "queue_ms": 148.47045799979242,
+          "handler_completion_ms": 217.67229099987162,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 219.16350000083185
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.013005897402763367,
+            "neutral": 0.16398929059505463,
+            "positive": 0.8230047821998596
+          },
+          "inference_ms": 66.30779199986137,
+          "token_count": 25,
+          "input_characters": 82,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 196.055389689919,
+          "queue_ms": 172.82779200013465,
+          "handler_completion_ms": 239.27033400013897,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 240.89133399957063
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.042284827679395676,
+            "neutral": 0.2251920849084854,
+            "positive": 0.7325230836868286
+          },
+          "inference_ms": 50.47312500028056,
+          "token_count": 12,
+          "input_characters": 45,
+          "rss_mb": 1035.8671875,
+          "cpu_percent": 198.12523991600122,
+          "queue_ms": 188.01074999919365,
+          "handler_completion_ms": 238.63149999942834,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 239.9796259996947
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0048172008246183395,
+            "neutral": 0.29465675354003906,
+            "positive": 0.7005260586738586
+          },
+          "inference_ms": 73.62729200031026,
+          "token_count": 32,
+          "input_characters": 109,
+          "rss_mb": 1036.015625,
+          "cpu_percent": 203.7288020853176,
+          "queue_ms": 184.89645899990137,
+          "handler_completion_ms": 258.677166999405,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 260.1792919995205
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.00430217944085598,
+            "neutral": 0.032500822097063065,
+            "positive": 0.9631969928741455
+          },
+          "inference_ms": 64.1806670000733,
+          "token_count": 26,
+          "input_characters": 95,
+          "rss_mb": 1036.015625,
+          "cpu_percent": 202.55320811753683,
+          "queue_ms": 189.47504199968535,
+          "handler_completion_ms": 253.7832919997527,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 255.2576260004571
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7378408312797546,
+            "neutral": 0.25250500440597534,
+            "positive": 0.00965417642146349
+          },
+          "inference_ms": 82.21887500076264,
+          "token_count": 41,
+          "input_characters": 68,
+          "rss_mb": 1036.015625,
+          "cpu_percent": 194.60251675615575,
+          "queue_ms": 187.3326660006569,
+          "handler_completion_ms": 269.67291600067256,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 271.0437499999898
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8171351552009583,
+            "neutral": 0.17615412175655365,
+            "positive": 0.006710803136229515
+          },
+          "inference_ms": 84.33145799972408,
+          "token_count": 35,
+          "input_characters": 112,
+          "rss_mb": 1036.0390625,
+          "cpu_percent": 177.86956796164293,
+          "queue_ms": 219.17979200043192,
+          "handler_completion_ms": 303.6538329997711,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 304.92762500034587
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.02661423198878765,
+            "neutral": 0.8237316608428955,
+            "positive": 0.14965416491031647
+          },
+          "inference_ms": 64.68045800011168,
+          "token_count": 25,
+          "input_characters": 66,
+          "rss_mb": 1036.0390625,
+          "cpu_percent": 200.9880635042576,
+          "queue_ms": 229.74591700040037,
+          "handler_completion_ms": 294.5702920005715,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 295.9768749997238
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9275963306427002,
+            "neutral": 0.05944017320871353,
+            "positive": 0.012963471934199333
+          },
+          "inference_ms": 64.90958399990632,
+          "token_count": 27,
+          "input_characters": 92,
+          "rss_mb": 1036.0390625,
+          "cpu_percent": 200.2785906008416,
+          "queue_ms": 230.32670900011,
+          "handler_completion_ms": 295.37420899941935,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 296.8412079999325
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9088228940963745,
+            "neutral": 0.07986441254615784,
+            "positive": 0.011312635615468025
+          },
+          "inference_ms": 41.6614590003519,
+          "token_count": 10,
+          "input_characters": 21,
+          "rss_mb": 1036.0390625,
+          "cpu_percent": 192.0239999263561,
+          "queue_ms": 212.98687499984226,
+          "handler_completion_ms": 254.77658399995562,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 256.191750000653
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.941993772983551,
+            "neutral": 0.05265088006854057,
+            "positive": 0.005355313420295715
+          },
+          "inference_ms": 65.28666599933786,
+          "token_count": 25,
+          "input_characters": 91,
+          "rss_mb": 1036.0390625,
+          "cpu_percent": 199.1218237445304,
+          "queue_ms": 170.38124999999127,
+          "handler_completion_ms": 235.81020799974794,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 237.30783399969368
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.02986481785774231,
+            "neutral": 0.4853614568710327,
+            "positive": 0.484773725271225
+          },
+          "inference_ms": 83.24050099963642,
+          "token_count": 37,
+          "input_characters": 96,
+          "rss_mb": 1036.2890625,
+          "cpu_percent": 192.21412422875818,
+          "queue_ms": 170.90229199948226,
+          "handler_completion_ms": 254.27637499979028,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 256.22808299976896
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8852792382240295,
+            "neutral": 0.10583450645208359,
+            "positive": 0.008886219933629036
+          },
+          "inference_ms": 61.006417000498914,
+          "token_count": 23,
+          "input_characters": 102,
+          "rss_mb": 1036.2890625,
+          "cpu_percent": 180.30890094561752,
+          "queue_ms": 188.99995900028443,
+          "handler_completion_ms": 250.14891699993314,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 251.71837500056427
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.30051782727241516,
+            "neutral": 0.6288517713546753,
+            "positive": 0.07063034176826477
+          },
+          "inference_ms": 88.45800000017334,
+          "token_count": 36,
+          "input_characters": 133,
+          "rss_mb": 1036.2890625,
+          "cpu_percent": 214.79120034330668,
+          "queue_ms": 208.7342089998856,
+          "handler_completion_ms": 297.3591669997404,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 298.79087600056664
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5895342826843262,
+            "neutral": 0.39727339148521423,
+            "positive": 0.01319227833300829
+          },
+          "inference_ms": 77.68791600028635,
+          "token_count": 35,
+          "input_characters": 113,
+          "rss_mb": 1036.39453125,
+          "cpu_percent": 193.08022112414247,
+          "queue_ms": 231.48329200012085,
+          "handler_completion_ms": 309.31354200038186,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 311.0852919999161
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9402272701263428,
+            "neutral": 0.05339884012937546,
+            "positive": 0.0063739074394106865
+          },
+          "inference_ms": 83.30887499960227,
+          "token_count": 37,
+          "input_characters": 133,
+          "rss_mb": 1036.39453125,
+          "cpu_percent": 204.0598915789668,
+          "queue_ms": 225.72887500064098,
+          "handler_completion_ms": 309.183166999901,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 310.5420410001898
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.33912500739097595,
+            "neutral": 0.6425031423568726,
+            "positive": 0.01837179809808731
+          },
+          "inference_ms": 66.72324999999546,
+          "token_count": 25,
+          "input_characters": 95,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 194.8346341044808,
+          "queue_ms": 248.33529200077464,
+          "handler_completion_ms": 315.2038750004067,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 316.7324579999331
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.009348035790026188,
+            "neutral": 0.8689859509468079,
+            "positive": 0.12166596949100494
+          },
+          "inference_ms": 73.14545799999905,
+          "token_count": 31,
+          "input_characters": 93,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 191.3994441047515,
+          "queue_ms": 226.56224999991537,
+          "handler_completion_ms": 299.8434589999306,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 301.4690830004838
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.6751218438148499,
+            "neutral": 0.2892400622367859,
+            "positive": 0.035638097673654556
+          },
+          "inference_ms": 56.995542000549904,
+          "token_count": 20,
+          "input_characters": 77,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 210.54278244947727,
+          "queue_ms": 222.19258299992362,
+          "handler_completion_ms": 279.3463750003866,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 280.70970800035866
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.023255784064531326,
+            "neutral": 0.22287297248840332,
+            "positive": 0.7538712620735168
+          },
+          "inference_ms": 48.494749999917985,
+          "token_count": 13,
+          "input_characters": 29,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 185.5870996346416,
+          "queue_ms": 195.99600000037753,
+          "handler_completion_ms": 244.63387500054523,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 246.01933299982193
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8479450941085815,
+            "neutral": 0.14438635110855103,
+            "positive": 0.00766853429377079
+          },
+          "inference_ms": 78.00666599996475,
+          "token_count": 31,
+          "input_characters": 98,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 205.11067605447226,
+          "queue_ms": 177.8146659999038,
+          "handler_completion_ms": 255.96212500022375,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 257.24245800029166
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7391725778579712,
+            "neutral": 0.25150561332702637,
+            "positive": 0.009321853518486023
+          },
+          "inference_ms": 73.35204199989676,
+          "token_count": 32,
+          "input_characters": 109,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 190.86039895122445,
+          "queue_ms": 182.48420799955056,
+          "handler_completion_ms": 255.98741699923266,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 257.50608400085184
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.006995544768869877,
+            "neutral": 0.14771190285682678,
+            "positive": 0.8452925682067871
+          },
+          "inference_ms": 51.73195800034591,
+          "token_count": 12,
+          "input_characters": 43,
+          "rss_mb": 1036.44921875,
+          "cpu_percent": 173.97369726377593,
+          "queue_ms": 198.9992090002488,
+          "handler_completion_ms": 250.8673339998495,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 252.16687499960244
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.0041105253621935844,
+            "neutral": 0.8543654680252075,
+            "positive": 0.14152400195598602
+          },
+          "inference_ms": 80.79199999974662,
+          "token_count": 47,
+          "input_characters": 113,
+          "rss_mb": 1036.94921875,
+          "cpu_percent": 198.03940984299965,
+          "queue_ms": 202.28491699981532,
+          "handler_completion_ms": 283.21716699974786,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 284.4534999994721
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8892825245857239,
+            "neutral": 0.10128863900899887,
+            "positive": 0.009428935125470161
+          },
+          "inference_ms": 60.42416600030265,
+          "token_count": 26,
+          "input_characters": 105,
+          "rss_mb": 1036.94921875,
+          "cpu_percent": 198.59603854444129,
+          "queue_ms": 205.0983749995794,
+          "handler_completion_ms": 265.6539999998131,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 267.0457919994078
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.2824643850326538,
+            "neutral": 0.6762533187866211,
+            "positive": 0.04128223657608032
+          },
+          "inference_ms": 47.20604100020864,
+          "token_count": 12,
+          "input_characters": 46,
+          "rss_mb": 1036.94921875,
+          "cpu_percent": 190.6535648679379,
+          "queue_ms": 191.99324999954115,
+          "handler_completion_ms": 239.34758299947134,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 241.0960420002084
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.005889521446079016,
+            "neutral": 0.05904983729124069,
+            "positive": 0.9350606799125671
+          },
+          "inference_ms": 85.45133300049201,
+          "token_count": 38,
+          "input_characters": 127,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 210.64621660030426,
+          "queue_ms": 187.67558299987286,
+          "handler_completion_ms": 273.29516600002535,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 274.704374999601
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8469412326812744,
+            "neutral": 0.13933797180652618,
+            "positive": 0.013720800168812275
+          },
+          "inference_ms": 73.00437499998225,
+          "token_count": 31,
+          "input_characters": 105,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 191.76932889314386,
+          "queue_ms": 192.39391699920816,
+          "handler_completion_ms": 265.5486249996102,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 266.8992500002787
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5062379837036133,
+            "neutral": 0.4630970358848572,
+            "positive": 0.030665021389722824
+          },
+          "inference_ms": 48.767250000310014,
+          "token_count": 13,
+          "input_characters": 53,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 205.0556469747081,
+          "queue_ms": 204.75616699968668,
+          "handler_completion_ms": 253.66441699952702,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 255.07875000039348
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.04692624881863594,
+            "neutral": 0.9222263693809509,
+            "positive": 0.030847392976284027
+          },
+          "inference_ms": 46.15387500052748,
+          "token_count": 18,
+          "input_characters": 44,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 194.99987812267022,
+          "queue_ms": 205.85541699983878,
+          "handler_completion_ms": 252.1502089994101,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 253.5872919997928
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0062565370462834835,
+            "neutral": 0.36046263575553894,
+            "positive": 0.633280873298645
+          },
+          "inference_ms": 42.58279100031359,
+          "token_count": 14,
+          "input_characters": 38,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 211.35298529277412,
+          "queue_ms": 166.97841600034735,
+          "handler_completion_ms": 209.6839160003583,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 210.96745900013048
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.06366778910160065,
+            "neutral": 0.7133181095123291,
+            "positive": 0.22301416099071503
+          },
+          "inference_ms": 51.34291700051108,
+          "token_count": 17,
+          "input_characters": 46,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 194.76883247384177,
+          "queue_ms": 136.65074999971694,
+          "handler_completion_ms": 188.15087499933725,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 189.67154100027983
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.05754653364419937,
+            "neutral": 0.7962917685508728,
+            "positive": 0.1461617648601532
+          },
+          "inference_ms": 68.22216599994135,
+          "token_count": 22,
+          "input_characters": 99,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 161.2379178934628,
+          "queue_ms": 139.62137499947858,
+          "handler_completion_ms": 207.9892080000718,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 209.3182920007166
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.03219052776694298,
+            "neutral": 0.908934473991394,
+            "positive": 0.058875057846307755
+          },
+          "inference_ms": 51.255375999971875,
+          "token_count": 21,
+          "input_characters": 76,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 214.61163410441145,
+          "queue_ms": 161.89670900075726,
+          "handler_completion_ms": 213.31120900049427,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 214.5078330004253
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7994248270988464,
+            "neutral": 0.18360453844070435,
+            "positive": 0.016970638185739517
+          },
+          "inference_ms": 43.85424999964016,
+          "token_count": 14,
+          "input_characters": 48,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 182.42245620568968,
+          "queue_ms": 170.42258299989044,
+          "handler_completion_ms": 214.4072920000326,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 215.81958300066617
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.037009984254837036,
+            "neutral": 0.8831185698509216,
+            "positive": 0.07987146079540253
+          },
+          "inference_ms": 50.58379199999763,
+          "token_count": 20,
+          "input_characters": 59,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 197.69178237989968,
+          "queue_ms": 162.564416999885,
+          "handler_completion_ms": 213.25900000010733,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 214.58704199994827
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.0019784457981586456,
+            "neutral": 0.05341402813792229,
+            "positive": 0.9446075558662415
+          },
+          "inference_ms": 50.604125000063505,
+          "token_count": 21,
+          "input_characters": 81,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 197.61234879524852,
+          "queue_ms": 144.84825100043963,
+          "handler_completion_ms": 195.58100100039155,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 196.86170900058642
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.006584210321307182,
+            "neutral": 0.03144783899188042,
+            "positive": 0.9619680047035217
+          },
+          "inference_ms": 65.39629199960473,
+          "token_count": 34,
+          "input_characters": 120,
+          "rss_mb": 1037.09765625,
+          "cpu_percent": 214.07941600258656,
+          "queue_ms": 144.15195800029323,
+          "handler_completion_ms": 209.66962500006048,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 210.95045899983234
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9302958846092224,
+            "neutral": 0.0621335543692112,
+            "positive": 0.007570554502308369
+          },
+          "inference_ms": 87.55208299953665,
+          "token_count": 51,
+          "input_characters": 139,
+          "rss_mb": 1037.74609375,
+          "cpu_percent": 194.17013756342618,
+          "queue_ms": 165.62933400018665,
+          "handler_completion_ms": 253.29812499967375,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 254.54595900009735
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5585435628890991,
+            "neutral": 0.39069098234176636,
+            "positive": 0.05076546221971512
+          },
+          "inference_ms": 50.46662500080856,
+          "token_count": 21,
+          "input_characters": 82,
+          "rss_mb": 1037.74609375,
+          "cpu_percent": 198.15075804758936,
+          "queue_ms": 202.78508299998066,
+          "handler_completion_ms": 253.37883300016983,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 254.59124999997584
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.023205220699310303,
+            "neutral": 0.8953136205673218,
+            "positive": 0.0814812034368515
+          },
+          "inference_ms": 72.22979200014379,
+          "token_count": 38,
+          "input_characters": 94,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 193.8258385121668,
+          "queue_ms": 202.59908400021232,
+          "handler_completion_ms": 274.95195899973623,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 276.273499999661
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.7152673602104187,
+            "neutral": 0.2757817804813385,
+            "positive": 0.008950840681791306
+          },
+          "inference_ms": 72.59491700006038,
+          "token_count": 39,
+          "input_characters": 138,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 206.62603691656014,
+          "queue_ms": 209.48495800075762,
+          "handler_completion_ms": 282.19862500009185,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 283.36466700056917
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.01599118486046791,
+            "neutral": 0.4389512836933136,
+            "positive": 0.545057475566864
+          },
+          "inference_ms": 58.1379579998611,
+          "token_count": 27,
+          "input_characters": 98,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 189.2051316975439,
+          "queue_ms": 194.52795800043532,
+          "handler_completion_ms": 252.78570800037414,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 254.03287500012084
+        },
+        {
+          "label": "positive",
+          "scores": {
+            "negative": 0.00218397518619895,
+            "neutral": 0.17782019078731537,
+            "positive": 0.8199958205223083
+          },
+          "inference_ms": 67.21495799956756,
+          "token_count": 35,
+          "input_characters": 139,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 208.2869708867493,
+          "queue_ms": 202.25262500025565,
+          "handler_completion_ms": 269.59616699969047,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 270.769666999513
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.5504083633422852,
+            "neutral": 0.44011273980140686,
+            "positive": 0.009478841908276081
+          },
+          "inference_ms": 52.467041999989306,
+          "token_count": 24,
+          "input_characters": 84,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 190.59584109950288,
+          "queue_ms": 197.1457500003453,
+          "handler_completion_ms": 249.73291700007394,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 250.8957919999375
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8929149508476257,
+            "neutral": 0.0784921869635582,
+            "positive": 0.02859295904636383
+          },
+          "inference_ms": 50.609791000169935,
+          "token_count": 22,
+          "input_characters": 58,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 197.59022517955202,
+          "queue_ms": 177.16104200007976,
+          "handler_completion_ms": 227.8889170002003,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 229.04195899991464
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.03511519357562065,
+            "neutral": 0.8894288539886475,
+            "positive": 0.07545601576566696
+          },
+          "inference_ms": 43.743457999880775,
+          "token_count": 16,
+          "input_characters": 57,
+          "rss_mb": 1037.9765625,
+          "cpu_percent": 228.6056122956297,
+          "queue_ms": 169.45899999973335,
+          "handler_completion_ms": 213.32449999954406,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 214.52741699977196
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.6061872839927673,
+            "neutral": 0.37625256180763245,
+            "positive": 0.017560193315148354
+          },
+          "inference_ms": 108.62312500012195,
+          "token_count": 68,
+          "input_characters": 138,
+          "rss_mb": 1039.01953125,
+          "cpu_percent": 193.3289987742487,
+          "queue_ms": 146.03791700028523,
+          "handler_completion_ms": 254.78175100033695,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 255.95933400018112
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8972033262252808,
+            "neutral": 0.09275654703378677,
+            "positive": 0.01004012580960989
+          },
+          "inference_ms": 83.64733300004445,
+          "token_count": 40,
+          "input_characters": 131,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 179.32430672928191,
+          "queue_ms": 202.1919999997408,
+          "handler_completion_ms": 285.98874999988766,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 287.22654200009856
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8037258386611938,
+            "neutral": 0.179098442196846,
+            "positive": 0.01717565767467022
+          },
+          "inference_ms": 58.46437499985768,
+          "token_count": 28,
+          "input_characters": 115,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 205.25319906423417,
+          "queue_ms": 235.2826249998543,
+          "handler_completion_ms": 293.8660420004453,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 295.04287500003556
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.004069957882165909,
+            "neutral": 0.5987567901611328,
+            "positive": 0.3971731960773468
+          },
+          "inference_ms": 57.66158299957169,
+          "token_count": 27,
+          "input_characters": 74,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 190.76826246812723,
+          "queue_ms": 250.1349999993181,
+          "handler_completion_ms": 307.92599999949744,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 309.0256249997765
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.036796003580093384,
+            "neutral": 0.9305431246757507,
+            "positive": 0.03266085311770439
+          },
+          "inference_ms": 43.54566700021678,
+          "token_count": 14,
+          "input_characters": 52,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 206.67957617849203,
+          "queue_ms": 198.8042500006486,
+          "handler_completion_ms": 242.48495800020464,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 243.93049999980576
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9423040151596069,
+            "neutral": 0.05155892297625542,
+            "positive": 0.0061371587216854095
+          },
+          "inference_ms": 50.90087500047957,
+          "token_count": 21,
+          "input_characters": 92,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 196.4602769578458,
+          "queue_ms": 158.8826249999329,
+          "handler_completion_ms": 209.8997919993053,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 211.04333299990685
+        },
+        {
+          "label": "neutral",
+          "scores": {
+            "negative": 0.021760212257504463,
+            "neutral": 0.582135796546936,
+            "positive": 0.39610403776168823
+          },
+          "inference_ms": 66.31079199996748,
+          "token_count": 33,
+          "input_characters": 114,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 196.0465198487946,
+          "queue_ms": 151.37349999986327,
+          "handler_completion_ms": 217.79595899988635,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 219.0182089998416
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9411777257919312,
+            "neutral": 0.05452488735318184,
+            "positive": 0.004297364503145218
+          },
+          "inference_ms": 59.70837500080961,
+          "token_count": 30,
+          "input_characters": 116,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 184.22876187537915,
+          "queue_ms": 160.0805420002871,
+          "handler_completion_ms": 219.90870799982076,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 220.9905420004361
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.8237282633781433,
+            "neutral": 0.16748110949993134,
+            "positive": 0.008790599182248116
+          },
+          "inference_ms": 66.04187499942782,
+          "token_count": 35,
+          "input_characters": 132,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 211.98671297765696,
+          "queue_ms": 176.19037500026025,
+          "handler_completion_ms": 242.3566249999567,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 243.526625999948
+        },
+        {
+          "label": "negative",
+          "scores": {
+            "negative": 0.9308302998542786,
+            "neutral": 0.06186462566256523,
+            "positive": 0.007305020932108164
+          },
+          "inference_ms": 50.62545900000259,
+          "token_count": 22,
+          "input_characters": 81,
+          "rss_mb": 1039.11328125,
+          "cpu_percent": 197.5290732670768,
+          "queue_ms": 191.30641700030537,
+          "handler_completion_ms": 242.03058400053123,
+          "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+          "http_roundtrip_ms": 243.18700099956914
+        }
+      ],
+      "inference_ms": {
+        "n": 100,
+        "p50": 57.5301664998733,
+        "p95": 83.68153925002844,
+        "mean": 59.258256620032626,
+        "max": 108.62312500012195
+      },
+      "queue_ms": {
+        "n": 100,
+        "p50": 171.1098124997079,
+        "p95": 229.77495660038585,
+        "mean": 173.458185559939,
+        "max": 250.1349999993181
+      },
+      "handler_completion_ms": {
+        "n": 100,
+        "p50": 228.42175000005227,
+        "p95": 300.0339776999226,
+        "mean": 232.84461347993783,
+        "max": 315.2038750004067
+      },
+      "http_roundtrip_ms": {
+        "n": 100,
+        "p50": 229.75477099998898,
+        "p95": 301.6420101004769,
+        "mean": 234.20821431003787,
+        "max": 316.7324579999331
+      }
+    }
+  ],
+  "definition": "Isolated synchronous inference HTTP service; one resident CPU model protected by a serial lock. Does not include Campus Notes comment/database/job workflow.",
+  "run_id": "929e3f5c-a1b6-4ba0-8bd2-7bc1f870376f"
+}

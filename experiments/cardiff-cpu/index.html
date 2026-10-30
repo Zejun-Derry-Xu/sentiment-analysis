@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Cardiff · CPU 三分类试验台</title
+  ><style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #f3f3ed;
+      color: #253329;
+      font-family:
+        system-ui,
+        -apple-system,
+        "PingFang SC",
+        sans-serif;
+      line-height: 1.7;
+    }
+    main {
+      max-width: 950px;
+      margin: 50px auto;
+      padding: 0 25px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #d8ddcf;
+      padding-bottom: 20px;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+    a {
+      color: #497248;
+    }
+    h1 {
+      font-size: 40px;
+      letter-spacing: -2px;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #7b8775;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+    .panel {
+      background: #fcfcf8;
+      border: 1px solid #d9dfd0;
+      border-radius: 12px;
+      padding: 26px;
+      margin: 20px 0;
+    }
+    textarea {
+      width: 100%;
+      font: inherit;
+      background: #f5f7ef;
+      border: 1px solid #d9dfd0;
+      border-radius: 7px;
+      padding: 15px;
+      resize: vertical;
+    }
+    button {
+      font: inherit;
+      border: 0;
+      background: #2b6c4b;
+      color: #fff;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.45;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .examples {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .examples button {
+      background: #edf0e5;
+      color: #70815d;
+      font-size: 11px;
+      padding: 7px 10px;
+    }
+    .muted {
+      font-size: 11px;
+      color: #88947b;
+    }
+    .bars {
+      display: grid;
+      gap: 13px;
+      margin: 20px 0;
+    }
+    .bars > div {
+      display: grid;
+      grid-template-columns: 130px 1fr 70px;
+      gap: 15px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .track {
+      height: 8px;
+      background: #e5eadc;
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    .fill {
+      background: #98ad76;
+      height: 100%;
+    }
+    .winner {
+      font-size: 29px;
+      color: #386844;
+      font-weight: 600;
+    }
+    .error {
+      color: #ae5f43;
+      font-size: 13px;
+    }
+    small {
+      color: #8b967c;
+    }
+    #summary {
+      font-size: 13px;
+    }
+    details {
+      font-size: 11px;
+      overflow: auto;
+    }
+    pre {
+      white-space: pre-wrap;
+    }
+    @media (max-width: 600px) {
+      main {
+        margin: 25px auto;
+      }
+      h1 {
+        font-size: 30px;
+      }
+      .row {
+        align-items: start;
+        flex-direction: column;
+      }
+      .panel {
+        padding: 18px;
+      }
+      .bars > div {
+        grid-template-columns: 95px 1fr 50px;
+        gap: 8px;
+      }
+    }
+  </style>
+  <main>
+    <header>
+      <span>CARDIFF / CPU TRIAL</span
+      ><a href="http://localhost:5180" id="old-link">原校园平台 ↗</a>
+    </header>
+    <h1>三分类，直接试一条。</h1>
+    <p class="subtitle">
+      英文评论 → 正面 / 中性 / 负面。独立试验台，现成权重，仅使用 CPU。
+    </p>
+    <section class="panel">
+      <form id="form">
+        <textarea
+          id="text"
+          rows="4"
+          maxlength="2000"
+          required
+          placeholder="Write an English comment…"
+        >
+The concert was wonderful. Thank you for organizing it!</textarea
+        >
+        <div class="row">
+          <span class="muted">模型得分未经校准；不用于心理或违规判断。</span
+          ><button id="submit">分析评论 ↗</button>
+        </div>
+      </form>
+      <div class="examples">
+        <button
+          data-text="The concert was wonderful. Thank you for organizing it!"
+        >
+          正面体验示例</button
+        ><button
+          data-text="The queue was awful and the event was badly organized."
+        >
+          负面体验示例</button
+        ><button data-text="The event starts at six in the student union.">
+          普通事实示例
+        </button>
+      </div>
+      <p id="error" class="error" role="alert"></p>
+      <div id="result" hidden>
+        <div class="winner" id="winner"></div>
+        <div id="bars" class="bars"></div>
+        <small id="timing"></small>
+      </div>
+    </section>
+    <section class="panel">
+      <strong>这次实测</strong>
+      <p id="summary" class="muted">
+        官方评测或性能测试完成后显示结果。这里不包含原平台的数据库和后台任务处理时间。
+      </p>
+      <details>
+        <summary>固定模型与运行配置</summary>
+        <pre id="metadata"></pre>
+      </details>
+    </section>
+    <p class="muted">
+      服务在完整评测期间会暂时拒绝交互请求，保证单一模型进程和可解释的资源记录。全部评测按固定测试划分执行，不训练、不调参、不挑选样本。
+    </p>
+  </main>
+  <script>
+    const names = { negative: "负面", neutral: "中性", positive: "正面" };
+    const text = document.querySelector("#text"),
+      error = document.querySelector("#error"),
+      submit = document.querySelector("#submit");
+    document.querySelector("#old-link").href =
+      location.protocol + "//" + location.hostname + ":5180";
+    document.querySelectorAll("[data-text]").forEach(
+      (b) =>
+        (b.onclick = () => {
+          text.value = b.dataset.text;
+        }),
+    );
+    document.querySelector("#form").onsubmit = async (e) => {
+      e.preventDefault();
+      submit.disabled = true;
+      error.textContent = "";
+      try {
+        const r = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text.value }),
+        });
+        const d = await r.json();
+        if (!r.ok)
+          throw new Error(
+            typeof d.detail === "string" ? d.detail : "输入不符合要求",
+          );
+        document.querySelector("#winner").textContent =
+          names[d.label] + " · " + d.label;
+        const bars = document.querySelector("#bars");
+        bars.replaceChildren();
+        Object.entries(d.scores).forEach(([name, score]) => {
+          const row = document.createElement("div"),
+            label = document.createElement("span"),
+            track = document.createElement("div"),
+            fill = document.createElement("div"),
+            value = document.createElement("span");
+          label.textContent = names[name] + " / " + name;
+          track.className = "track";
+          fill.className = "fill";
+          fill.style.width = score * 100 + "%";
+          track.append(fill);
+          value.textContent = score.toFixed(4);
+          row.append(label, track, value);
+          bars.append(row);
+        });
+        document.querySelector("#timing").textContent =
+          "CPU 推理 " +
+          d.inference_ms.toFixed(1) +
+          " ms · " +
+          d.token_count +
+          " tokens · 模型进程 RSS " +
+          d.rss_mb.toFixed(0) +
+          " MiB";
+        document.querySelector("#result").hidden = false;
+      } catch (e) {
+        error.textContent = e.message;
+      } finally {
+        submit.disabled = false;
+      }
+    };
+    async function refresh() {
+      try {
+        const [m, r] = await Promise.all([
+          fetch("/metadata").then((r) => r.json()),
+          fetch("/results").then((r) => r.json()),
+        ]);
+        document.querySelector("#metadata").textContent = JSON.stringify(
+          {
+            model: m.model,
+            revision: m.revision,
+            device: m.device,
+            precision: m.precision,
+            threads: m.threads,
+            interop_threads: m.interop_threads,
+            architecture: m.architecture,
+            host_label: m.host_label,
+          },
+          null,
+          2,
+        );
+        const summary = [];
+        const ev = r["latest-evaluation.json"],
+          b = r["latest-benchmark.json"];
+        if (ev)
+          summary.push(
+            "官方 test " +
+              ev.metrics.samples +
+              " 条：Accuracy " +
+              (ev.metrics.accuracy * 100).toFixed(2) +
+              "%，Macro-F1 " +
+              ev.metrics.macro_f1.toFixed(4) +
+              "，官方 Macro-Recall " +
+              ev.metrics.macro_recall.toFixed(4),
+          );
+        if (b)
+          summary.push(
+            "预热后 p50 / p95：" +
+              b.inference_ms.p50.toFixed(1) +
+              " / " +
+              b.inference_ms.p95.toFixed(1) +
+              " ms；采样最大 RSS " +
+              b.rss_mb.max.toFixed(0) +
+              " MiB",
+          );
+        if (summary.length)
+          document.querySelector("#summary").textContent = summary.join("。");
+      } catch {}
+    }
+    refresh();
+    setInterval(refresh, 10000);
+  </script>
+</html>

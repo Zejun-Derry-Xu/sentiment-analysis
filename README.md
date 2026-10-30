@@ -199,3 +199,9 @@ docker compose exec -T db pg_dump -U campus -d campus -Fc > reports/backups/camp
 模型来自 Reddit 英文语料，校园场景存在领域差异；讽刺、上下文不足、罕见情绪和多标签共现都可能造成错误。第一版不保证中文或其他非英文分析可靠；页面遇到明显中文会提示并阻止提交，但这不是完整语言检测器。阈值固定，无概率校准，不从现场反馈训练。公开看板中的纠正也不构成官方测试标签。
 
 源代码采用 MIT；模型及数据保留各自许可证。大权重、数据库、会话、`.env` 不进入 Git。
+
+## 并行三分类 CPU 试验
+
+Cardiff 的正面/中性/负面分类器在独立目录和 Compose 项目中运行，不替换本平台。
+启动：`sh experiments/cardiff-cpu/start.sh`，访问 `http://localhost:5181`。
+固定版本、完整官方测试与 CPU 性能复测见 [独立试验说明](experiments/cardiff-cpu/README.md)。

@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "model_revision": "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7",
+  "checks": [
+    "author preprocessing",
+    "CPU-only runtime",
+    "complete classifier weights",
+    "three semantic smoke examples",
+    "softmax normalization and argmax",
+    "short-text tokenization",
+    "input validation",
+    "512-token truncation"
+  ],
+  "examples": [
+    {
+      "text": "The event was wonderful! I loved every minute of it.",
+      "label": "positive",
+      "scores": {
+        "negative": 0.0042355479672551155,
+        "neutral": 0.0076113673858344555,
+        "positive": 0.9881530404090881
+      },
+      "inference_ms": 27.57479199954105,
+      "token_count": 14,
+      "input_characters": 52,
+      "rss_mb": 777.19921875,
+      "cpu_percent": 181.3250304873814,
+      "queue_ms": 0.0006669997674180195,
+      "handler_completion_ms": 27.687583000442828,
+      "runtime_id": "47e881b2-4ac4-4b8e-ac7d-322c04b1de5e"
+    },
+    {
+      "text": "The event was terrible and a complete waste of time.",
+      "label": "negative",
+      "scores": {
+        "negative": 0.9438501596450806,
+        "neutral": 0.048152122646570206,
+        "positive": 0.007997680455446243
+      },
+      "inference_ms": 25.829457999861916,
+      "token_count": 13,
+      "input_characters": 52,
+      "rss_mb": 777.5078125,
+      "cpu_percent": 193.57742620951288,
+      "queue_ms": 0.00045900014811195433,
+      "handler_completion_ms": 25.921917000232497,
+      "runtime_id": "47e881b2-4ac4-4b8e-ac7d-322c04b1de5e"
+    },
+    {
+      "text": "The event is scheduled for six o'clock in room 102.",
+      "label": "neutral",
+      "scores": {
+        "negative": 0.005951093975454569,
+        "neutral": 0.9358440041542053,
+        "positive": 0.05820482224225998
+      },
+      "inference_ms": 26.465791999726207,
+      "token_count": 15,
+      "input_characters": 51,
+      "rss_mb": 778.19140625,
+      "cpu_percent": 188.92312008088433,
+      "queue_ms": 0.0005000001692678779,
+      "handler_completion_ms": 26.561666999441513,
+      "runtime_id": "47e881b2-4ac4-4b8e-ac7d-322c04b1de5e"
+    }
+  ],
+  "note": "These are hand-written functional smoke examples, not an accuracy dataset. Official scores use all 12,284 separate test samples."
+}

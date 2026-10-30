@@ -1,0 +1,18 @@
+{
+  "repository": "cardiffnlp/tweet_eval",
+  "revision": "b3a375baf0f409c77e6bc7aa35102b7b3534f8be",
+  "configuration": "sentiment",
+  "split": "test",
+  "rows": 12284,
+  "labels": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "file": {
+    "url": "https://huggingface.co/datasets/cardiffnlp/tweet_eval/resolve/b3a375baf0f409c77e6bc7aa35102b7b3534f8be/sentiment/test-00000-of-00001.parquet",
+    "bytes": 900553,
+    "sha256": "f73aea52d43879223019e733b944780f7e9203ee32459ea006f554011379fcdf"
+  },
+  "license_status": "HF aggregate dataset card says unknown; original task terms require separate verification. Raw test text is not bundled in the repository or exported prediction report."
+}

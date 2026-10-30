@@ -1,0 +1,181 @@
+{
+  "run_id": "69a391dc-f5d2-4b4c-aa5c-f525b999f6dd",
+  "runtime": {
+    "model": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+    "revision": "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7",
+    "runtime_id": "d14ae650-ec8b-4dee-b496-b392d2a920da",
+    "device": "cpu",
+    "precision": "float32",
+    "batch_size": 1,
+    "threads": 2,
+    "interop_threads": 1,
+    "model_load_ms": 2265.8183339999596,
+    "asset_preparation_ms": 311.64612499969735,
+    "platform": "Linux-6.12.76-linuxkit-aarch64-with-glibc2.41",
+    "architecture": "aarch64",
+    "cpu_count": 10,
+    "cpu_description": "aarch64",
+    "host_label": "Apple M5 / macOS Docker Desktop / local trial, not Jetstream2",
+    "cpu_limit": "200000 100000",
+    "memory_limit": "4294967296",
+    "loading_info": {
+      "missing_keys": [],
+      "unexpected_keys": [
+        "roberta.pooler.dense.bias",
+        "roberta.pooler.dense.weight"
+      ],
+      "mismatched_keys": [],
+      "error_msgs": []
+    },
+    "parameter_count": 124647939,
+    "cuda_available": false,
+    "packages": {
+      "torch": "2.7.1+cpu",
+      "transformers": "4.53.3",
+      "tokenizers": "0.21.4",
+      "numpy": "2.2.6"
+    },
+    "manifest": {
+      "repository": "cardiffnlp/twitter-roberta-base-sentiment-latest",
+      "revision": "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7",
+      "license": "CC-BY-4.0 as declared in model card",
+      "weights": "Author-published float32 PyTorch; no training, conversion or quantization",
+      "files": {
+        "config.json": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/config.json",
+          "bytes": 929,
+          "sha256": "d2fba19997da698157196ba16f5fcb30a97a7551cef6845a0f3d743ee19c6129"
+        },
+        "merges.txt": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/merges.txt",
+          "bytes": 456318,
+          "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5"
+        },
+        "vocab.json": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/vocab.json",
+          "bytes": 898822,
+          "sha256": "06b4d46c8e752d410213d9548eb27a54db70fda0319b6271fb8d59dead5e1cab"
+        },
+        "special_tokens_map.json": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/special_tokens_map.json",
+          "bytes": 239,
+          "sha256": "378eb3bf733eb16e65792d7e3fda5b8a4631387ca04d2015199c4d4f22ae554d"
+        },
+        "README.md": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/README.md",
+          "bytes": 4328,
+          "sha256": "05ad85143ed60f0abe631ab935485db046c24710d9bec50829b017cfc1e12bf7"
+        },
+        "pytorch_model.bin": {
+          "url": "https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest/resolve/3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7/pytorch_model.bin",
+          "bytes": 501045531,
+          "sha256": "4d24a3e32a88ed1c4e5b789fc6644e2e767500554e954b27dccf52a8e762cbae"
+        }
+      }
+    },
+    "first_inference_ms": 42.53441600030783,
+    "startup_warmup_count": 20,
+    "module_entry_to_ready_ms": 3078.4567519999655,
+    "cold_start_definition": "Model load includes torch/transformers imports, tokenizer and weights; first inference is before warmup. Module-entry-to-ready includes asset preparation and 20 warmups, but not preceding module imports/container creation."
+  },
+  "dataset": {
+    "repository": "cardiffnlp/tweet_eval",
+    "revision": "b3a375baf0f409c77e6bc7aa35102b7b3534f8be",
+    "configuration": "sentiment",
+    "split": "test",
+    "rows": 12284,
+    "labels": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "file": {
+      "url": "https://huggingface.co/datasets/cardiffnlp/tweet_eval/resolve/b3a375baf0f409c77e6bc7aa35102b7b3534f8be/sentiment/test-00000-of-00001.parquet",
+      "bytes": 900553,
+      "sha256": "f73aea52d43879223019e733b944780f7e9203ee32459ea006f554011379fcdf"
+    },
+    "license_status": "HF aggregate dataset card says unknown; original task terms require separate verification. Raw test text is not bundled in the repository or exported prediction report."
+  },
+  "metrics": {
+    "samples": 12284,
+    "official_full_test": true,
+    "accuracy": 0.7218332790621947,
+    "micro_f1": 0.7218332790621947,
+    "macro_f1": 0.7240497134269231,
+    "macro_recall": 0.7349497561715372,
+    "tweeteval_official_metric": "macro_recall",
+    "classification_report": {
+      "negative": {
+        "precision": 0.6894770819883796,
+        "recall": 0.8066465256797583,
+        "f1-score": 0.7434737208492864,
+        "support": 3972.0
+      },
+      "neutral": {
+        "precision": 0.7565891472868217,
+        "recall": 0.6575711638874853,
+        "f1-score": 0.7036135892583582,
+        "support": 5937.0
+      },
+      "positive": {
+        "precision": 0.7101332256762213,
+        "recall": 0.7406315789473684,
+        "f1-score": 0.7250618301731245,
+        "support": 2375.0
+      },
+      "accuracy": 0.7218332790621947,
+      "macro avg": {
+        "precision": 0.7187331516504742,
+        "recall": 0.7349497561715372,
+        "f1-score": 0.7240497134269231,
+        "support": 12284.0
+      },
+      "weighted avg": {
+        "precision": 0.7259068013742047,
+        "recall": 0.7218332790621947,
+        "f1-score": 0.7206490837920393,
+        "support": 12284.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        3204,
+        711,
+        57
+      ],
+      [
+        1372,
+        3904,
+        661
+      ],
+      [
+        71,
+        545,
+        1759
+      ]
+    ]
+  },
+  "evaluation_wall_seconds": 752.4114992159998,
+  "inference_ms": {
+    "n": 12284,
+    "p50": 56.84787500013044,
+    "p95": 94.93979995042994,
+    "mean": 61.06718117030341,
+    "max": 2016.1005009999826
+  },
+  "text_characters": {
+    "n": 12284,
+    "p50": 95.0,
+    "p95": 135.0,
+    "mean": 91.34809508303485,
+    "max": 141.0
+  },
+  "token_lengths": {
+    "n": 12284,
+    "p50": 26.0,
+    "p95": 39.0,
+    "mean": 25.49820905242592,
+    "max": 74.0
+  },
+  "protocol": "Entire fixed test split, original order, one forward pass per sample; author preprocessing; softmax argmax; no training/tuning or test selection."
+}

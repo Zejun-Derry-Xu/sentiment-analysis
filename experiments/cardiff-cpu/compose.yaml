@@ -1,0 +1,40 @@
+name: dml-cardiff-cpu-bench
+services:
+  inference:
+    image: campus-cardiff-cpu:local
+    build: .
+    ports: ["${CARDIFF_BIND:-127.0.0.1}:${CARDIFF_PORT:-5181}:8000"]
+    environment:
+      TORCH_THREADS: "2"
+      TORCH_INTER_THREADS: "1"
+      HOST_LABEL: ${HOST_LABEL:-unspecified-host}
+    volumes: [assets:/assets, reports:/reports]
+    cpus: 2
+    mem_limit: 4g
+    restart: unless-stopped
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        [
+          CMD,
+          python,
+          -c,
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      start_period: 300s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  client:
+    image: campus-cardiff-cpu:local
+    profiles: [tools]
+    command: [python, run.py]
+    environment:
+      BASE_URL: http://inference:8000
+    volumes: [assets:/assets, reports:/reports]
+    depends_on:
+      inference: { condition: service_healthy }
+    mem_limit: 768m
+volumes:
+  assets:
+  reports:
