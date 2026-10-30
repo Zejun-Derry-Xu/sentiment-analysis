@@ -423,6 +423,208 @@ function SentimentEvaluationReport({
   );
 }
 
+const emotionEmoji: Record<string, string> = {
+  admiration: "🤩",
+  amusement: "😂",
+  anger: "😠",
+  annoyance: "😒",
+  approval: "👍",
+  caring: "🫶",
+  confusion: "😕",
+  curiosity: "🧐",
+  desire: "🤞",
+  disappointment: "😞",
+  disapproval: "👎",
+  disgust: "🤢",
+  embarrassment: "🫣",
+  excitement: "🥳",
+  fear: "😨",
+  gratitude: "🙏",
+  grief: "💔",
+  joy: "😄",
+  love: "🥰",
+  nervousness: "😬",
+  optimism: "🌈",
+  pride: "🏅",
+  realization: "💡",
+  relief: "😌",
+  remorse: "😔",
+  sadness: "😢",
+  surprise: "😮",
+  neutral: "😐",
+};
+function EmotionSticker({
+  analysis,
+  text,
+}: {
+  analysis: Analysis;
+  text: string;
+}) {
+  const [open, setOpen] = useState(false),
+    [preview, setPreview] = useState<string | null>(null),
+    [burst, setBurst] = useState(0);
+  const root = useRef<HTMLDivElement>(null),
+    hold = useRef<ReturnType<typeof setTimeout> | null>(null),
+    origin = useRef({ x: 0, y: 0 });
+  const eligible = analysis.labels.filter((l) => Boolean(emotionEmoji[l]));
+  const label =
+    preview && eligible.includes(preview)
+      ? preview
+      : eligible.includes(analysis.top_label)
+        ? analysis.top_label
+        : eligible[0];
+  function cancelHold() {
+    if (hold.current) {
+      clearTimeout(hold.current);
+      hold.current = null;
+    }
+  }
+  useEffect(() => {
+    setPreview(null);
+    setOpen(false);
+  }, [analysis.id]);
+  useEffect(() => () => cancelHold(), []);
+  useEffect(() => {
+    if (!open) return;
+    function outside(e: PointerEvent) {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    }
+    function escape(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+    };
+  }, [open]);
+  return (
+    <div className="mood-post" ref={root}>
+      <div
+        className="mood-text"
+        onPointerDown={(e) => {
+          if (e.button !== 0) return;
+          cancelHold();
+          origin.current = { x: e.clientX, y: e.clientY };
+          hold.current = setTimeout(() => {
+            setOpen(true);
+            hold.current = null;
+          }, 480);
+        }}
+        onPointerMove={(e) => {
+          if (
+            Math.hypot(
+              e.clientX - origin.current.x,
+              e.clientY - origin.current.y,
+            ) > 10
+          )
+            cancelHold();
+        }}
+        onPointerUp={cancelHold}
+        onPointerCancel={cancelHold}
+        onPointerLeave={cancelHold}
+        onContextMenu={(e) => {
+          if (open) e.preventDefault();
+        }}
+      >
+        <p className="comment-text" lang="en">
+          {text}
+        </p>
+      </div>
+      <div className="mood-bar">
+        <span className="mood-caption">MODEL EMOTION</span>
+        {label ? (
+          <button
+            className="mood-stamp"
+            key={analysis.id + label + burst}
+            aria-label={
+              "Model emotion: " +
+              labelName(label) +
+              ". Show predicted emoji stickers"
+            }
+            aria-expanded={open}
+            onClick={() => {
+              setOpen((v) => !v);
+              setBurst((v) => v + 1);
+            }}
+            title={
+              labelName(label) +
+              " · model score " +
+              analysis.scores[label].toFixed(3)
+            }
+          >
+            <span className="mood-emoji" aria-hidden="true">
+              {emotionEmoji[label]}
+            </span>
+            <span>{labelName(label)}</span>
+            <span className="mood-spark" aria-hidden="true">
+              ✦
+            </span>
+          </button>
+        ) : (
+          <span className="mood-empty">No emotion above the threshold</span>
+        )}
+        <button
+          className="mood-more"
+          aria-label="Show model emotion stickers"
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+        >
+          ⌁ <span>View moods</span>
+        </button>
+      </div>
+      {open && (
+        <div
+          className="mood-palette"
+          role="group"
+          aria-label="Model emotion stickers"
+        >
+          <div className="mood-palette-title">
+            Model predictions{" "}
+            <button
+              aria-label="Close mood stickers"
+              onClick={() => setOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+          {eligible.length ? (
+            <>
+              <div className="mood-options">
+                {eligible.map((l, i) => (
+                  <button
+                    key={l}
+                    style={{ animationDelay: `${i * 45}ms` }}
+                    className={label === l ? "selected" : ""}
+                    aria-pressed={label === l}
+                    aria-label={"Preview " + labelName(l) + " sticker"}
+                    onClick={() => {
+                      setPreview(l);
+                      setBurst((v) => v + 1);
+                      setOpen(false);
+                    }}
+                  >
+                    <span aria-hidden="true">{emotionEmoji[l]}</span>
+                    <small>{labelName(l)}</small>
+                    <b>{analysis.scores[l].toFixed(3)}</b>
+                  </button>
+                ))}
+              </div>
+              <p>
+                Tap a predicted mood to replay the sticker. This is a model
+                result, not a user reaction.
+              </p>
+            </>
+          ) : (
+            <p>No label scored above 0.5. No emoji is assigned.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function App() {
   const [user, setUser] = useState<User | null>(null),
     [checking, setChecking] = useState(true),
@@ -700,9 +902,13 @@ function App() {
             {statusName[n.status]}
           </span>
         </div>
-        <p className="comment-text" lang="en">
-          {n.text}
-        </p>
+        {n.analysis ? (
+          <EmotionSticker analysis={n.analysis} text={n.text} />
+        ) : (
+          <p className="comment-text" lang="en">
+            {n.text}
+          </p>
+        )}
         {n.analysis ? (
           <div className="analysis">
             <div className="analysis-heading">
