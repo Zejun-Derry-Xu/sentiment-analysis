@@ -119,9 +119,10 @@ def test_analysis_review_filters_and_immutability(client, new_comment, runtime):
     assert client.get("/api/comments?event_id=night-run").json()["total"] == 0
     assert (
         client.put(f"/api/comments/{cid}/favorite", json={"value": True}).status_code
-        == 200
+        == 404
     )
-    assert client.get("/api/comments?favorites=true").json()["total"] == 1
+    assert "favorite" not in original
+    assert "favorites" not in client.get("/api/stats").json()
     assert (
         client.put(
             f"/api/comments/{cid}/handling", json={"status": "processed"}
@@ -159,7 +160,6 @@ def test_analysis_review_filters_and_immutability(client, new_comment, runtime):
     assert client.post(f"/api/comments/{cid}/retry").status_code == 409
     with TestClient(app) as other:
         other.post("/api/session", json={"username": "Jordan"})
-        assert other.get("/api/comments?favorites=true").json()["total"] == 0
         # Public demo intentionally allows dashboard actions for all sessions.
         assert (
             other.post(

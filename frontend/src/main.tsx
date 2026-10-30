@@ -31,9 +31,9 @@ type Sentiment = {
   model_revision: string;
 };
 const sentiments: Record<string, string> = {
-  negative: "负面",
-  neutral: "中性",
-  positive: "正面",
+  negative: "Negative",
+  neutral: "Neutral",
+  positive: "Positive",
 };
 type Correction = {
   labels: string[];
@@ -51,7 +51,6 @@ type Note = {
   handling: string;
   created_at: string;
   completed_at: string | null;
-  favorite: boolean;
   analysis: Analysis | null;
   sentiment: Sentiment | null;
   sentiment_status: string;
@@ -67,7 +66,6 @@ type Stats = {
   completed: number;
   waiting: number;
   unread: number;
-  favorites: number;
   sentiment?: Record<string, number>;
   sentiment_completed?: number;
   emotions?: { label: string; count: number }[];
@@ -130,37 +128,7 @@ type Bench = {
     }[];
   };
 };
-type View = "events" | "event" | "mine" | "board" | "favorites" | "evaluation";
-const chinese = [
-  "赞赏",
-  "愉悦",
-  "愤怒",
-  "烦恼",
-  "认同",
-  "关爱",
-  "困惑",
-  "好奇",
-  "渴望",
-  "失望",
-  "不认同",
-  "厌恶",
-  "尴尬",
-  "兴奋",
-  "恐惧",
-  "感谢",
-  "悲痛",
-  "喜悦",
-  "喜爱",
-  "紧张",
-  "乐观",
-  "自豪",
-  "领悟",
-  "释然",
-  "懊悔",
-  "悲伤",
-  "惊讶",
-  "中性",
-];
+type View = "events" | "event" | "mine" | "board" | "evaluation";
 const labels = [
   "admiration",
   "amusement",
@@ -191,18 +159,32 @@ const labels = [
   "surprise",
   "neutral",
 ];
-const labelName = (v: string) => `${chinese[labels.indexOf(v)] || v} · ${v}`;
+const labelName = (v: string) => v.charAt(0).toUpperCase() + v.slice(1);
+const postExamples: Record<string, string[]> = {
+  "spring-sounds": [
+    "The haunted house was so much fun! I loved the costumes and spooky decorations.",
+    "The long queue was disappointing, but the student actors were amazing.",
+  ],
+  "campus-makers": [
+    "The new campus food stall is delicious, and the staff are so welcoming!",
+    "The vegetarian options were limited and the lunch queue was frustrating.",
+  ],
+  "night-run": [
+    "The DSAN project feedback was clear and helped me understand the material.",
+    "I am confused about the assignment requirements. Could we have more examples?",
+  ],
+};
 const statusName: Record<string, string> = {
-  pending: "等待分析",
-  processing: "分析中",
-  completed: "分析完成",
-  failed: "分析失败",
-  unread: "未查看",
-  viewed: "已查看",
-  processed: "已处理",
+  pending: "Pending",
+  processing: "Processing",
+  completed: "Completed",
+  failed: "Failed",
+  unread: "Unread",
+  viewed: "Viewed",
+  processed: "Processed",
 };
 const date = (v: string) =>
-  new Date(v).toLocaleString("zh-CN", {
+  new Date(v).toLocaleString("en-US", {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -216,13 +198,13 @@ async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers: { "Content-Type": "application/json", ...options.headers },
   });
   if (!r.ok) {
-    let msg = `请求失败 (${r.status})`;
+    let msg = `Request failed (${r.status})`;
     try {
       const e = await r.json();
       msg =
         typeof e.detail === "string"
           ? e.detail
-          : e.detail?.map((x: { msg: string }) => x.msg).join("；") || msg;
+          : e.detail?.map((x: { msg: string }) => x.msg).join("; ") || msg;
     } catch {}
     throw new Error(msg);
   }
@@ -243,6 +225,7 @@ function App() {
     [checking, setChecking] = useState(true),
     [username, setUsername] = useState(""),
     [loginBusy, setLoginBusy] = useState(false);
+  const [adminMode, setAdminMode] = useState(false);
   const [view, setView] = useState<View>("events"),
     [events, setEvents] = useState<Event[]>([]),
     [selected, setSelected] = useState<Event | null>(null);
@@ -251,7 +234,6 @@ function App() {
       completed: 0,
       waiting: 0,
       unread: 0,
-      favorites: 0,
     }),
     [notes, setNotes] = useState<Note[]>([]),
     [total, setTotal] = useState(0),
@@ -337,8 +319,7 @@ function App() {
           });
           if (view === "event" && selected) q.set("event_id", selected.id);
           if (view === "mine") q.set("mine", "true");
-          if (view === "favorites") q.set("favorites", "true");
-          if (["board", "favorites", "mine"].includes(view)) {
+          if (["board", "mine"].includes(view)) {
             if (filterEvent) q.set("event_id", filterEvent);
             if (filterLabel) q.set("label", filterLabel);
             if (filterSentiment) q.set("sentiment", filterSentiment);
@@ -451,7 +432,7 @@ function App() {
     ) {
       setText("");
       draftKey.current = uuid();
-      setNotice("评论已保存，正在等待分析。");
+      setNotice("Post saved. Both analyses are queued.");
       setPage(1);
     }
     setSending(false);
@@ -476,7 +457,9 @@ function App() {
       })
     ) {
       setCorrecting(null);
-      setNotice("人工纠正已追加保存，原始模型结果保持不变。");
+      setNotice(
+        "Review saved separately. Original model results are unchanged.",
+      );
     }
     setSaving(false);
   }
@@ -502,7 +485,7 @@ function App() {
             <strong>{n.username}</strong>
             <span className="muted note-context">
               {date(n.created_at)}
-              {view !== "event" ? " · " + n.event_title.split(" · ")[0] : ""}
+              {view !== "event" ? " · " + n.event_title : ""}
             </span>
           </div>
           <span className={"status " + n.status}>
@@ -519,18 +502,18 @@ function App() {
               <span className="eyebrow">TEXT EMOTION</span>
               <span className="muted">
                 {ms(n.analysis.inference_ms)} · {n.analysis.token_count} tokens
-                {n.analysis.truncated ? " · 已截断至 512 tokens" : ""}
+                {n.analysis.truncated ? " · Truncated to 512 tokens" : ""}
               </span>
             </div>
             <div className="top-emotion">
-              <span>最高分标签</span>
+              <span>Highest-scoring emotion</span>
               <strong>{labelName(n.analysis.top_label)}</strong>
-              <span className="score" title="模型得分未经校准">
-                模型得分 {n.analysis.top_score.toFixed(3)}
+              <span className="score" title="Model scores are not calibrated">
+                Model score {n.analysis.top_score.toFixed(3)}
               </span>
             </div>
             <div className="label-row">
-              <span className="muted">超过 0.5 的标签</span>
+              <span className="muted">Labels above 0.5</span>
               {n.analysis.labels.length ? (
                 n.analysis.labels.map((l) => (
                   <span className={"tag emotion-" + l} key={l}>
@@ -538,11 +521,11 @@ function App() {
                   </span>
                 ))
               ) : (
-                <span className="tag">无标签超过阈值</span>
+                <span className="tag">No labels above the threshold</span>
               )}
             </div>
             <details>
-              <summary>查看全部 28 项模型得分</summary>
+              <summary>View all 28 emotion scores</summary>
               <div className="score-grid">
                 {Object.entries(n.analysis.scores)
                   .sort((a, b) => b[1] - a[1])
@@ -555,7 +538,8 @@ function App() {
                   ))}
               </div>
               <p className="muted fineprint">
-                模型得分未经心理测量校准；标签判定严格使用 score &gt; 0.5。
+                Model score is not a psychological measurement; labels require
+                score &gt; 0.5.
               </p>
             </details>
           </div>
@@ -563,16 +547,19 @@ function App() {
           <div className={"analysis pending-message " + n.status}>
             {n.status === "failed" ? (
               <>
-                <strong>分析暂未完成</strong>
-                <span>评论已安全保存。可以重试，历史尝试会保留。</span>
+                <strong>Emotion analysis unavailable</strong>
+                <span>
+                  Your post is safe. Retry analysis; previous attempts are
+                  retained.
+                </span>
               </>
             ) : (
               <>
                 <span className="pulse" />
                 <span>
                   {n.status === "processing"
-                    ? "模型正在分析文本表达的情绪…"
-                    : "评论已保存，等待后台分析。"}
+                    ? "Analyzing the emotions expressed in this post…"
+                    : "Post saved. Emotion analysis is queued."}
                 </span>
               </>
             )}
@@ -580,7 +567,7 @@ function App() {
         )}
         <div className="analysis sentiment-analysis">
           <div className="analysis-heading">
-            <span className="eyebrow">TEXT SENTIMENT · 三分类</span>
+            <span className="eyebrow">TEXT SENTIMENT · THREE CLASSES</span>
             <span className={"status " + n.sentiment_status}>
               {statusName[n.sentiment_status]}
             </span>
@@ -590,7 +577,7 @@ function App() {
               <div
                 className={"sentiment-winner sentiment-" + n.sentiment.label}
               >
-                {sentiments[n.sentiment.label]} · {n.sentiment.label}
+                {sentiments[n.sentiment.label]}
               </div>
               <div className="sentiment-scores">
                 {Object.entries(sentiments).map(([label, name]) => (
@@ -602,15 +589,17 @@ function App() {
                 ))}
               </div>
               <p className="fineprint muted">
-                模型得分 · 单标签三分类；与上方多标签情绪独立。推理{" "}
-                {ms(n.sentiment.inference_ms)} · 排队 {ms(n.sentiment.queue_ms)}
+                Model score · Single-label sentiment, independent of multi-label
+                emotion. Inference {ms(n.sentiment.inference_ms)} · Queue{" "}
+                {ms(n.sentiment.queue_ms)}
               </p>
             </>
           ) : (
             <p className="muted">
               {n.sentiment_status === "failed"
-                ? n.sentiment_error || "三分类暂时失败，评论已保存。"
-                : "评论已保存，后台正在分析正面／中性／负面倾向。"}
+                ? n.sentiment_error ||
+                  "Sentiment analysis failed. Your post is saved."
+                : "Post saved. Sentiment analysis is queued."}
             </p>
           )}
           {n.sentiment_status === "failed" && (
@@ -620,71 +609,62 @@ function App() {
                 void act(`/api/comments/${n.id}/sentiment/retry`, "POST")
               }
             >
-              重试三分类 ↻
+              Retry sentiment ↻
             </button>
           )}
         </div>
+        {n.status === "failed" && (
+          <button
+            className="text-button"
+            onClick={() => void act(`/api/comments/${n.id}/retry`, "POST")}
+          >
+            Retry emotion ↻
+          </button>
+        )}
         {n.correction && (
           <div className="correction">
-            <span className="eyebrow">人工纠正 · 独立记录</span>
+            <span className="eyebrow">HUMAN REVIEW · SEPARATE RECORD</span>
             <p>
               {n.correction.labels.length
                 ? n.correction.labels.map(labelName).join(" / ")
-                : "空标签集合"}
+                : "No emotion labels"}
             </p>
             <span className="muted">
               {n.correction.reason} · {n.correction.username}
             </span>
           </div>
         )}
-        <div className="note-actions">
-          <button
-            className={"text-button " + (n.favorite ? "is-favorite" : "")}
-            onClick={() =>
-              void act(`/api/comments/${n.id}/favorite`, "PUT", {
-                value: !n.favorite,
-              })
-            }
-            aria-label={n.favorite ? "取消收藏" : "收藏评论"}
-          >
-            {n.favorite ? "★ 已收藏" : "☆ 收藏"}
-          </button>
-          <label className="handling-label">
-            处理状态
-            <select
-              aria-label="评论处理状态"
-              value={n.handling}
-              onChange={(e) =>
-                void act(`/api/comments/${n.id}/handling`, "PUT", {
-                  status: e.target.value,
-                })
-              }
-            >
-              {["unread", "viewed", "processed"].map((x) => (
-                <option value={x} key={x}>
-                  {statusName[x]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="action-spacer" />
-          {n.status === "failed" && (
-            <button
-              className="text-button"
-              onClick={() => void act(`/api/comments/${n.id}/retry`, "POST")}
-            >
-              重试分析 ↻
+        {adminMode && (
+          <div className="note-actions">
+            <label className="handling-label">
+              Handling status
+              <select
+                aria-label="Post handling status"
+                value={n.handling}
+                onChange={(e) =>
+                  void act(`/api/comments/${n.id}/handling`, "PUT", {
+                    status: e.target.value,
+                  })
+                }
+              >
+                {["unread", "viewed", "processed"].map((x) => (
+                  <option value={x} key={x}>
+                    {statusName[x]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="action-spacer" />
+            {n.analysis && (
+              <button className="text-button" onClick={() => openCorrection(n)}>
+                Human review
+              </button>
+            )}
+            <button className="text-button" onClick={() => void showHistory(n)}>
+              History ↗
             </button>
-          )}
-          {n.analysis && (
-            <button className="text-button" onClick={() => openCorrection(n)}>
-              人工纠正
-            </button>
-          )}
-          <button className="text-button" onClick={() => void showHistory(n)}>
-            记录 ↗
-          </button>
-        </div>
+          </div>
+        )}
       </article>
     );
   }
@@ -692,7 +672,7 @@ function App() {
     return (
       <div className="loading">
         <Mark />
-        <p>正在打开校园回声…</p>
+        <p>Opening Campus Forum…</p>
       </div>
     );
   if (!user)
@@ -701,27 +681,27 @@ function App() {
         <section className="welcome-art">
           <div className="wordmark">
             <Mark />
-            <span>CAMPUS NOTES</span>
+            <span>CAMPUS FORUM</span>
           </div>
           <div className="welcome-copy">
             <span className="eyebrow">LISTEN TO YOUR CAMPUS</span>
             <h1>
-              每一种声音，
+              Your voice,
               <br />
-              都值得被听见<span>。</span>
+              your campus<span>.</span>
             </h1>
             <p>
-              记录校园活动里的真实体验，
+              Share what campus life feels like,
               <br />
-              一起发现文字中的情绪。
+              one conversation at a time.
             </p>
           </div>
           <div className="welcome-decoration">
             <div className="floating-note one">
-              <span>SPRING SOUNDS</span>
+              <span>HALLOWEEN NIGHT</span>
               <p>
-                “The music was incredible.
-                <br />I loved every minute!”
+                “The haunted house was incredible.
+                <br />I loved every spooky moment!”
               </p>
               <small>joy · admiration · love</small>
             </div>
@@ -736,23 +716,23 @@ function App() {
           <span className="edition">DML COURSE PROJECT / 01</span>
           <form onSubmit={login}>
             <span className="eyebrow">WELCOME IN</span>
-            <h2>先打个招呼。</h2>
-            <p className="muted">给自己起个名字，就能参与校园讨论。</p>
-            <label htmlFor="username">你的名字</label>
+            <h2>Join the conversation.</h2>
+            <p className="muted">Choose a display name to start posting.</p>
+            <label htmlFor="username">Your name</label>
             <input
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               maxLength={32}
               required
-              placeholder="例如 Alex"
+              placeholder="e.g. Alex"
               autoComplete="nickname"
             />
             <button
               className="primary"
               disabled={loginBusy || !username.trim()}
             >
-              {loginBusy ? "正在进入…" : "进入校园回声"} <span>↗</span>
+              {loginBusy ? "Joining…" : "Enter Campus Forum"} <span>↗</span>
             </button>
             {error && (
               <p className="error" role="alert">
@@ -760,13 +740,15 @@ function App() {
               </p>
             )}
             <div className="demo-notice">
-              <strong>无需密码 · 公开演示</strong>
+              <strong>No password · Public demo</strong>
               <p>
-                用户页与分析看板可自由切换，所有访客均可操作看板。名字仅用于展示，不验证真实身份。
+                Anyone can switch to the admin dashboard in this demo. Display
+                names do not verify identity.
               </p>
             </div>
             <p className="fineprint muted">
-              模型仅支持英文评论。分析文本表达的情绪，不推断心理状态，不自动删除评论。
+              English posts only. Models analyze text, not mental health. No
+              automatic moderation.
             </p>
           </form>
           <span className="login-footer">
@@ -790,17 +772,15 @@ function App() {
           <span>
             CAMPUS
             <br />
-            <b>NOTES</b>
+            <b>FORUM</b>
           </span>
         </a>
-        <nav aria-label="主导航">
+        <nav aria-label="Main navigation">
           {(
             [
-              ["events", "发现活动"],
-              ["mine", "我的评论"],
-              ["board", "分析看板"],
-              ["favorites", "我的收藏"],
-              ["evaluation", "评测报告"],
+              ["events", "Forum"],
+              ["mine", "My Posts"],
+              ["evaluation", "Evaluation"],
             ] as [View, string][]
           ).map(([v, t]) => (
             <button
@@ -813,45 +793,54 @@ function App() {
               onClick={() => navigate(v)}
             >
               {t}
-              {v === "favorites" && stats.favorites > 0 ? (
-                <span className="nav-count">{stats.favorites}</span>
-              ) : null}
             </button>
           ))}
         </nav>
         <div className="user">
+          <button
+            className={"admin-switch " + (adminMode ? "is-admin" : "")}
+            aria-pressed={adminMode}
+            onClick={() => {
+              const next = !adminMode;
+              setAdminMode(next);
+              navigate(next ? "board" : "events");
+            }}
+          >
+            {adminMode ? "Switch to Student" : "Switch to Admin"}
+          </button>
           <span className="avatar">
             {user.username.slice(0, 1).toUpperCase()}
           </span>
-          <span>{user.username}</span>
+          <span className="user-name">{user.username}</span>
           <button
-            title="退出后会结束此浏览器身份，同名不恢复原会话"
+            title="Signing out ends this browser identity. Reusing a name will not restore it."
             className="text-button"
             onClick={async () => {
               await api("/api/session", { method: "DELETE" });
               setUser(null);
+              setAdminMode(false);
               navigate("events");
             }}
           >
-            退出
+            Sign out
           </button>
         </div>
       </header>
       <div className="demo-banner">
         <span>
           <i />
-          公开演示模式 · 用户与看板自由切换
+          Public demo · Admin tools are open to every visitor
         </span>
         <span>
-          仅支持英文文本情绪分析 <span className="banner-divider">/</span>{" "}
-          不用于心理或违规判断
+          English text analysis only <span className="banner-divider">/</span>{" "}
+          Not a mental-health or moderation decision
         </span>
       </div>
       <main className="container">
         {error && (
           <div className="error global-error" role="alert">
             {error}
-            <button onClick={() => setError("")} aria-label="关闭错误">
+            <button onClick={() => setError("")} aria-label="Dismiss error">
               ×
             </button>
           </div>
@@ -862,17 +851,24 @@ function App() {
               <div>
                 <span className="eyebrow">YOUR CAMPUS, IN YOUR WORDS</span>
                 <h1>
-                  校园里的事，
+                  Your campus.
                   <br />
-                  听听大家怎么说<span>。</span>
+                  Your conversation<span>.</span>
                 </h1>
                 <p>
-                  参与一场活动，留下一段感受。
+                  Talk about Halloween, campus food, and DSAN.
                   <br />
-                  让每一条反馈，都成为下一次更好的开始。
+                  Share an experience. Ask a question. Start something better.
                 </p>
-                <button className="secondary" onClick={() => navigate("board")}>
-                  打开分析看板 <span>↗</span>
+                <button
+                  className="secondary"
+                  onClick={() =>
+                    document
+                      .getElementById("forum-boards")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  Explore the boards <span>↗</span>
                 </button>
               </div>
               <div className="hero-art" aria-hidden="true">
@@ -895,11 +891,15 @@ function App() {
             <div className="section-title">
               <div>
                 <span className="eyebrow">WHAT'S HAPPENING</span>
-                <h2>值得参与的校园日常</h2>
+                <h2>Find your conversation</h2>
               </div>
-              <span className="muted">03 场虚构活动 · 真实功能演示</span>
+              <span className="muted">03 demo boards · Real analysis</span>
             </div>
-            <div className="event-grid">
+            <div
+              className="event-grid"
+              id="forum-boards"
+              aria-label="Forum boards"
+            >
               {events.map((e, i) => (
                 <button
                   className="event-card"
@@ -911,26 +911,20 @@ function App() {
                 >
                   <div className={"event-art art-" + i}>
                     <span className="event-number">0{i + 1}</span>
-                    <span className="event-date">
-                      APR {new Date(e.starts_at).getUTCDate()}
-                    </span>
+                    <span className="event-date">DISCUSS</span>
                     <div className="event-shape" />
                     <span className="event-art-title">
-                      {
-                        ["SPRING\nSOUNDS", "MAKE\nSOMETHING.", "AFTER\nHOURS"][
-                          i
-                        ]
-                      }
+                      {["AFTER\nDARK.", "CAMPUS\nBITES.", "DSAN\nVOICE."][i]}
                     </span>
                   </div>
                   <div className="event-info">
                     <span className="eyebrow">{e.category}</span>
-                    <h3>{e.title.split(" · ")[1]}</h3>
+                    <h3>{e.title}</h3>
                     <p>{e.description}</p>
                     <div className="event-meta">
                       <span>{e.location}</span>
                       <span>
-                        {e.comment_count} 条评论 <b>↗</b>
+                        {e.comment_count} posts <b>↗</b>
                       </span>
                     </div>
                   </div>
@@ -939,9 +933,11 @@ function App() {
             </div>
             <section className="principles">
               <span className="eyebrow">A NOTE ON EMOTION</span>
-              <h3>情绪是线索，理解需要更多上下文。</h3>
+              <h3>A little context goes a long way.</h3>
               <p>
-                模型识别英文文字中表达的情绪，无法知道一个人的真实心理状态。多种情绪可以同时出现；没有标签超过阈值，也是一种正常结果。
+                Models identify emotions expressed in English text, not a
+                person’s inner state. Multiple emotions may appear together, and
+                no label may exceed the threshold.
               </p>
             </section>
           </>
@@ -949,43 +945,50 @@ function App() {
           <>
             <div className="page-heading">
               <span className="eyebrow">MEASURE, DON'T GUESS</span>
-              <h1>让结果，经得起检验。</h1>
-              <p>固定模型、固定官方测试集。分类质量与运行性能分别记录。</p>
+              <h1>Results you can inspect.</h1>
+              <p>
+                Fixed models and official test sets. Quality and runtime
+                performance are reported separately.
+              </p>
               <p className="fineprint muted">
-                下方为 GoEmotions 28 类情绪模型的评测。三分类另用 TweetEval
-                官方测试：本地 12,284 条 Accuracy 72.18%、Macro-F1 72.40%，见{" "}
+                Below: the 28-label GoEmotions emotion evaluation. Sentiment
+                uses TweetEval official test data: 12,284 local samples,
+                accuracy 72.18%, macro-F1 72.40%. See the{" "}
                 <a
                   href="https://github.com/Zejun-Derry-Xu/sentiment-analysis/blob/main/docs/cardiff-cpu-validation.md"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  三分类独立验证报告
+                  independent sentiment report
                 </a>
-                。两套测试任务不同，不直接比较分数；现场评论分布不是准确率。
+                . These are different tasks; scores are not directly comparable.
+                Live post distributions are not accuracy measurements.
               </p>
             </div>
             <div className="evaluation-source">
               <div>
                 <span className="eyebrow">MODEL</span>
                 <strong>RoBERTa · GoEmotions INT8</strong>
-                <span>CPU ONNX · 28 标签 · score &gt; 0.5</span>
+                <span>CPU ONNX · 28 labels · score &gt; 0.5</span>
               </div>
               <div>
                 <span className="eyebrow">TEST DATA</span>
                 <strong>GoEmotions simplified / test</strong>
-                <span>5,427 条真实标注 · 与现场评论及人工纠正分开</span>
+                <span>
+                  5,427 labeled samples · Separate from posts and human reviews
+                </span>
               </div>
               <a
                 href="https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx"
                 target="_blank"
                 rel="noreferrer"
               >
-                查看模型来源 ↗
+                View model source ↗
               </a>
             </div>
             {evaluations.length > 0 && (
               <label className="run-picker">
-                评测运行
+                Evaluation run
                 <select
                   value={activeEvaluation?.id || ""}
                   onChange={(e) => setEvaluationId(e.target.value)}
@@ -993,8 +996,8 @@ function App() {
                   {evaluations.map((e) => (
                     <option key={e.id} value={e.id}>
                       {date(e.created_at)} ·{" "}
-                      {e.official ? "完整官方测试" : "部分样本冒烟测试"} ·{" "}
-                      {statusName[e.status] || e.status}
+                      {e.official ? "Full official test" : "Partial smoke test"}{" "}
+                      · {statusName[e.status] || e.status}
                     </option>
                   ))}
                 </select>
@@ -1003,8 +1006,10 @@ function App() {
             {!activeEvaluation ? (
               <div className="empty">
                 <span>◎</span>
-                <h3>官方评测结果尚未生成</h3>
-                <p>完成评测后，指标和逐条预测会出现在这里。</p>
+                <h3>No official evaluation yet</h3>
+                <p>
+                  Metrics and saved predictions appear here after evaluation.
+                </p>
               </div>
             ) : activeEvaluation.status !== "completed" ? (
               <div className="empty">
@@ -1014,8 +1019,9 @@ function App() {
                     activeEvaluation.status}
                 </h3>
                 <p>
-                  已处理 {activeEvaluation.processed} / {activeEvaluation.total}{" "}
-                  条，页面会自动更新。
+                  Processed {activeEvaluation.processed} /{" "}
+                  {activeEvaluation.total} samples. This page refreshes
+                  automatically.
                 </p>
               </div>
             ) : (
@@ -1024,11 +1030,12 @@ function App() {
                   <div className="section-title">
                     <h2>
                       {activeEvaluation.official
-                        ? "官方完整测试成绩"
-                        : "部分样本冒烟结果 · 非官方完整成绩"}
+                        ? "Official full-test results"
+                        : "Partial smoke results · Not the full official test"}
                     </h2>
                     <span className="muted">
-                      {activeEvaluation.total.toLocaleString()} 条 · 全部 28 类
+                      {activeEvaluation.total.toLocaleString()} samples · All 28
+                      labels
                     </span>
                   </div>
                   <div className="metric-grid">
@@ -1036,17 +1043,17 @@ function App() {
                       [
                         "Micro-F1",
                         activeEvaluation.metrics.micro_f1,
-                        "整体标签预测",
+                        "Overall label prediction",
                       ],
                       [
                         "Macro-F1",
                         activeEvaluation.metrics.macro_f1,
-                        "28 类等权平均",
+                        "Equal weight for all 28 labels",
                       ],
                       [
                         "Exact-match accuracy",
                         activeEvaluation.metrics.exact_match_accuracy,
-                        "整组标签完全匹配",
+                        "Entire label set matches",
                       ],
                     ].map(([t, v, s]) => (
                       <div className="metric-card" key={String(t)}>
@@ -1065,10 +1072,10 @@ function App() {
                           download
                         >
                           {f === "metrics.json"
-                            ? "下载指标"
+                            ? "Download metrics"
                             : f === "predictions.jsonl"
-                              ? "下载逐条预测"
-                              : "下载运行信息"}{" "}
+                              ? "Download predictions"
+                              : "Download run metadata"}{" "}
                           ↓
                         </a>
                       ),
@@ -1078,11 +1085,11 @@ function App() {
                     <table>
                       <thead>
                         <tr>
-                          <th>情绪标签</th>
+                          <th>Emotion label</th>
                           <th>Precision</th>
                           <th>Recall</th>
                           <th>F1</th>
-                          <th>真实标签样本数</th>
+                          <th>Support</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1101,8 +1108,9 @@ function App() {
                     </table>
                   </div>
                   <p className="fineprint muted">
-                    多标签样本可计入多个类别的 support。Exact-match
-                    要求一条文本的整组预测标签与真实标签完全一致；不等于逐标签平均准确率。
+                    A multi-label sample can contribute to several classes.
+                    Exact-match requires every predicted label to match the
+                    reference set; it is not mean per-label accuracy.
                   </p>
                 </>
               )
@@ -1110,47 +1118,51 @@ function App() {
             <div className="section-title">
               <div>
                 <span className="eyebrow">ON THIS MACHINE</span>
-                <h2>CPU 实测性能</h2>
+                <h2>Measured CPU performance</h2>
               </div>
-              <span className="muted">与作者报告分开记录</span>
+              <span className="muted">
+                Measured separately from author reports
+              </span>
             </div>
             {benchmark ? (
               <>
                 <div className="metric-grid">
                   <div className="metric-card">
-                    <span>预热后推理 p50 / p95</span>
+                    <span>Warm inference p50 / p95</span>
                     <strong className="compact-number">
                       {ms(benchmark.model_inference_ms.p50)} /{" "}
                       {ms(benchmark.model_inference_ms.p95)}
                     </strong>
-                    <small>{benchmark.samples} 条 · batch 1 · 预热 20 次</small>
+                    <small>
+                      {benchmark.samples} samples · Batch 1 · 20 warmups
+                    </small>
                   </div>
                   <div className="metric-card">
-                    <span>模型加载 / 首次推理</span>
+                    <span>Model load / First inference</span>
                     <strong className="compact-number">
                       {ms(benchmark.runtime.model_load_ms)} /{" "}
                       {ms(benchmark.runtime.first_inference_ms)}
                     </strong>
-                    <small>本地缓存加载，不含文件下载</small>
+                    <small>Cached loading; excludes downloads</small>
                   </div>
                   <div className="metric-card">
-                    <span>进程内存 / CPU</span>
+                    <span>Process memory / CPU</span>
                     <strong className="compact-number">
                       {benchmark.rss_mb.max.toFixed(0)} MB /{" "}
                       {benchmark.process_cpu_percent.mean.toFixed(0)}%
                     </strong>
-                    <small>推理后采样最大 RSS / 平均 CPU（100% = 1 核）</small>
+                    <small>Sampled max RSS / Mean CPU (100% = one core)</small>
                   </div>
                 </div>
                 <div className="table-wrap">
                   <table>
                     <thead>
                       <tr>
-                        <th>API 并发</th>
-                        <th>完成 p50 / p95</th>
-                        <th>排队 p95</th>
-                        <th>推理 p95</th>
-                        <th>吞吐量</th>
+                        <th>API concurrency</th>
+                        <th>Completion p50 / p95</th>
+                        <th>Queue p95</th>
+                        <th>Inference p95</th>
+                        <th>Throughput</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1163,24 +1175,24 @@ function App() {
                           </td>
                           <td>{ms(c.queue_ms.p95)}</td>
                           <td>{ms(c.inference_ms.p95)}</td>
-                          <td>{c.throughput_per_second.toFixed(2)} 条/秒</td>
+                          <td>{c.throughput_per_second.toFixed(2)} posts/s</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
                 <p className="fineprint muted">
-                  硬件环境：{benchmark.runtime.platform} /{" "}
-                  {benchmark.runtime.architecture}；ORT 线程{" "}
+                  Hardware: {benchmark.runtime.platform} /{" "}
+                  {benchmark.runtime.architecture}; ORT threads{" "}
                   {benchmark.runtime.intra_threads}/
-                  {benchmark.runtime.inter_threads}；容器 CPU 配额{" "}
-                  {benchmark.runtime.cpu_limit}。容器本地结果不代表 Jetstream2
-                  的性能。
+                  {benchmark.runtime.inter_threads}; Container CPU quota{" "}
+                  {benchmark.runtime.cpu_limit}. Local container results do not
+                  establish Jetstream2 performance.
                 </p>
               </>
             ) : (
               <div className="empty compact">
-                <p>尚无已完成的性能测试。</p>
+                <p>No completed emotion-only benchmark yet.</p>
               </div>
             )}
           </>
@@ -1192,15 +1204,15 @@ function App() {
                   className="back text-button"
                   onClick={() => navigate("events")}
                 >
-                  ← 返回活动
+                  ← Back to forum
                 </button>
                 <div className="event-heading">
                   <div>
                     <span className="eyebrow">{selected.category}</span>
-                    <h1>{selected.title.split(" · ")[1]}</h1>
+                    <h1>{selected.title}</h1>
                     <p>{selected.description}</p>
                     <span className="muted">
-                      {selected.location} · {date(selected.starts_at)}
+                      {selected.location} · Open discussion
                     </span>
                   </div>
                   <span
@@ -1214,38 +1226,35 @@ function App() {
                 </div>
                 <form className="composer" onSubmit={submit}>
                   <div className="composer-title">
-                    <h3>留下你的活动体验</h3>
+                    <h3>Start a discussion</h3>
                     <span className="tag">ENGLISH ONLY</span>
                   </div>
                   <textarea
-                    aria-label="英文活动评论"
+                    aria-label="English post"
                     value={text}
                     onChange={(e) => editText(e.target.value)}
                     maxLength={2000}
                     required
-                    placeholder="How was the event? Tell us what stood out to you…"
+                    placeholder="Share an experience, ask a question, or suggest an improvement…"
                     rows={4}
                   />
                   <div className="composer-bottom">
                     <span className={hasCjk ? "language-warning" : "muted"}>
                       {hasCjk
-                        ? "本模型仅支持英文；中文分析结果不可靠，请改用英文。"
-                        : "先保存评论，再由后台分析；不根据情绪自动删除内容。"}
+                        ? "These models support English only. Please write your post in English."
+                        : "Your post is saved before analysis. Emotion never triggers automatic removal."}
                       <small>{text.length} / 2000</small>
                     </span>
                     <button
                       className="primary"
                       disabled={sending || !text.trim() || hasCjk}
                     >
-                      {sending ? "保存中…" : "发布评论"} <span>↗</span>
+                      {sending ? "Saving…" : "Publish post"} <span>↗</span>
                     </button>
                   </div>
                   <div className="examples">
-                    <span>试试：</span>
-                    {[
-                      "The music was amazing! Thank you for organizing this.",
-                      "I was disappointed by the long wait, but I loved the performances.",
-                    ].map((s) => (
+                    <span>Try a prompt:</span>
+                    {(postExamples[selected.id] || []).map((s) => (
                       <button type="button" key={s} onClick={() => editText(s)}>
                         {s}
                       </button>
@@ -1253,8 +1262,10 @@ function App() {
                   </div>
                 </form>
                 <div className="section-title">
-                  <h2>活动评论</h2>
-                  <span className="muted">{total} 条 · 自动更新分析状态</span>
+                  <h2>Discussion</h2>
+                  <span className="muted">
+                    {total} posts · Analysis updates automatically
+                  </span>
                 </div>
               </>
             ) : (
@@ -1263,113 +1274,122 @@ function App() {
                   <span className="eyebrow">
                     {view === "mine"
                       ? "YOUR WORDS, YOUR EXPERIENCE"
-                      : view === "favorites"
-                        ? "KEEP THE IMPORTANT ONES"
-                        : "FROM FEEDBACK TO FOLLOW-UP"}
+                      : "FROM FEEDBACK TO FOLLOW-UP"}
                   </span>
                   <h1>
                     {view === "mine"
-                      ? "你说过的，都在这里。"
-                      : view === "favorites"
-                        ? "把重要的声音，留下来。"
-                        : "听见情绪，跟进反馈。"}
+                      ? "Your posts, all together."
+                      : "Understand the feedback."}
                   </h1>
                   <p>
                     {view === "mine"
-                      ? "查看此浏览器会话提交的评论与分析状态。"
-                      : view === "favorites"
-                        ? "收藏按当前浏览器身份保存，处理和纠正记录公开可见。"
-                        : "情绪标签帮助理解文字表达，不代表违规或真实心理状态。"}
+                      ? "Posts and analysis submitted from this browser identity."
+                      : "Emotion labels describe text, not misconduct or a person’s mental state."}
                   </p>
                 </div>
-                <div className="stats-grid">
-                  {[
-                    ["所有评论", stats.total, "01"],
-                    ["两套分析均完成", stats.completed, "02"],
-                    ["等待 / 分析中", stats.waiting, "03"],
-                    ["尚未查看", stats.unread, "04"],
-                  ].map(([t, n, i]) => (
-                    <div key={String(t)}>
-                      <span>{t}</span>
-                      <strong>{String(n).padStart(2, "0")}</strong>
-                      <small>{i}</small>
-                    </div>
-                  ))}
-                </div>
-                <section className="dual-distributions" aria-label="双模型统计">
-                  <div className="distribution-panel">
-                    <span className="eyebrow">SENTIMENT · 三分类分布</span>
-                    <p className="fineprint muted">
-                      全站真实评论 · 已完成 {stats.sentiment_completed || 0} 条
-                    </p>
-                    <div className="sentiment-totals">
-                      {Object.entries(sentiments).map(([label, name]) => (
-                        <button
-                          key={label}
-                          className={"sentiment-total sentiment-" + label}
-                          onClick={() => {
-                            setFilterSentiment(label);
-                            setPage(1);
-                          }}
-                        >
-                          <span>{name}</span>
-                          <strong>{stats.sentiment?.[label] || 0}</strong>
-                          <small>
-                            {stats.sentiment_completed
-                              ? percent(
-                                  (stats.sentiment?.[label] || 0) /
-                                    stats.sentiment_completed,
-                                )
-                              : "—"}
-                          </small>
-                        </button>
+                {view === "board" && (
+                  <>
+                    {" "}
+                    <div className="stats-grid">
+                      {[
+                        ["All posts", stats.total, "01"],
+                        ["Both analyses complete", stats.completed, "02"],
+                        ["Pending / Processing", stats.waiting, "03"],
+                        ["Unread", stats.unread, "04"],
+                      ].map(([t, n, i]) => (
+                        <div key={String(t)}>
+                          <span>{t}</span>
+                          <strong>{String(n).padStart(2, "0")}</strong>
+                          <small>{i}</small>
+                        </div>
                       ))}
                     </div>
-                  </div>
-                  <div className="distribution-panel">
-                    <span className="eyebrow">EMOTION · 阈值标签分布</span>
-                    <p className="fineprint muted">
-                      全站模型原始输出 · 一条评论可有多个标签
-                    </p>
-                    <div className="emotion-totals">
-                      {stats.emotions?.length ? (
-                        stats.emotions.map((e) => (
-                          <button
-                            key={e.label}
-                            className="tag"
-                            onClick={() => setFilterLabel(e.label)}
-                          >
-                            {labelName(e.label)} <b>{e.count}</b>
-                          </button>
-                        ))
-                      ) : (
-                        <span className="muted">分析完成后显示情绪分布。</span>
-                      )}
-                    </div>
-                  </div>
-                </section>
-                <section className="filters" aria-label="评论筛选">
+                    <section
+                      className="dual-distributions"
+                      aria-label="Model distributions"
+                    >
+                      <div className="distribution-panel">
+                        <span className="eyebrow">
+                          SENTIMENT · POST DISTRIBUTION
+                        </span>
+                        <p className="fineprint muted">
+                          All non-benchmark posts · Completed{" "}
+                          {stats.sentiment_completed || 0} posts
+                        </p>
+                        <div className="sentiment-totals">
+                          {Object.entries(sentiments).map(([label, name]) => (
+                            <button
+                              key={label}
+                              className={"sentiment-total sentiment-" + label}
+                              onClick={() => {
+                                setFilterSentiment(label);
+                                setPage(1);
+                              }}
+                            >
+                              <span>{name}</span>
+                              <strong>{stats.sentiment?.[label] || 0}</strong>
+                              <small>
+                                {stats.sentiment_completed
+                                  ? percent(
+                                      (stats.sentiment?.[label] || 0) /
+                                        stats.sentiment_completed,
+                                    )
+                                  : "—"}
+                              </small>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="distribution-panel">
+                        <span className="eyebrow">
+                          EMOTION · THRESHOLD LABELS
+                        </span>
+                        <p className="fineprint muted">
+                          Original predictions · A post can have multiple labels
+                        </p>
+                        <div className="emotion-totals">
+                          {stats.emotions?.length ? (
+                            stats.emotions.map((e) => (
+                              <button
+                                key={e.label}
+                                className="tag"
+                                onClick={() => setFilterLabel(e.label)}
+                              >
+                                {labelName(e.label)} <b>{e.count}</b>
+                              </button>
+                            ))
+                          ) : (
+                            <span className="muted">
+                              Emotion counts appear after analysis.
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                )}
+                <section className="filters" aria-label="Post filters">
                   <label>
-                    活动
+                    Board
                     <select
                       value={filterEvent}
                       onChange={(e) => setFilterEvent(e.target.value)}
                     >
-                      <option value="">全部活动</option>
+                      <option value="">All boards</option>
                       {events.map((e) => (
                         <option key={e.id} value={e.id}>
-                          {e.title.split(" · ")[1]}
+                          {e.title}
                         </option>
                       ))}
                     </select>
                   </label>
                   <label>
-                    模型情绪
+                    Emotion
                     <select
                       value={filterLabel}
                       onChange={(e) => setFilterLabel(e.target.value)}
                     >
-                      <option value="">全部情绪</option>
+                      <option value="">All emotions</option>
                       {labels.map((l) => (
                         <option key={l} value={l}>
                           {labelName(l)}
@@ -1378,12 +1398,12 @@ function App() {
                     </select>
                   </label>
                   <label>
-                    情绪分析状态
+                    Emotion status
                     <select
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value)}
                     >
-                      <option value="">全部状态</option>
+                      <option value="">All statuses</option>
                       {["pending", "processing", "completed", "failed"].map(
                         (s) => (
                           <option key={s} value={s}>
@@ -1394,26 +1414,26 @@ function App() {
                     </select>
                   </label>
                   <label>
-                    三分类结果
+                    Sentiment
                     <select
                       value={filterSentiment}
                       onChange={(e) => setFilterSentiment(e.target.value)}
                     >
-                      <option value="">全部倾向</option>
+                      <option value="">All sentiments</option>
                       {Object.entries(sentiments).map(([l, n]) => (
                         <option key={l} value={l}>
-                          {n} · {l}
+                          {n}
                         </option>
                       ))}
                     </select>
                   </label>
                   <label>
-                    三分类状态
+                    Sentiment status
                     <select
                       value={filterSentimentStatus}
                       onChange={(e) => setFilterSentimentStatus(e.target.value)}
                     >
-                      <option value="">全部状态</option>
+                      <option value="">All statuses</option>
                       {["pending", "processing", "completed", "failed"].map(
                         (l) => (
                           <option key={l} value={l}>
@@ -1424,12 +1444,12 @@ function App() {
                     </select>
                   </label>
                   <label>
-                    处理状态
+                    Handling status
                     <select
                       value={filterHandling}
                       onChange={(e) => setFilterHandling(e.target.value)}
                     >
-                      <option value="">全部处理状态</option>
+                      <option value="">All handling statuses</option>
                       {["unread", "viewed", "processed"].map((s) => (
                         <option key={s} value={s}>
                           {statusName[s]}
@@ -1438,7 +1458,7 @@ function App() {
                     </select>
                   </label>
                   <label>
-                    开始日期
+                    From date
                     <input
                       type="date"
                       value={after}
@@ -1446,7 +1466,7 @@ function App() {
                     />
                   </label>
                   <label>
-                    结束日期
+                    To date
                     <input
                       type="date"
                       value={before}
@@ -1466,18 +1486,14 @@ function App() {
                       setBefore("");
                     }}
                   >
-                    重置
+                    Reset
                   </button>
                 </section>
                 <div className="section-title">
-                  <h2>
-                    {view === "mine"
-                      ? "我的评论"
-                      : view === "favorites"
-                        ? "已收藏的评论"
-                        : "评论与跟进"}
-                  </h2>
-                  <span className="muted">{total} 条匹配 · 按发布时间倒序</span>
+                  <h2>{view === "mine" ? "My Posts" : "Posts & follow-up"}</h2>
+                  <span className="muted">
+                    {total} matching posts · Newest first
+                  </span>
                 </div>
               </>
             )}
@@ -1486,23 +1502,15 @@ function App() {
               <div className="empty">
                 <span>↗</span>
                 <h3>
-                  {view === "event"
-                    ? "成为第一个分享体验的人"
-                    : view === "favorites"
-                      ? "重要的反馈，值得收藏"
-                      : "这里暂时没有评论"}
+                  {view === "event" ? "Be the first to post" : "No posts yet"}
                 </h3>
-                <p>
-                  {view === "favorites"
-                    ? "在评论下点击 ☆ 收藏，就能在这里找到它。"
-                    : "发布一条英文活动评论，查看真实运行的情绪分析。"}
-                </p>
+                <p>{"Publish an English post to see both models in action."}</p>
                 {view !== "event" && (
                   <button
                     className="secondary"
                     onClick={() => navigate("events")}
                   >
-                    去发现活动 ↗
+                    Explore the forum ↗
                   </button>
                 )}
               </div>
@@ -1513,7 +1521,7 @@ function App() {
                   disabled={page === 1}
                   onClick={() => setPage((x) => x - 1)}
                 >
-                  ← 上一页
+                  ← Previous
                 </button>
                 <span>
                   {page} / {Math.ceil(total / 12)}
@@ -1522,7 +1530,7 @@ function App() {
                   disabled={page >= Math.ceil(total / 12)}
                   onClick={() => setPage((x) => x + 1)}
                 >
-                  下一页 →
+                  Next →
                 </button>
               </div>
             )}
@@ -1532,13 +1540,11 @@ function App() {
       <footer className="footer">
         <div>
           <Mark small />
-          <span>
-            CAMPUS NOTES <span className="muted">/ 校园回声</span>
-          </span>
+          <span>CAMPUS FORUM</span>
         </div>
         <span className={"worker-state " + (ready ? "online" : "")}>
           <i />
-          {ready ? "两套 CPU 模型服务在线" : "模型服务准备中"}
+          {ready ? "Both CPU model services online" : "Model services starting"}
         </span>
         <span className="muted">DML · PUBLIC DEMO · 2026</span>
       </footer>
@@ -1561,20 +1567,21 @@ function App() {
           >
             <button
               className="modal-close"
-              aria-label="关闭纠正"
+              aria-label="Close review"
               onClick={() => setCorrecting(null)}
             >
               ×
             </button>
             <span className="eyebrow">HUMAN REVIEW</span>
-            <h2 id="correction-title">添加你的判断</h2>
+            <h2 id="correction-title">Add your review</h2>
             <p className="muted">
-              人工纠正单独保存，不覆盖模型输出，也不触发训练。可以保留空标签集合。
+              Human reviews are saved separately, never overwrite model results,
+              and never trigger training. An empty label set is allowed.
             </p>
             <blockquote>{correcting.text}</blockquote>
             <form onSubmit={saveCorrection}>
               <fieldset className="label-options">
-                <legend>选择情绪标签</legend>
+                <legend>Choose emotion labels</legend>
                 {labels.map((l) => (
                   <label
                     key={l}
@@ -1596,13 +1603,13 @@ function App() {
                 ))}
               </fieldset>
               <label className="reason-label">
-                纠正说明
+                Review reason
                 <textarea
                   required
                   maxLength={500}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder="为什么你认为这些标签更合适？"
+                  placeholder="Why do you think these labels fit better?"
                 />
               </label>
               {error && (
@@ -1611,7 +1618,7 @@ function App() {
                 </p>
               )}
               <button className="primary" disabled={saving || !reason.trim()}>
-                {saving ? "保存中…" : "追加保存纠正记录"} ↗
+                {saving ? "Saving…" : "Save separate review"} ↗
               </button>
             </form>
           </section>
@@ -1628,15 +1635,15 @@ function App() {
           >
             <button
               className="modal-close"
-              aria-label="关闭记录"
+              aria-label="Close history"
               onClick={() => setHistory(null)}
             >
               ×
             </button>
             <span className="eyebrow">A TRACE OF EVERY CHANGE</span>
-            <h2 id="history-title">评论记录</h2>
+            <h2 id="history-title">Post history</h2>
             <blockquote>{history.text}</blockquote>
-            <h3>分析尝试</h3>
+            <h3>Emotion attempts</h3>
             {history.attempts?.length ? (
               history.attempts.map((a, i) => (
                 <p className="history-row" key={i}>
@@ -1647,9 +1654,9 @@ function App() {
                 </p>
               ))
             ) : (
-              <p className="muted">等待首次分析。</p>
+              <p className="muted">Waiting for the first emotion analysis.</p>
             )}
-            <h3>三分类分析尝试</h3>
+            <h3>Sentiment attempts</h3>
             {history.sentiment_attempts?.length ? (
               history.sentiment_attempts.map((a, i) => (
                 <p className="history-row" key={i}>
@@ -1660,21 +1667,26 @@ function App() {
                 </p>
               ))
             ) : (
-              <p className="muted">等待三分类首次分析。</p>
+              <p className="muted">Waiting for the first sentiment analysis.</p>
             )}
-            <h3>人工纠正历史（情绪标签）</h3>
+            <h3>Human review history (emotion labels)</h3>
             {history.correction_history?.length ? (
               history.correction_history.map((c, i) => (
                 <div className="history-entry" key={i}>
                   <span className="muted">
                     {c.username} · {date(c.created_at)}
                   </span>
-                  <p>{c.labels.map(labelName).join(" / ") || "空标签集合"}</p>
+                  <p>
+                    {c.labels.map(labelName).join(" / ") || "No emotion labels"}
+                  </p>
                   <small>{c.reason}</small>
                 </div>
               ))
             ) : (
-              <p className="muted">还没有人工纠正。原始模型输出始终保留。</p>
+              <p className="muted">
+                No human reviews yet. Original model outputs are always
+                preserved.
+              </p>
             )}
           </section>
         </div>

@@ -30,29 +30,29 @@ def initialize():
         events = [
             (
                 "spring-sounds",
-                "Spring Sounds · 草坪音乐夜",
-                "音乐 / MUSIC",
-                "学生乐队、落日与草坪。分享你对表演、音响和现场组织的体验。",
-                "North Lawn",
-                "2027-04-16T18:00:00Z",
+                "Halloween Haunted House",
+                "CAMPUS LIFE / HALLOWEEN",
+                "Brave the student-run haunted house. Share spooky moments, costume ideas, queue experiences, and feedback for the organizers.",
+                "Campus Haunted House",
+                "2026-10-31T23:00:00Z",
                 False,
             ),
             (
                 "campus-makers",
-                "Campus Makers · 创意市集",
-                "创意 / COMMUNITY",
-                "逛逛学生的手作、插画和小发明，留下你的真实活动体验。",
-                "Student Union",
-                "2027-04-20T15:00:00Z",
+                "Campus Food",
+                "FOOD / COMMUNITY",
+                "Find your next campus favorite. Discuss dining halls, food stalls, dietary options, prices, and the best places to eat.",
+                "Across Campus",
+                "2026-11-01T17:00:00Z",
                 False,
             ),
             (
                 "night-run",
-                "After Hours · 校园夜跑",
-                "运动 / WELLNESS",
-                "一起跑过熟悉的校园。告诉我们路线、补给与组织体验如何。",
-                "University Track",
-                "2027-04-23T23:00:00Z",
+                "DSAN Feedback",
+                "ACADEMICS / DSAN",
+                "Talk about DSAN courses, assignments, projects, and classroom experiences. Share constructive feedback and suggestions.",
+                "DSAN Community",
+                "2026-11-02T18:00:00Z",
                 False,
             ),
             (
@@ -70,6 +70,14 @@ def initialize():
                 "INSERT INTO events VALUES (%s,%s,%s,%s,%s,%s,%s) ON CONFLICT(id) DO NOTHING",
                 e,
             )
+        if not c.execute("SELECT 1 FROM schema_migrations WHERE version=3").fetchone():
+            for e in events:
+                if not e[6]:
+                    c.execute(
+                        "UPDATE events SET title=%s,category=%s,description=%s,location=%s,starts_at=%s WHERE id=%s",
+                        (*e[1:6], e[0]),
+                    )
+            c.execute("INSERT INTO schema_migrations(version) VALUES (3)")
 
 
 def enqueue(c, kind, comment_id=None, payload=None):

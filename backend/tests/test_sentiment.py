@@ -155,3 +155,54 @@ def test_dual_readiness_and_service_output_validation(client, runtime, monkeypat
     ):
         with pytest.raises(ValueError):
             sw.validate_result(bad)
+
+
+def test_forum_migration_preserves_existing_analysis(client, new_comment, runtime):
+    cid = new_comment["id"]
+    emotion_execute(claim_emotion(), GoodEngine(), runtime)
+    sw.execute(sw.claim(), service(), sentiment_runtime(), "model-test")
+    before = client.get("/api/comments/" + cid).json()
+    with connect() as c:
+        c.execute("DELETE FROM schema_migrations WHERE version=3")
+        c.execute("UPDATE events SET title='Legacy title' WHERE NOT is_benchmark")
+    initialize()
+    initialize()
+    after = client.get("/api/comments/" + cid).json()
+    assert (
+        before["analysis"] == after["analysis"]
+        and before["sentiment"] == after["sentiment"]
+    )
+    assert after["text"] == before["text"] and after["id"] == cid
+    events = client.get("/api/events").json()
+    assert [e["title"] for e in events] == [
+        "Halloween Haunted House",
+        "Campus Food",
+        "DSAN Feedback",
+    ]
+    assert all(
+        not any(
+            "\u4e00" <= ch <= "\u9fff"
+            for ch in e["title"] + e["description"] + e["category"]
+        )
+        for e in events
+    )
+    assert all("favorite" not in c for c in client.get("/api/comments").json()["items"])
+
+
+def test_forum_demo_seeds_both_queues_idempotently(client):
+    from app.cli import seed_demo
+
+    seed_demo()
+    with connect() as c:
+        assert c.execute("SELECT count(*) AS n FROM comments").fetchone()["n"] == 6
+        assert (
+            c.execute("SELECT count(*) AS n FROM jobs WHERE kind='comment'").fetchone()[
+                "n"
+            ]
+            == 6
+        )
+        assert (
+            c.execute("SELECT count(*) AS n FROM sentiment_jobs").fetchone()["n"] == 6
+        )
+    seed_demo()
+    assert client.get("/api/comments").json()["total"] == 6

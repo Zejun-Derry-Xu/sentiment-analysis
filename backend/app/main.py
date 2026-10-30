@@ -21,7 +21,7 @@ async def lifespan(app):
 
 
 app = FastAPI(
-    title="Campus Notes · Emotion Analysis",
+    title="Campus Forum · Emotion and Sentiment",
     version="0.1.0",
     lifespan=lifespan,
     docs_url=None,
@@ -57,27 +57,30 @@ async def internal_error(request: Request, exc: Exception):
         request.url.path,
         exc_info=exc,
     )
-    return JSONResponse({"detail": "暂时无法完成请求，请稍后重试。"}, status_code=500)
+    return JSONResponse(
+        {"detail": "Unable to complete this request. Please try again."},
+        status_code=500,
+    )
 
 
 def session_user(request: Request):
     token = request.cookies.get("campus_session", "")
     if not token:
-        raise HTTPException(401, "请先输入用户名进入平台。")
+        raise HTTPException(401, "Enter a display name to continue.")
     with connect() as c:
         user = c.execute(
             "SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=%s AND s.expires_at>now()",
             (hashlib.sha256(token.encode()).hexdigest(),),
         ).fetchone()
     if not user:
-        raise HTTPException(401, "会话已过期，请重新进入。")
+        raise HTTPException(401, "Your session expired. Please sign in again.")
     return user
 
 
 def clean_text(v):
     v = v.strip()
     if not v or any(ord(x) < 32 and x not in "\n\t\r" for x in v):
-        raise ValueError("请输入有效文本。")
+        raise ValueError("Enter valid text.")
     return v
 
 
@@ -89,7 +92,9 @@ class Login(BaseModel):
     def validate_name(cls, v):
         v = clean_text(v)
         if not re.fullmatch(r"[\w .-]+", v):
-            raise ValueError("用户名可包含文字、数字、空格、点、下划线和短横线。")
+            raise ValueError(
+                "Names may contain letters, numbers, spaces, dots, underscores, and hyphens."
+            )
         return v
 
 
@@ -108,10 +113,6 @@ class Handling(BaseModel):
     status: Literal["unread", "viewed", "processed"]
 
 
-class Favorite(BaseModel):
-    value: bool
-
-
 class Correction(BaseModel):
     labels: list[str] = Field(max_length=28)
     reason: str = Field(min_length=1, max_length=500)
@@ -120,7 +121,9 @@ class Correction(BaseModel):
     @classmethod
     def valid_labels(cls, v):
         if len(set(v)) != len(v) or any(x not in LABELS for x in v):
-            raise ValueError("标签必须是互不重复的模型标签。")
+            raise ValueError(
+                "Choose distinct labels from the supported emotion labels."
+            )
         return v
 
     @field_validator("reason")
@@ -130,7 +133,6 @@ class Correction(BaseModel):
 
 
 SELECT_COMMENT = """SELECT c.*,u.username,e.title AS event_title,
- EXISTS(SELECT 1 FROM favorites f WHERE f.comment_id=c.id AND f.user_id=%s) AS favorite,
  (SELECT row_to_json(s) FROM sentiment_analyses s WHERE s.comment_id=c.id AND s.status='completed' ORDER BY s.started_at DESC LIMIT 1) AS sentiment,
  (SELECT row_to_json(a) FROM analyses a WHERE a.comment_id=c.id AND a.status='completed' ORDER BY a.started_at DESC LIMIT 1) AS analysis,
  (SELECT json_build_object('id',r.id,'labels',r.labels,'reason',r.reason,'created_at',r.created_at,'username',ru.username)
@@ -139,9 +141,9 @@ SELECT_COMMENT = """SELECT c.*,u.username,e.title AS event_title,
 
 
 def get_comment(c, comment_id, user_id):
-    row = c.execute(SELECT_COMMENT + " WHERE c.id=%s", (user_id, comment_id)).fetchone()
+    row = c.execute(SELECT_COMMENT + " WHERE c.id=%s", (comment_id,)).fetchone()
     if not row:
-        raise HTTPException(404, "评论不存在。")
+        raise HTTPException(404, "Post not found.")
     return row
 
 
@@ -157,7 +159,7 @@ def ready():
             "SELECT id FROM runtimes WHERE heartbeat>now()-interval '30 seconds' ORDER BY started_at DESC LIMIT 1"
         ).fetchone()
     if not runtime:
-        raise HTTPException(503, "模型 worker 尚未就绪。")
+        raise HTTPException(503, "The emotion worker is not ready.")
     result = {"database": "ok", "worker": "ready", "runtime_id": runtime["id"]}
     if os.getenv("ENABLE_SENTIMENT", "false").lower() == "true":
         with connect() as c:
@@ -165,7 +167,7 @@ def ready():
                 "SELECT id FROM sentiment_runtimes WHERE heartbeat>now()-interval '30 seconds' ORDER BY started_at DESC LIMIT 1"
             ).fetchone()
         if not sentiment:
-            raise HTTPException(503, "三分类 worker 尚未就绪。")
+            raise HTTPException(503, "The sentiment worker is not ready.")
         result["sentiment_worker"] = "ready"
         result["sentiment_runtime_id"] = sentiment["id"]
     return result
@@ -262,7 +264,7 @@ def post_comment(body: NewComment, user=Depends(session_user)):
         if not c.execute(
             "SELECT 1 FROM events WHERE id=%s", (body.event_id,)
         ).fetchone():
-            raise HTTPException(404, "活动不存在。")
+            raise HTTPException(404, "Forum board not found.")
         # ON CONFLICT also handles a simultaneous duplicate browser submission.
         row = c.execute(
             "INSERT INTO comments(id,event_id,user_id,text,idempotency_key) VALUES (%s,%s,%s,%s,%s) ON CONFLICT(user_id,idempotency_key) DO NOTHING RETURNING id",
@@ -277,7 +279,9 @@ def post_comment(body: NewComment, user=Depends(session_user)):
                 (user["id"], body.idempotency_key),
             ).fetchone()
             if row["event_id"] != body.event_id or row["text"] != body.text:
-                raise HTTPException(409, "重复提交标识与原评论不一致。")
+                raise HTTPException(
+                    409, "This submission key was already used for a different post."
+                )
         return get_comment(c, row["id"], user["id"])
 
 
@@ -293,7 +297,6 @@ def comments(
     after: datetime | None = None,
     before: datetime | None = None,
     mine: bool = False,
-    favorites: bool = False,
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     user=Depends(session_user),
@@ -318,7 +321,7 @@ def comments(
         params.append(sentiment)
     if label:
         if label not in LABELS:
-            raise HTTPException(422, "未知情绪标签。")
+            raise HTTPException(422, "Unknown emotion label.")
         conditions.append(
             "EXISTS(SELECT 1 FROM analyses a WHERE a.comment_id=c.id AND a.status='completed' AND a.labels @> %s)"
         )
@@ -326,18 +329,13 @@ def comments(
     for value, operator in [(after, ">="), (before, "<=")]:
         if value:
             if value.tzinfo is None:
-                raise HTTPException(422, "时间必须带时区。")
+                raise HTTPException(422, "Dates must include a time zone.")
             conditions.append("c.created_at " + operator + " %s")
             params.append(value)
     if after and before and after > before:
-        raise HTTPException(422, "开始时间不能晚于结束时间。")
+        raise HTTPException(422, "The start date must not be after the end date.")
     if mine:
         conditions.append("c.user_id=%s")
-        params.append(user["id"])
-    if favorites:
-        conditions.append(
-            "EXISTS(SELECT 1 FROM favorites f WHERE f.comment_id=c.id AND f.user_id=%s)"
-        )
         params.append(user["id"])
     where = " WHERE " + " AND ".join(conditions)
     with connect() as c:
@@ -350,7 +348,7 @@ def comments(
             SELECT_COMMENT
             + where
             + " ORDER BY c.created_at DESC,c.id DESC LIMIT %s OFFSET %s",
-            [user["id"], *params, page_size, (page - 1) * page_size],
+            [*params, page_size, (page - 1) * page_size],
         ).fetchall()
     return {"items": items, "total": total, "page": page, "page_size": page_size}
 
@@ -363,10 +361,8 @@ def stats(user=Depends(session_user)):
         count(*) FILTER(WHERE c.status='completed' AND c.sentiment_status='completed') AS completed,
         count(*) FILTER(WHERE c.status IN ('pending','processing') OR c.sentiment_status IN ('pending','processing')) AS waiting,
         count(*) FILTER(WHERE c.status='failed' OR c.sentiment_status='failed') AS failed,
-        count(*) FILTER(WHERE c.handling='unread') AS unread,
-        count(*) FILTER(WHERE EXISTS(SELECT 1 FROM favorites f WHERE f.comment_id=c.id AND f.user_id=%s)) AS favorites
+        count(*) FILTER(WHERE c.handling='unread') AS unread
         FROM comments c JOIN events e ON e.id=c.event_id WHERE NOT e.is_benchmark""",
-            (user["id"],),
         ).fetchone()
         counts = c.execute("""SELECT s.label,count(*) AS n FROM comments c JOIN events e ON e.id=c.event_id
         JOIN LATERAL (SELECT label FROM sentiment_analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) s ON true
@@ -391,9 +387,9 @@ def retry_sentiment(comment_id: UUID, user=Depends(session_user)):
             "SELECT * FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
         ).fetchone()
         if not row:
-            raise HTTPException(404, "评论不存在。")
+            raise HTTPException(404, "Post not found.")
         if row["sentiment_status"] != "failed":
-            raise HTTPException(409, "仅失败的三分类任务可以重试。")
+            raise HTTPException(409, "Only failed sentiment jobs can be retried.")
         c.execute(
             "UPDATE comments SET sentiment_status='pending',sentiment_error=NULL WHERE id=%s",
             (comment_id,),
@@ -432,32 +428,15 @@ def retry(comment_id: UUID, user=Depends(session_user)):
             "SELECT * FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
         ).fetchone()
         if not row:
-            raise HTTPException(404, "评论不存在。")
+            raise HTTPException(404, "Post not found.")
         if row["status"] != "failed":
-            raise HTTPException(409, "仅失败的评论可以重试。")
+            raise HTTPException(409, "Only failed emotion jobs can be retried.")
         c.execute(
             "UPDATE comments SET status='pending',last_error=NULL WHERE id=%s",
             (comment_id,),
         )
         enqueue(c, "comment", comment_id)
         return get_comment(c, comment_id, user["id"])
-
-
-@app.put("/api/comments/{comment_id}/favorite")
-def favorite(comment_id: UUID, body: Favorite, user=Depends(session_user)):
-    with connect() as c:
-        get_comment(c, comment_id, user["id"])
-        if body.value:
-            c.execute(
-                "INSERT INTO favorites(user_id,comment_id) VALUES (%s,%s) ON CONFLICT DO NOTHING",
-                (user["id"], comment_id),
-            )
-        else:
-            c.execute(
-                "DELETE FROM favorites WHERE user_id=%s AND comment_id=%s",
-                (user["id"], comment_id),
-            )
-    return {"favorite": body.value}
 
 
 @app.put("/api/comments/{comment_id}/handling")
@@ -467,7 +446,7 @@ def handle(comment_id: UUID, body: Handling, user=Depends(session_user)):
             "SELECT handling FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
         ).fetchone()
         if not row:
-            raise HTTPException(404, "评论不存在。")
+            raise HTTPException(404, "Post not found.")
         c.execute(
             "UPDATE comments SET handling=%s WHERE id=%s", (body.status, comment_id)
         )
@@ -483,7 +462,9 @@ def correct(comment_id: UUID, body: Correction, user=Depends(session_user)):
     with connect() as c:
         row = get_comment(c, comment_id, user["id"])
         if row["status"] != "completed":
-            raise HTTPException(409, "分析完成后才可追加人工纠正。")
+            raise HTTPException(
+                409, "Emotion analysis must complete before adding a human review."
+            )
         return c.execute(
             "INSERT INTO corrections(id,comment_id,user_id,labels,reason) VALUES (%s,%s,%s,%s,%s) RETURNING *",
             (uuid4(), comment_id, user["id"], Jsonb(body.labels), body.reason),
@@ -503,7 +484,7 @@ def evaluation(run_id: UUID):
     with connect() as c:
         row = c.execute("SELECT * FROM evaluations WHERE id=%s", (run_id,)).fetchone()
     if not row:
-        raise HTTPException(404, "评测不存在。")
+        raise HTTPException(404, "Evaluation not found.")
     return row
 
 
@@ -515,7 +496,7 @@ def evaluation_file(
     run = evaluation(run_id)
     path = REPORT_DIR / "evaluations" / str(run_id) / filename
     if run["status"] != "completed" or not path.is_file():
-        raise HTTPException(404, "评测文件尚未生成。")
+        raise HTTPException(404, "Evaluation file is not available yet.")
     return FileResponse(path, filename=f"{run_id}-{filename}")
 
 

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <meta charset="utf-8" /><meta
     name="viewport"
     content="width=device-width,initial-scale=1"
-  /><title>Cardiff · CPU 三分类试验台</title
+  /><title>Cardiff · CPU Sentiment Trial</title
   ><style>
     * {
       box-sizing: border-box;
@@ -163,11 +163,12 @@
   <main>
     <header>
       <span>CARDIFF / CPU TRIAL</span
-      ><a href="http://localhost:5180" id="old-link">原校园平台 ↗</a>
+      ><a href="http://localhost:5180" id="old-link">Campus Forum ↗</a>
     </header>
-    <h1>三分类，直接试一条。</h1>
+    <h1>Three classes. One post.</h1>
     <p class="subtitle">
-      英文评论 → 正面 / 中性 / 负面。独立试验台，现成权重，仅使用 CPU。
+      English text → positive / neutral / negative. Independent trial,
+      pretrained weights, CPU only.
     </p>
     <section class="panel">
       <form id="form">
@@ -181,21 +182,23 @@
 The concert was wonderful. Thank you for organizing it!</textarea
         >
         <div class="row">
-          <span class="muted">模型得分未经校准；不用于心理或违规判断。</span
-          ><button id="submit">分析评论 ↗</button>
+          <span class="muted"
+            >Model scores are uncalibrated. Not a mental-health or moderation
+            decision.</span
+          ><button id="submit">Analyze post ↗</button>
         </div>
       </form>
       <div class="examples">
         <button
           data-text="The concert was wonderful. Thank you for organizing it!"
         >
-          正面体验示例</button
+          Positive example</button
         ><button
           data-text="The queue was awful and the event was badly organized."
         >
-          负面体验示例</button
+          Negative example</button
         ><button data-text="The event starts at six in the student union.">
-          普通事实示例
+          Neutral example
         </button>
       </div>
       <p id="error" class="error" role="alert"></p>
@@ -206,21 +209,28 @@ The concert was wonderful. Thank you for organizing it!</textarea
       </div>
     </section>
     <section class="panel">
-      <strong>这次实测</strong>
+      <strong>Measured results</strong>
       <p id="summary" class="muted">
-        官方评测或性能测试完成后显示结果。这里不包含原平台的数据库和后台任务处理时间。
+        Results appear after evaluation or benchmarking. These timings exclude
+        the forum database and job workflow.
       </p>
       <details>
-        <summary>固定模型与运行配置</summary>
+        <summary>Fixed model and runtime settings</summary>
         <pre id="metadata"></pre>
       </details>
     </section>
     <p class="muted">
-      服务在完整评测期间会暂时拒绝交互请求，保证单一模型进程和可解释的资源记录。全部评测按固定测试划分执行，不训练、不调参、不挑选样本。
+      Interactive requests pause during full evaluation to isolate resource
+      measurements. All evaluation uses a fixed test split, with no training,
+      tuning, or sample selection.
     </p>
   </main>
   <script>
-    const names = { negative: "负面", neutral: "中性", positive: "正面" };
+    const names = {
+      negative: "Negative",
+      neutral: "Neutral",
+      positive: "Positive",
+    };
     const text = document.querySelector("#text"),
       error = document.querySelector("#error"),
       submit = document.querySelector("#submit");
@@ -245,7 +255,7 @@ The concert was wonderful. Thank you for organizing it!</textarea
         const d = await r.json();
         if (!r.ok)
           throw new Error(
-            typeof d.detail === "string" ? d.detail : "输入不符合要求",
+            typeof d.detail === "string" ? d.detail : "Invalid input",
           );
         document.querySelector("#winner").textContent =
           names[d.label] + " · " + d.label;
@@ -267,11 +277,11 @@ The concert was wonderful. Thank you for organizing it!</textarea
           bars.append(row);
         });
         document.querySelector("#timing").textContent =
-          "CPU 推理 " +
+          "CPU inference " +
           d.inference_ms.toFixed(1) +
           " ms · " +
           d.token_count +
-          " tokens · 模型进程 RSS " +
+          " tokens · Model process RSS " +
           d.rss_mb.toFixed(0) +
           " MiB";
         document.querySelector("#result").hidden = false;
@@ -306,22 +316,22 @@ The concert was wonderful. Thank you for organizing it!</textarea
           b = r["latest-benchmark.json"];
         if (ev)
           summary.push(
-            "官方 test " +
+            "Official test: " +
               ev.metrics.samples +
-              " 条：Accuracy " +
+              " samples. Accuracy " +
               (ev.metrics.accuracy * 100).toFixed(2) +
               "%，Macro-F1 " +
               ev.metrics.macro_f1.toFixed(4) +
-              "，官方 Macro-Recall " +
+              ", official Macro-Recall " +
               ev.metrics.macro_recall.toFixed(4),
           );
         if (b)
           summary.push(
-            "预热后 p50 / p95：" +
+            "Warm p50 / p95: " +
               b.inference_ms.p50.toFixed(1) +
               " / " +
               b.inference_ms.p95.toFixed(1) +
-              " ms；采样最大 RSS " +
+              " ms; sampled max RSS " +
               b.rss_mb.max.toFixed(0) +
               " MiB",
           );

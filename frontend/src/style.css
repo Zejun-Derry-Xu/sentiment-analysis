@@ -2235,3 +2235,57 @@ td b {
 .sentiment-scores progress::-moz-progress-bar {
   background: #80966f;
 }
+
+.admin-switch {
+  border: 1px solid #d4dacb;
+  background: #f0f3e9;
+  color: #49624d;
+  padding: 9px 13px;
+  border-radius: 7px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+}
+.admin-switch:hover,
+.admin-switch.is-admin {
+  background: #e3eadb;
+  border-color: #acbba0;
+}
+.header nav {
+  gap: 25px;
+}
+.user .user-name {
+  max-width: 125px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .admin-switch {
+    padding: 8px;
+    font-size: 10px;
+  }
+  .header .user {
+    gap: 7px;
+  }
+  .user .avatar {
+    width: 25px;
+    height: 25px;
+  }
+  .event-heading h1 {
+    font-size: 32px;
+  }
+}
+
+.header .user .user-name {
+  display: inline-block;
+}
+@media (max-width: 700px) {
+  .header .user .user-name {
+    max-width: 70px;
+  }
+  .header .user {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}

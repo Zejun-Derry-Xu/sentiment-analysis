@@ -6,7 +6,7 @@ from uuid import uuid4
 from pathlib import Path
 from psycopg.types.json import Jsonb
 from .config import MODEL_REV, DATA_REV, REPORT_DIR, LABELS
-from .db import connect, initialize, enqueue
+from .db import connect, initialize, enqueue, enqueue_sentiment
 from .assets import load_test, prepare_model
 from .metrics import distribution, calculate_metrics
 
@@ -178,32 +178,32 @@ def seed_demo():
         (
             "Taylor",
             "spring-sounds",
-            "The student band was incredible. I loved the energy and the beautiful sunset!",
+            "The haunted house was incredible. I loved the costumes and spooky decorations!",
         ),
         (
             "Jordan",
             "spring-sounds",
-            "I was disappointed by the long queue and the poor sound quality. Please improve the organization.",
+            "I was disappointed by the long haunted house queue. Please improve the organization.",
         ),
         (
             "Sam",
             "campus-makers",
-            "Thank you for bringing the community together. Everyone was so kind and welcoming.",
+            "The campus food festival was delicious! Thank you to the friendly kitchen staff.",
         ),
         (
             "Riley",
             "campus-makers",
-            "I am curious about how the handmade lamps were built. Can we have a workshop next time?",
+            "I am curious about the new campus food stalls. Will there be more vegetarian options?",
         ),
         (
             "Morgan",
             "night-run",
-            "I am nervous about running at night, but excited to try something new with my friends.",
+            "I am nervous about the DSAN project, but excited to learn new data science skills.",
         ),
         (
             "Casey",
             "night-run",
-            "The route map was confusing. I got lost and felt frustrated, but the volunteers were helpful.",
+            "The DSAN assignment instructions were confusing, but the teaching assistants were helpful.",
         ),
     ]
     count = 0
@@ -221,6 +221,7 @@ def seed_demo():
             ).fetchone()
             if row:
                 enqueue(c, "comment", cid)
+                enqueue_sentiment(c, cid)
                 count += 1
     print(
         f"Queued {count} fictional demo comments for real model inference; no ground-truth labels are assigned."

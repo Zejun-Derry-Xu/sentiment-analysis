@@ -168,7 +168,7 @@ class Text(BaseModel):
     @classmethod
     def nonempty(cls, v):
         if not v.strip():
-            raise ValueError("请输入英文评论。")
+            raise ValueError("Enter an English post.")
         return v.strip()
 
 
@@ -190,11 +190,11 @@ def metadata():
 @app.post("/predict")
 def predict(body: Text):
     if experiment_active:
-        raise HTTPException(409, "正在进行固定 CPU 基准测试，请稍后再试。")
+        raise HTTPException(409, "A fixed CPU benchmark is running. Please try again later.")
     entered = time.perf_counter()
     with lock:
         if experiment_active:
-            raise HTTPException(409, "正在进行固定 CPU 基准测试，请稍后再试。")
+            raise HTTPException(409, "A fixed CPU benchmark is running. Please try again later.")
         queue_ms = (time.perf_counter() - entered) * 1000
         result = engine.predict(body.text)
     return {

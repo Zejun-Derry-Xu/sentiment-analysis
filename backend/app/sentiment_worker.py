@@ -127,7 +127,7 @@ def execute(job, client, runtime_id, model_runtime_id):
                 (state, job["id"]),
             )
             c.execute(
-                "UPDATE comments SET sentiment_status=%s,sentiment_error='三分类暂时不可用，评论已保存，可重试。' WHERE id=%s",
+                "UPDATE comments SET sentiment_status=%s,sentiment_error='Sentiment is temporarily unavailable. Your post is saved and can be retried.' WHERE id=%s",
                 (state, comment["id"]),
             )
 
