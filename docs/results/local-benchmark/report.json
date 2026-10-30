@@ -1,0 +1,1996 @@
+{
+  "corpus": "First N rows of pinned official test split, original order; no threshold/model selection.",
+  "rss_mb": {
+    "max": 457.83203125,
+    "p50": 457.83203125,
+    "p95": 457.83203125,
+    "mean": 457.83203125,
+    "count": 100
+  },
+  "warmup": 20,
+  "runtime": {
+    "manifest": {
+      "files": {
+        "README.md": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/README.md",
+          "bytes": 6106,
+          "sha256": "05fcf4d10db72edeba581d28c7257900ae3aa5df4a648bb2facaf11fdc2c4c0b"
+        },
+        "config.json": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/config.json",
+          "bytes": 1924,
+          "sha256": "3d4ef8e1465958e169761e2eb09d6e2c8d8806216973691ac40e405c97339d5c"
+        },
+        "LICENSE.model": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions/resolve/d75048347613a25d77de8cf6412eaae9fa7b26be/LICENSE",
+          "bytes": 1064,
+          "sha256": "b96472c26654c10d3fdbcb1f469d34d5a42085b25d7e414670601306615e71e3"
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/tokenizer.json",
+          "bytes": 2108856,
+          "sha256": "90e2336a1cdacffe5d4328ab323aa9e5c33889026e4e4881323bebdeeb0e179d"
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/tokenizer_config.json",
+          "bytes": 380,
+          "sha256": "6735f2f38dc5399eb76a2c20dcba3ef27a9b2fbba0d05b6e2966038f28aefcf9"
+        },
+        "onnx/model_quantized.onnx": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/onnx/model_quantized.onnx",
+          "bytes": 125397543,
+          "sha256": "0c1981c5b479674747911c8e2228f0c4ec90bf47bf66e830f7d4fc62be082958"
+        }
+      },
+      "model_license": "MIT",
+      "model_revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+      "original_revision": "d75048347613a25d77de8cf6412eaae9fa7b26be"
+    },
+    "packages": {
+      "numpy": "2.2.6",
+      "tokenizers": "0.21.1",
+      "onnxruntime": "1.22.1",
+      "scikit-learn": "1.6.1"
+    },
+    "platform": "Linux-6.12.76-linuxkit-aarch64-with-glibc2.41",
+    "provider": [
+      "CPUExecutionProvider"
+    ],
+    "cpu_count": 10,
+    "cpu_limit": "200000 100000",
+    "cpu_model": "",
+    "batch_size": 1,
+    "architecture": "aarch64",
+    "memory_limit": "3221225472",
+    "warmup_count": 20,
+    "inter_threads": 1,
+    "intra_threads": 2,
+    "model_load_ms": 730.9921670000108,
+    "model_revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+    "memory_total_mb": 7936.015625,
+    "first_inference_ms": 12.728665999986788,
+    "asset_preparation_ms": 544.8480839999661
+  },
+  "samples": 100,
+  "batch_size": 1,
+  "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9",
+  "token_lengths": {
+    "max": 36.0,
+    "p50": 19.0,
+    "p95": 32.0,
+    "mean": 19.45,
+    "count": 100
+  },
+  "cpu_definition": "Process CPU time / wall time x 100; 100% means one fully used core; sampled per inference.",
+  "text_characters": {
+    "max": 149.0,
+    "p50": 64.5,
+    "p95": 123.29999999999998,
+    "mean": 70.37,
+    "count": 100
+  },
+  "model_inference_ms": {
+    "max": 477.58891700004824,
+    "p50": 10.448708500007342,
+    "p95": 123.44338634991901,
+    "mean": 33.31192000000442,
+    "count": 100
+  },
+  "process_cpu_percent": {
+    "max": 357.86177588775433,
+    "p50": 191.57817233450322,
+    "p95": 267.23559048747177,
+    "mean": 187.9964884631761,
+    "count": 100
+  },
+  "model_throughput_per_second": 24.829807184174857,
+  "api_cases": [
+    {
+      "concurrency": 1,
+      "samples": 100,
+      "throughput_per_second": 3.2202323059458497,
+      "poll_interval_ms": 100,
+      "results": [
+        {
+          "comment_id": "1cc4916c-5a2d-4ba9-b81a-f5cc4d036a19",
+          "client_completion_ms": 205.8991670000978,
+          "acceptance_ms": 53.28683300001558,
+          "server_completion_ms": 98.491,
+          "queue_ms": 30.702,
+          "inference_ms": 46.68295900000885,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "1151140f-0508-48f0-b4d3-7292a8ebd550",
+          "client_completion_ms": 340.1205000000118,
+          "acceptance_ms": 43.25333300005241,
+          "server_completion_ms": 214.777,
+          "queue_ms": 167.828,
+          "inference_ms": 25.26558300007764,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d1f396eb-4387-4ad7-be1c-46e0fdc662ae",
+          "client_completion_ms": 322.18870799999877,
+          "acceptance_ms": 35.90733299995463,
+          "server_completion_ms": 190.546,
+          "queue_ms": 155.797,
+          "inference_ms": 19.719041000030302,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "098be20b-8d04-414e-b376-b0a80a06ea6e",
+          "client_completion_ms": 295.2870000000303,
+          "acceptance_ms": 28.87199999997847,
+          "server_completion_ms": 153.042,
+          "queue_ms": 119.637,
+          "inference_ms": 18.57225000003382,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a232efee-8580-42f7-af89-473e3792bee0",
+          "client_completion_ms": 186.2645830000247,
+          "acceptance_ms": 30.50729100004901,
+          "server_completion_ms": 137.516,
+          "queue_ms": 97.367,
+          "inference_ms": 21.718207999924743,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5537e74e-e628-41f7-b382-a96967d30ea4",
+          "client_completion_ms": 289.8282499999141,
+          "acceptance_ms": 30.035666000003403,
+          "server_completion_ms": 231.858,
+          "queue_ms": 195.022,
+          "inference_ms": 24.43179199997303,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6c15d91e-2f63-4b05-91e7-c88cab7a177c",
+          "client_completion_ms": 290.4942079999273,
+          "acceptance_ms": 29.319791000034456,
+          "server_completion_ms": 219.17600000000002,
+          "queue_ms": 186.284,
+          "inference_ms": 15.609249999897656,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "23d93055-0e21-49a6-9673-e2ab09e1894f",
+          "client_completion_ms": 275.50275099997634,
+          "acceptance_ms": 22.733958999992865,
+          "server_completion_ms": 181.771,
+          "queue_ms": 163.338,
+          "inference_ms": 8.841374999974505,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b33760eb-0e73-46c5-8584-3bbb86380205",
+          "client_completion_ms": 404.85579200003485,
+          "acceptance_ms": 60.28350000008231,
+          "server_completion_ms": 177.34900000000002,
+          "queue_ms": 125.311,
+          "inference_ms": 37.160208000045714,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c5f98567-216c-4283-8c48-0edafe9df34d",
+          "client_completion_ms": 392.9762090000395,
+          "acceptance_ms": 59.79137500003162,
+          "server_completion_ms": 331.61400000000003,
+          "queue_ms": 246.504,
+          "inference_ms": 67.85829099999319,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "57efecb9-b9d8-4e7f-af1d-67872e2a29ac",
+          "client_completion_ms": 518.4645000000501,
+          "acceptance_ms": 51.77824999998393,
+          "server_completion_ms": 303.73499999999996,
+          "queue_ms": 212.747,
+          "inference_ms": 62.98079199996209,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "3d28de05-9b90-4e67-91ce-379185dd7f87",
+          "client_completion_ms": 190.68462499990346,
+          "acceptance_ms": 47.83529099995576,
+          "server_completion_ms": 115.108,
+          "queue_ms": 65.03,
+          "inference_ms": 26.64262499990855,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "548fc405-2799-4af8-b91f-9ea8c3a0df5d",
+          "client_completion_ms": 411.13866699993196,
+          "acceptance_ms": 41.08454199990774,
+          "server_completion_ms": 268.453,
+          "queue_ms": 235.346,
+          "inference_ms": 16.473750000045584,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "48c83a84-22e8-42b1-87c7-8bf6e684a411",
+          "client_completion_ms": 356.55437499997333,
+          "acceptance_ms": 35.345375000019885,
+          "server_completion_ms": 149.281,
+          "queue_ms": 107.585,
+          "inference_ms": 28.664249999906133,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "8ee76ea1-9ce0-456d-991a-3e3be974a971",
+          "client_completion_ms": 192.6957500000981,
+          "acceptance_ms": 59.61879100004808,
+          "server_completion_ms": 87.38799999999999,
+          "queue_ms": 49.722,
+          "inference_ms": 18.36170800004311,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4ce4427c-a97b-4760-9075-f1aaea04dc5f",
+          "client_completion_ms": 306.62408399996366,
+          "acceptance_ms": 36.33745899992391,
+          "server_completion_ms": 180.077,
+          "queue_ms": 143.968,
+          "inference_ms": 22.155042000008507,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "15a9f382-6f9f-44eb-a857-a8bbf598d5ce",
+          "client_completion_ms": 287.7948750000314,
+          "acceptance_ms": 30.976458000054663,
+          "server_completion_ms": 143.707,
+          "queue_ms": 117.805,
+          "inference_ms": 13.602125000033993,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "3ec9755b-48a4-41b1-9c2f-144cf5cbcbda",
+          "client_completion_ms": 147.5689170000578,
+          "acceptance_ms": 24.448042000017267,
+          "server_completion_ms": 115.768,
+          "queue_ms": 92.332,
+          "inference_ms": 14.44062500002019,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "79e4aeb2-df76-4605-a8bc-433dd4294eb3",
+          "client_completion_ms": 264.73558400005004,
+          "acceptance_ms": 20.66104200002883,
+          "server_completion_ms": 225.663,
+          "queue_ms": 205.543,
+          "inference_ms": 12.784000000010565,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7c408bf2-66d0-40b3-ab2d-94b815099de3",
+          "client_completion_ms": 258.61191699993924,
+          "acceptance_ms": 17.242791999933615,
+          "server_completion_ms": 204.077,
+          "queue_ms": 185.206,
+          "inference_ms": 11.091915999941193,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7c88cee7-fe92-4dc0-aab5-17733efe8bba",
+          "client_completion_ms": 252.5657080000201,
+          "acceptance_ms": 17.047375000061038,
+          "server_completion_ms": 187.102,
+          "queue_ms": 168.212,
+          "inference_ms": 12.556749999930616,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5f36aed3-c588-4ac2-a546-06d0c330d90e",
+          "client_completion_ms": 256.34279199994126,
+          "acceptance_ms": 14.085958000009668,
+          "server_completion_ms": 167.421,
+          "queue_ms": 155.619,
+          "inference_ms": 6.124125000042113,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6d56648d-8764-4260-8d95-c807adfbe1c7",
+          "client_completion_ms": 273.03699999993114,
+          "acceptance_ms": 21.224249999932,
+          "server_completion_ms": 164.198,
+          "queue_ms": 140.123,
+          "inference_ms": 16.339040999923782,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "8e925d9a-6e8b-4ba9-a249-d7e50fa06796",
+          "client_completion_ms": 270.095332999972,
+          "acceptance_ms": 14.363916999968751,
+          "server_completion_ms": 158.027,
+          "queue_ms": 137.325,
+          "inference_ms": 9.531874999993306,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7f5b22eb-28fa-48ca-9935-bc534f039376",
+          "client_completion_ms": 258.37608400001955,
+          "acceptance_ms": 16.076375000011467,
+          "server_completion_ms": 144.26,
+          "queue_ms": 117.475,
+          "inference_ms": 16.920916000003672,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "552ccef1-badb-4508-8f68-2e909eda8476",
+          "client_completion_ms": 276.75491699994836,
+          "acceptance_ms": 16.87687499997992,
+          "server_completion_ms": 149.405,
+          "queue_ms": 116.164,
+          "inference_ms": 18.72904199990444,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "30df48a8-af25-41c2-aa42-e535002b7164",
+          "client_completion_ms": 282.7159999999367,
+          "acceptance_ms": 21.214249999957246,
+          "server_completion_ms": 132.72400000000002,
+          "queue_ms": 99.501,
+          "inference_ms": 23.267083000064304,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c7a4ae4d-b54f-4484-a23c-fb18890dcdbe",
+          "client_completion_ms": 154.13724999996248,
+          "acceptance_ms": 32.7372499999683,
+          "server_completion_ms": 87.018,
+          "queue_ms": 69.12,
+          "inference_ms": 8.976416999985304,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "1b48a858-d135-4042-a98b-df8d37f544bb",
+          "client_completion_ms": 262.2200000000703,
+          "acceptance_ms": 18.96950000002562,
+          "server_completion_ms": 184.409,
+          "queue_ms": 163.062,
+          "inference_ms": 13.486042000067755,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6104537f-f8d0-4197-9b4b-4868c188e3c1",
+          "client_completion_ms": 277.2256669999251,
+          "acceptance_ms": 20.06674999995539,
+          "server_completion_ms": 175.004,
+          "queue_ms": 148.003,
+          "inference_ms": 17.217583000046943,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "64e156c8-de02-47b0-b344-75a41e58e996",
+          "client_completion_ms": 270.55633300005866,
+          "acceptance_ms": 20.33649999998488,
+          "server_completion_ms": 147.277,
+          "queue_ms": 124.554,
+          "inference_ms": 12.252332999992177,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "67e07782-c798-4e3c-95ba-d63acd2c2981",
+          "client_completion_ms": 184.12962499996866,
+          "acceptance_ms": 54.32524999991983,
+          "server_completion_ms": 130.319,
+          "queue_ms": 94.549,
+          "inference_ms": 24.07670800005235,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4aeee729-1bf6-4db7-80eb-edb48ca0bc35",
+          "client_completion_ms": 291.95983399995384,
+          "acceptance_ms": 30.81820800002788,
+          "server_completion_ms": 232.014,
+          "queue_ms": 199.532,
+          "inference_ms": 20.17941700000847,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7d8a7c6a-dcf7-4aae-8bf3-f8a220b35827",
+          "client_completion_ms": 276.493749999986,
+          "acceptance_ms": 28.098124999928586,
+          "server_completion_ms": 208.38799999999998,
+          "queue_ms": 172.553,
+          "inference_ms": 22.437540999931116,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a4d615b5-f4bb-4cea-820d-2c711db9ff94",
+          "client_completion_ms": 279.4489999999996,
+          "acceptance_ms": 29.377166000017496,
+          "server_completion_ms": 199.523,
+          "queue_ms": 178.858,
+          "inference_ms": 9.370583999952942,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "abe90dbe-d7b7-46ef-ade9-940de274f00d",
+          "client_completion_ms": 264.1500830000041,
+          "acceptance_ms": 21.130500000026586,
+          "server_completion_ms": 171.034,
+          "queue_ms": 148.976,
+          "inference_ms": 14.007083000024068,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5e7dd965-fe57-4b67-b45a-f29e2295dc6e",
+          "client_completion_ms": 257.8972500000418,
+          "acceptance_ms": 16.512959000010596,
+          "server_completion_ms": 151.32899999999998,
+          "queue_ms": 133.125,
+          "inference_ms": 11.033834000045317,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "08cb0110-7f11-4f76-a115-915ce03080c1",
+          "client_completion_ms": 266.472001000011,
+          "acceptance_ms": 17.20124999997097,
+          "server_completion_ms": 140.53,
+          "queue_ms": 119.229,
+          "inference_ms": 13.42379200002597,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "71452b6d-ee44-47bf-b339-92e9af2b60f3",
+          "client_completion_ms": 421.7324579999513,
+          "acceptance_ms": 287.94349999998303,
+          "server_completion_ms": 196.54,
+          "queue_ms": 151.23,
+          "inference_ms": 28.68870799989054,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "9608aea9-feba-4317-84e0-54ece2e425df",
+          "client_completion_ms": 813.4870420000198,
+          "acceptance_ms": 28.212625000037406,
+          "server_completion_ms": 613.5749999999999,
+          "queue_ms": 219.067,
+          "inference_ms": 308.7831670000014,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "0168f786-7f00-4ce4-986b-a21de9c5bfa8",
+          "client_completion_ms": 220.7387920000201,
+          "acceptance_ms": 49.67325000006895,
+          "server_completion_ms": 120.892,
+          "queue_ms": 69.1,
+          "inference_ms": 24.804916999983107,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4f79a4ac-0a7b-40dc-bcf5-d6377b7b2f62",
+          "client_completion_ms": 1816.4565829999901,
+          "acceptance_ms": 116.84970800001793,
+          "server_completion_ms": 390.561,
+          "queue_ms": 255.742,
+          "inference_ms": 99.66670799997246,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "0e7432e5-30d7-41a6-973b-addc0d478d9a",
+          "client_completion_ms": 835.8944589999737,
+          "acceptance_ms": 393.1908749999593,
+          "server_completion_ms": 432.82,
+          "queue_ms": 179.226,
+          "inference_ms": 212.33716699998695,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "8f59bc28-ab0e-48c6-8d40-d1cd581b3f3e",
+          "client_completion_ms": 429.39179200004673,
+          "acceptance_ms": 117.56679200004783,
+          "server_completion_ms": 210.557,
+          "queue_ms": 120.259,
+          "inference_ms": 69.26787499992315,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "96d337f4-f56b-48ee-9e59-e3500a536ba3",
+          "client_completion_ms": 191.52266699995835,
+          "acceptance_ms": 43.88054200001079,
+          "server_completion_ms": 137.78199999999998,
+          "queue_ms": 87.991,
+          "inference_ms": 32.04399999992802,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5635747b-b081-4643-93be-d88658044f30",
+          "client_completion_ms": 319.18279199999233,
+          "acceptance_ms": 45.14033299994935,
+          "server_completion_ms": 240.00199999999998,
+          "queue_ms": 194.301,
+          "inference_ms": 29.974917000004098,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "039cff61-8ba3-4354-8c8c-88d27b3942c0",
+          "client_completion_ms": 306.5043749999177,
+          "acceptance_ms": 34.62170899990724,
+          "server_completion_ms": 215.492,
+          "queue_ms": 181.182,
+          "inference_ms": 19.85766699999658,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a64c8233-6481-4145-b98e-d4d09e0e715b",
+          "client_completion_ms": 293.54754199994204,
+          "acceptance_ms": 33.09316699994724,
+          "server_completion_ms": 176.753,
+          "queue_ms": 145.723,
+          "inference_ms": 18.204624999953012,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "2dc09cb7-c2d4-4455-b7df-7b1425c12364",
+          "client_completion_ms": 306.75425000004,
+          "acceptance_ms": 28.73158299996703,
+          "server_completion_ms": 176.966,
+          "queue_ms": 129.649,
+          "inference_ms": 32.74620899992442,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d04036f3-91a8-47c4-ab54-b5b9b26c7bae",
+          "client_completion_ms": 266.27287500002694,
+          "acceptance_ms": 22.800708000090708,
+          "server_completion_ms": 135.102,
+          "queue_ms": 115.219,
+          "inference_ms": 11.216667000098823,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "f8cef286-1abe-47d8-b50c-3f6ec3a45d09",
+          "client_completion_ms": 141.2342499999113,
+          "acceptance_ms": 18.953415999931167,
+          "server_completion_ms": 121.83800000000001,
+          "queue_ms": 99.25,
+          "inference_ms": 15.316208000058396,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7d65c2f4-78e9-4e28-91d9-354f6e93b6b5",
+          "client_completion_ms": 453.29575000005207,
+          "acceptance_ms": 17.379791000053046,
+          "server_completion_ms": 289.33,
+          "queue_ms": 238.199,
+          "inference_ms": 31.676708999953007,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "561f32d8-eb53-4698-a308-8c574dd618bf",
+          "client_completion_ms": 144.6480419999716,
+          "acceptance_ms": 22.853292000036163,
+          "server_completion_ms": 95.728,
+          "queue_ms": 72.309,
+          "inference_ms": 15.101333000075101,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "ec5f0848-0543-4986-9cbd-3376dd76812e",
+          "client_completion_ms": 1334.1999589999887,
+          "acceptance_ms": 19.78979199998321,
+          "server_completion_ms": 1100.286,
+          "queue_ms": 975.234,
+          "inference_ms": 27.24066700000094,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "03d96f80-8955-4004-91ca-7f25a8777252",
+          "client_completion_ms": 348.6502920000021,
+          "acceptance_ms": 68.05633299995861,
+          "server_completion_ms": 202.821,
+          "queue_ms": 133.154,
+          "inference_ms": 53.88316699998086,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "713c6af8-96a7-4d79-a798-a2a2327e347c",
+          "client_completion_ms": 295.7616669999652,
+          "acceptance_ms": 31.615249999958905,
+          "server_completion_ms": 152.81,
+          "queue_ms": 119.886,
+          "inference_ms": 19.86099999999169,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c9d36ec8-ad06-49ce-899f-099c5423ff05",
+          "client_completion_ms": 168.25029200003883,
+          "acceptance_ms": 41.021999999998116,
+          "server_completion_ms": 108.791,
+          "queue_ms": 83.207,
+          "inference_ms": 16.225167000015972,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "2a23b301-847a-4f02-ae3f-3cfd90baf3c1",
+          "client_completion_ms": 265.1785000000473,
+          "acceptance_ms": 23.45420800008924,
+          "server_completion_ms": 223.196,
+          "queue_ms": 193.579,
+          "inference_ms": 20.671375000006265,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d81f679a-5db0-4be8-b0b2-5e8aecee116d",
+          "client_completion_ms": 261.2832500000195,
+          "acceptance_ms": 18.17425000001549,
+          "server_completion_ms": 202.996,
+          "queue_ms": 185.066,
+          "inference_ms": 10.826124999994136,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "647788d5-f6bb-4e29-b0d0-4b958daf9ef1",
+          "client_completion_ms": 257.59595900001386,
+          "acceptance_ms": 19.595458000026156,
+          "server_completion_ms": 179.75,
+          "queue_ms": 162.189,
+          "inference_ms": 10.517292000031375,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c42a8285-afee-4301-8518-9e4735b4b282",
+          "client_completion_ms": 258.6893750000172,
+          "acceptance_ms": 17.446125000105894,
+          "server_completion_ms": 159.62599999999998,
+          "queue_ms": 143.133,
+          "inference_ms": 10.613250000005792,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6b604eb7-075a-43ce-81f8-8406d9fe43d6",
+          "client_completion_ms": 254.57166700005018,
+          "acceptance_ms": 12.828000000013162,
+          "server_completion_ms": 141.379,
+          "queue_ms": 124.392,
+          "inference_ms": 9.593957999982194,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b400192c-5954-4714-9aae-8b443ab577db",
+          "client_completion_ms": 251.9242089999807,
+          "acceptance_ms": 13.288792000025751,
+          "server_completion_ms": 126.29099999999998,
+          "queue_ms": 111.049,
+          "inference_ms": 8.989042000052905,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6676c109-378a-4eb0-b919-c6bc9da43b2f",
+          "client_completion_ms": 131.6370829999869,
+          "acceptance_ms": 13.937583000029008,
+          "server_completion_ms": 115.446,
+          "queue_ms": 97.429,
+          "inference_ms": 11.37216699999044,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "cc2d2f95-2fc5-49bb-a5ed-21b4e1acd863",
+          "client_completion_ms": 247.13704099997358,
+          "acceptance_ms": 11.802583000076083,
+          "server_completion_ms": 221.335,
+          "queue_ms": 208.239,
+          "inference_ms": 6.479291000005105,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7793605b-d859-4adb-9652-bd832c69696a",
+          "client_completion_ms": 261.3488330000564,
+          "acceptance_ms": 11.495791000015743,
+          "server_completion_ms": 211.805,
+          "queue_ms": 196.826,
+          "inference_ms": 7.784624999999323,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "488b5466-1f84-44f2-bb3d-0bb48576e16f",
+          "client_completion_ms": 251.39166700000715,
+          "acceptance_ms": 11.456834000000526,
+          "server_completion_ms": 184.42600000000002,
+          "queue_ms": 170.63,
+          "inference_ms": 7.00641599996743,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c6559cc8-a5b2-4580-a186-633c84fbd5e2",
+          "client_completion_ms": 257.481000000098,
+          "acceptance_ms": 13.60854200004269,
+          "server_completion_ms": 169.094,
+          "queue_ms": 150.512,
+          "inference_ms": 12.421291999999085,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "3c45278b-94d9-446b-bb44-71f60fdc5788",
+          "client_completion_ms": 258.8495829999147,
+          "acceptance_ms": 12.843582999948921,
+          "server_completion_ms": 145.798,
+          "queue_ms": 131.399,
+          "inference_ms": 8.213749999981701,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "2aa40e4f-25c3-4759-97ef-75654cf06fdd",
+          "client_completion_ms": 256.2788750000209,
+          "acceptance_ms": 13.745541000048433,
+          "server_completion_ms": 122.615,
+          "queue_ms": 109.55,
+          "inference_ms": 5.799083000056271,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "832f8340-211c-40e2-a2ea-eecf2322322d",
+          "client_completion_ms": 131.94270799999686,
+          "acceptance_ms": 15.300249999995685,
+          "server_completion_ms": 112.61200000000001,
+          "queue_ms": 92.011,
+          "inference_ms": 13.816540999982863,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "19ea47fc-77b6-4650-95ef-d15a3a28016b",
+          "client_completion_ms": 247.26195899995673,
+          "acceptance_ms": 11.433124999939537,
+          "server_completion_ms": 221.036,
+          "queue_ms": 206.671,
+          "inference_ms": 6.974874999968961,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "1f863d11-0d9f-4713-8e33-a89e9c8715b9",
+          "client_completion_ms": 241.32662500005608,
+          "acceptance_ms": 11.614709000014045,
+          "server_completion_ms": 218.17000000000002,
+          "queue_ms": 199.745,
+          "inference_ms": 12.105665999911253,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "966904cb-eeed-4207-a471-e40a8c491609",
+          "client_completion_ms": 246.14999999994325,
+          "acceptance_ms": 11.573042000009082,
+          "server_completion_ms": 215.667,
+          "queue_ms": 203.645,
+          "inference_ms": 5.456417000004876,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "cbcc8bb8-c218-41b6-8fee-cd8430d2ba4d",
+          "client_completion_ms": 244.93749999999181,
+          "acceptance_ms": 11.098583000034523,
+          "server_completion_ms": 219.32,
+          "queue_ms": 196.279,
+          "inference_ms": 15.560791999973844,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d86c3e7b-52b8-4220-ba2b-1c540aa21e26",
+          "client_completion_ms": 245.6793750000088,
+          "acceptance_ms": 11.451957999952356,
+          "server_completion_ms": 221.811,
+          "queue_ms": 198.573,
+          "inference_ms": 17.303332999972554,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a78de725-9246-4c18-9e14-e037ea0de83d",
+          "client_completion_ms": 239.3710829999236,
+          "acceptance_ms": 10.445916999969995,
+          "server_completion_ms": 205.186,
+          "queue_ms": 193.729,
+          "inference_ms": 6.460707999963233,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a2c43b01-69e5-4c29-89d2-65f33bdf840a",
+          "client_completion_ms": 236.49383400004353,
+          "acceptance_ms": 9.987124999952357,
+          "server_completion_ms": 188.26399999999998,
+          "queue_ms": 180.719,
+          "inference_ms": 3.246791000037774,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "52821727-e58a-48b1-b9d5-9ecca7b17af0",
+          "client_completion_ms": 237.39912500002447,
+          "acceptance_ms": 10.869583000044258,
+          "server_completion_ms": 190.48399999999998,
+          "queue_ms": 174.757,
+          "inference_ms": 10.620709000022543,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b1649151-286b-406c-90d7-8a311073b44e",
+          "client_completion_ms": 238.75212500001908,
+          "acceptance_ms": 10.263291000001118,
+          "server_completion_ms": 189.26999999999998,
+          "queue_ms": 173.46,
+          "inference_ms": 10.261749999926906,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e29137bb-19ae-4b22-a3d0-9f0430e2f13e",
+          "client_completion_ms": 251.69991699999628,
+          "acceptance_ms": 11.350125000035405,
+          "server_completion_ms": 185.841,
+          "queue_ms": 169.156,
+          "inference_ms": 10.639125000011518,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "28dc780d-01ce-4959-bb96-4de41e8bb0b2",
+          "client_completion_ms": 249.33720799992898,
+          "acceptance_ms": 11.74845799994273,
+          "server_completion_ms": 169.30200000000002,
+          "queue_ms": 151.497,
+          "inference_ms": 11.884958999985429,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e10a0943-3b69-44ce-bed8-d738b3391b0d",
+          "client_completion_ms": 249.2339579999907,
+          "acceptance_ms": 12.268250000033731,
+          "server_completion_ms": 146.607,
+          "queue_ms": 136.22,
+          "inference_ms": 4.746708999959992,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b194e224-2590-49a5-af56-dd1b28f415a2",
+          "client_completion_ms": 255.39899999989757,
+          "acceptance_ms": 13.061957999980223,
+          "server_completion_ms": 135.369,
+          "queue_ms": 118.371,
+          "inference_ms": 10.182624999970358,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d7223a13-1ee0-4f3e-bf41-ad389b685e2f",
+          "client_completion_ms": 254.189958999973,
+          "acceptance_ms": 16.982583999947565,
+          "server_completion_ms": 118.991,
+          "queue_ms": 102.062,
+          "inference_ms": 11.009707999960483,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "23fa32fa-b64c-4a92-b880-4139fc2204f3",
+          "client_completion_ms": 125.0079999999798,
+          "acceptance_ms": 11.41679199997725,
+          "server_completion_ms": 106.469,
+          "queue_ms": 92.141,
+          "inference_ms": 8.683833999953094,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "389a145f-4c24-4d10-9751-32b6d75a4c04",
+          "client_completion_ms": 254.94416699996236,
+          "acceptance_ms": 11.172582999961378,
+          "server_completion_ms": 214.098,
+          "queue_ms": 200.755,
+          "inference_ms": 8.430584000052477,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "1cd2efaa-c255-4e92-a701-ef7f96834a90",
+          "client_completion_ms": 247.49674999998206,
+          "acceptance_ms": 10.33554200000708,
+          "server_completion_ms": 193.441,
+          "queue_ms": 181.355,
+          "inference_ms": 5.997917000058806,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "25a1bb9c-71cc-4578-89fa-87e4a4ecd22b",
+          "client_completion_ms": 256.0387079998918,
+          "acceptance_ms": 11.759499999925538,
+          "server_completion_ms": 180.787,
+          "queue_ms": 164.105,
+          "inference_ms": 9.899249999989479,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "8b5626f5-339f-478f-b2bd-dde5e1351b62",
+          "client_completion_ms": 253.64779199992427,
+          "acceptance_ms": 14.205291999928704,
+          "server_completion_ms": 156.732,
+          "queue_ms": 143.052,
+          "inference_ms": 7.894999999962238,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b64c3219-dfe5-4d5c-80a6-00f603fe719e",
+          "client_completion_ms": 253.64395799999784,
+          "acceptance_ms": 13.498125000069194,
+          "server_completion_ms": 139.429,
+          "queue_ms": 120.839,
+          "inference_ms": 12.039582999932463,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a82808bf-6979-41a0-ba02-acc3f50b24bf",
+          "client_completion_ms": 250.18745900001704,
+          "acceptance_ms": 13.76412500007973,
+          "server_completion_ms": 129.73100000000002,
+          "queue_ms": 109.888,
+          "inference_ms": 13.126166000006378,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "261aa57d-cb28-42b5-ba32-1476ffe217b0",
+          "client_completion_ms": 251.86133299996527,
+          "acceptance_ms": 13.989915999900404,
+          "server_completion_ms": 119.354,
+          "queue_ms": 101.594,
+          "inference_ms": 11.465208999993592,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "df76c564-2bbc-4ef7-8bb5-bd45ca170b1c",
+          "client_completion_ms": 129.79608400007692,
+          "acceptance_ms": 15.09887500003515,
+          "server_completion_ms": 104.432,
+          "queue_ms": 88.611,
+          "inference_ms": 9.745124999994914,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "9c5674ee-d3fb-4a81-a39a-8a14693b2f5e",
+          "client_completion_ms": 244.8666669999966,
+          "acceptance_ms": 11.897167000029185,
+          "server_completion_ms": 223.65699999999998,
+          "queue_ms": 203.42,
+          "inference_ms": 13.816458000064813,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "75b3e92f-61e6-4a30-b28a-7daa6695fadf",
+          "client_completion_ms": 240.62349999996968,
+          "acceptance_ms": 10.766750000016145,
+          "server_completion_ms": 213.65,
+          "queue_ms": 199.652,
+          "inference_ms": 7.797208000056344,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d04eaf8f-47c8-40d6-8929-f8ecab82ca4b",
+          "client_completion_ms": 254.7973750000665,
+          "acceptance_ms": 11.065916000006837,
+          "server_completion_ms": 220.724,
+          "queue_ms": 198.872,
+          "inference_ms": 12.86862500001007,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e0998dff-4b98-468f-ac76-56b3549b8860",
+          "client_completion_ms": 267.9835420000245,
+          "acceptance_ms": 11.850665999986632,
+          "server_completion_ms": 223.384,
+          "queue_ms": 204.028,
+          "inference_ms": 9.578333000035855,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "7b509a11-5a74-437d-a03e-2315daec7937",
+          "client_completion_ms": 1147.1210839999912,
+          "acceptance_ms": 25.836124999955246,
+          "server_completion_ms": 191.334,
+          "queue_ms": 179.406,
+          "inference_ms": 6.480291999992005,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "deaf8b3c-4b41-4741-b858-70fb38a1e818",
+          "client_completion_ms": 385.5601669999942,
+          "acceptance_ms": 97.58370800000193,
+          "server_completion_ms": 226.086,
+          "queue_ms": 109.783,
+          "inference_ms": 94.56508400000985,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        }
+      ],
+      "acceptance_ms": {
+        "count": 100,
+        "p50": 19.282479000025887,
+        "p95": 69.5327017499607,
+        "mean": 32.48523576999901,
+        "max": 393.1908749999593
+      },
+      "client_completion_ms": {
+        "count": 100,
+        "p50": 258.1366670000307,
+        "p95": 533.2156271000478,
+        "mean": 310.4651297199939,
+        "max": 1816.4565829999901
+      },
+      "server_completion_ms": {
+        "count": 100,
+        "p50": 179.9135,
+        "p95": 305.12894999999986,
+        "mean": 193.63019999999995,
+        "max": 1100.286
+      },
+      "queue_ms": {
+        "count": 100,
+        "p50": 149.744,
+        "p95": 219.88094999999996,
+        "mean": 157.37371,
+        "max": 975.234
+      },
+      "inference_ms": {
+        "count": 100,
+        "p50": 13.544083500050874,
+        "p95": 67.92877019998969,
+        "mean": 23.628298759994095,
+        "max": 308.7831670000014
+      }
+    },
+    {
+      "concurrency": 4,
+      "samples": 100,
+      "throughput_per_second": 10.042554021149677,
+      "poll_interval_ms": 100,
+      "results": [
+        {
+          "comment_id": "b4c9f910-0895-456e-a742-8e0b0c3e3e2e",
+          "client_completion_ms": 2009.1994599999907,
+          "acceptance_ms": 126.17695899996306,
+          "server_completion_ms": 1178.441,
+          "queue_ms": 265.761,
+          "inference_ms": 746.2632079999594,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e7881164-8adf-4842-810e-8455ccc19e53",
+          "client_completion_ms": 2782.9089589999967,
+          "acceptance_ms": 184.23983299999236,
+          "server_completion_ms": 2518.2090000000003,
+          "queue_ms": 2402.861,
+          "inference_ms": 24.76895899997089,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "be3bc46f-a477-4894-a519-c31d5b9c2719",
+          "client_completion_ms": 2304.268583999942,
+          "acceptance_ms": 125.91391699993437,
+          "server_completion_ms": 2014.6130000000003,
+          "queue_ms": 1894.002,
+          "inference_ms": 40.433541000084006,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c4242108-aebd-46e7-a730-125e8c780ff4",
+          "client_completion_ms": 2586.0268760000054,
+          "acceptance_ms": 127.9691660000708,
+          "server_completion_ms": 2317.0899999999997,
+          "queue_ms": 2191.223,
+          "inference_ms": 30.490167000039037,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "392ac4c0-6024-4877-bce5-7cc658aa6a79",
+          "client_completion_ms": 912.4222090000558,
+          "acceptance_ms": 293.07125000002543,
+          "server_completion_ms": 552.554,
+          "queue_ms": 477.223,
+          "inference_ms": 25.885541999969064,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "70f1b559-18e0-45a7-9664-c64c6c24b207",
+          "client_completion_ms": 587.0245840000052,
+          "acceptance_ms": 202.36575000001267,
+          "server_completion_ms": 402.271,
+          "queue_ms": 335.762,
+          "inference_ms": 34.69504099996357,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "8ed29d9c-86f9-4982-ba24-8c73d9a65784",
+          "client_completion_ms": 496.62437500001033,
+          "acceptance_ms": 106.03562500000407,
+          "server_completion_ms": 312.112,
+          "queue_ms": 283.264,
+          "inference_ms": 13.86158399998294,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "83170f4a-c335-4edf-9e31-f614ed52ef70",
+          "client_completion_ms": 405.3998330000468,
+          "acceptance_ms": 43.716041000038786,
+          "server_completion_ms": 286.145,
+          "queue_ms": 203.666,
+          "inference_ms": 13.077417000090463,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "68c0f8b3-11b7-42bf-a1bd-be671b0ceab8",
+          "client_completion_ms": 343.4692079999877,
+          "acceptance_ms": 41.27908299994942,
+          "server_completion_ms": 264.604,
+          "queue_ms": 207.765,
+          "inference_ms": 30.37920799999938,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "26b13e3b-5d38-41fd-8821-81eb967f3b94",
+          "client_completion_ms": 392.09566700003506,
+          "acceptance_ms": 89.59149999998317,
+          "server_completion_ms": 240.428,
+          "queue_ms": 214.824,
+          "inference_ms": 14.300124999977015,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5bdc3c96-073c-4e4f-97ad-6874de247841",
+          "client_completion_ms": 324.138167000001,
+          "acceptance_ms": 33.29612499999257,
+          "server_completion_ms": 213.0,
+          "queue_ms": 172.801,
+          "inference_ms": 25.983249999967484,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "fd69025c-d812-4c02-8e9e-cb8edc65c0ea",
+          "client_completion_ms": 326.39095800004725,
+          "acceptance_ms": 28.22291600000426,
+          "server_completion_ms": 214.636,
+          "queue_ms": 178.686,
+          "inference_ms": 21.21604199999183,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "8239a6e4-297c-4e08-8dd0-9bdbd5f99018",
+          "client_completion_ms": 352.46058400002767,
+          "acceptance_ms": 64.34895899997173,
+          "server_completion_ms": 222.40099999999998,
+          "queue_ms": 198.307,
+          "inference_ms": 12.648124999941501,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "993a7917-868a-4c6d-acf8-9029ad752853",
+          "client_completion_ms": 327.2251249999272,
+          "acceptance_ms": 72.23345900001732,
+          "server_completion_ms": 240.41299999999998,
+          "queue_ms": 193.676,
+          "inference_ms": 21.876541999972687,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "48f8879f-5e77-44a0-bcbe-0b070c777732",
+          "client_completion_ms": 327.3876249999148,
+          "acceptance_ms": 70.67699999993238,
+          "server_completion_ms": 193.28500000000003,
+          "queue_ms": 170.811,
+          "inference_ms": 11.177290999967227,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4f9c94ba-4a70-49eb-bf2b-ae6d3bd856b7",
+          "client_completion_ms": 319.6687079999947,
+          "acceptance_ms": 30.60787499998696,
+          "server_completion_ms": 172.56099999999998,
+          "queue_ms": 112.325,
+          "inference_ms": 20.237583000039194,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a3563124-c1dc-46af-b9e4-f73cfcffd51c",
+          "client_completion_ms": 303.28558299993347,
+          "acceptance_ms": 30.869249999909698,
+          "server_completion_ms": 142.097,
+          "queue_ms": 117.176,
+          "inference_ms": 12.84237499999108,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "0fec0c5b-e62c-4287-ab7d-2b6d398aece3",
+          "client_completion_ms": 195.15158299998348,
+          "acceptance_ms": 63.472708000062994,
+          "server_completion_ms": 121.533,
+          "queue_ms": 94.388,
+          "inference_ms": 17.161750000013853,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "78d2a2e9-4f5d-45cd-8e8b-29fb50e477ba",
+          "client_completion_ms": 175.13129099995695,
+          "acceptance_ms": 45.914374999938445,
+          "server_completion_ms": 121.04299999999999,
+          "queue_ms": 79.975,
+          "inference_ms": 18.977708000079474,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "059a1bdd-522c-4c70-b67e-76e697b36cfa",
+          "client_completion_ms": 305.07462599996416,
+          "acceptance_ms": 51.792791999901056,
+          "server_completion_ms": 152.096,
+          "queue_ms": 126.681,
+          "inference_ms": 14.673749999928987,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5a11dd85-0205-4b2d-9317-95bc66f9df82",
+          "client_completion_ms": 170.20558299998356,
+          "acceptance_ms": 46.06312500004606,
+          "server_completion_ms": 72.759,
+          "queue_ms": 41.975,
+          "inference_ms": 20.53004200001851,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a1a42215-9a3a-4934-b84f-e5ae391ac355",
+          "client_completion_ms": 297.9099579999911,
+          "acceptance_ms": 29.724750000013955,
+          "server_completion_ms": 149.698,
+          "queue_ms": 129.039,
+          "inference_ms": 9.274957999991784,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "f3955779-05f9-43be-b762-28eddb6f03fa",
+          "client_completion_ms": 327.85724999996546,
+          "acceptance_ms": 69.77679199997056,
+          "server_completion_ms": 204.03199999999998,
+          "queue_ms": 163.595,
+          "inference_ms": 29.552874999922096,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "3673e22e-a8a3-4a73-a02a-c8dfde3e29b9",
+          "client_completion_ms": 293.64383299991914,
+          "acceptance_ms": 25.797333000014078,
+          "server_completion_ms": 159.638,
+          "queue_ms": 135.206,
+          "inference_ms": 12.7490410000064,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "cc6f1af0-1188-48d0-ad70-f2352cf2951f",
+          "client_completion_ms": 169.6050829999649,
+          "acceptance_ms": 42.60799999997289,
+          "server_completion_ms": 73.2,
+          "queue_ms": 41.489,
+          "inference_ms": 21.242000000029293,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "10c393aa-f169-4e4b-b358-b5b140613e67",
+          "client_completion_ms": 194.00783399999,
+          "acceptance_ms": 28.063041999985217,
+          "server_completion_ms": 69.87599999999999,
+          "queue_ms": 45.922,
+          "inference_ms": 12.27987499999017,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c1c3cf90-2da0-48ee-a471-b7cde207a795",
+          "client_completion_ms": 180.70608400000765,
+          "acceptance_ms": 42.21983399997953,
+          "server_completion_ms": 70.16699999999999,
+          "queue_ms": 40.01,
+          "inference_ms": 19.916249999937463,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "909a2543-1790-4a88-9022-9d453e0e80f3",
+          "client_completion_ms": 187.97495800004071,
+          "acceptance_ms": 29.583291999983885,
+          "server_completion_ms": 90.679,
+          "queue_ms": 67.943,
+          "inference_ms": 12.474292000092646,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "09adef07-95ba-4a41-b500-73440e69b41e",
+          "client_completion_ms": 189.45299999995768,
+          "acceptance_ms": 30.04195799996978,
+          "server_completion_ms": 149.22199999999998,
+          "queue_ms": 102.678,
+          "inference_ms": 20.224250000069333,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "02fb371e-736a-4336-b8cb-d6285b9041b5",
+          "client_completion_ms": 199.8010830000112,
+          "acceptance_ms": 35.81937499996002,
+          "server_completion_ms": 127.04099999999998,
+          "queue_ms": 94.787,
+          "inference_ms": 21.757917000059024,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "29ff4c4c-ae69-4731-83cd-c1e76916e504",
+          "client_completion_ms": 329.74737600000026,
+          "acceptance_ms": 64.51204200004668,
+          "server_completion_ms": 178.799,
+          "queue_ms": 152.531,
+          "inference_ms": 15.216334000001552,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "0e997dc3-8194-4ec5-b5bf-c1a20beb003a",
+          "client_completion_ms": 290.53783300003033,
+          "acceptance_ms": 30.190124999990076,
+          "server_completion_ms": 174.505,
+          "queue_ms": 132.345,
+          "inference_ms": 25.763291999965077,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e683464a-e8a2-43a9-982d-4dcbc63013ac",
+          "client_completion_ms": 321.5755009999839,
+          "acceptance_ms": 26.723584000023948,
+          "server_completion_ms": 209.687,
+          "queue_ms": 183.329,
+          "inference_ms": 16.982875000053355,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b2bdd969-09a5-4e72-b1a2-419f1c0c62ee",
+          "client_completion_ms": 323.3844170000566,
+          "acceptance_ms": 28.798917000017354,
+          "server_completion_ms": 182.82899999999998,
+          "queue_ms": 144.326,
+          "inference_ms": 25.60308400006761,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "5aec767f-6333-4e45-a2fb-600f4ead0b9a",
+          "client_completion_ms": 170.3947920000246,
+          "acceptance_ms": 36.39937499997359,
+          "server_completion_ms": 64.446,
+          "queue_ms": 39.657,
+          "inference_ms": 11.995208000030289,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "2d8a7cd0-f948-48c1-ab9c-96f3bbd858ae",
+          "client_completion_ms": 214.9410420000777,
+          "acceptance_ms": 43.731209000043236,
+          "server_completion_ms": 115.55799999999999,
+          "queue_ms": 81.393,
+          "inference_ms": 22.166958000070736,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a231dd7c-4d7e-4581-bee9-62b7a74c1e7a",
+          "client_completion_ms": 359.5011659999727,
+          "acceptance_ms": 60.34479100003409,
+          "server_completion_ms": 171.37199999999999,
+          "queue_ms": 143.698,
+          "inference_ms": 16.314416000000165,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "07865f9f-6cf1-40ae-b5c1-56a508006132",
+          "client_completion_ms": 206.25204200007374,
+          "acceptance_ms": 72.93195900001592,
+          "server_completion_ms": 141.47899999999998,
+          "queue_ms": 99.576,
+          "inference_ms": 18.19254200006526,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "eab9ac09-5541-449c-8c00-179711c60d51",
+          "client_completion_ms": 381.2932079999882,
+          "acceptance_ms": 77.42870799995671,
+          "server_completion_ms": 159.828,
+          "queue_ms": 118.705,
+          "inference_ms": 27.79641599988736,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a2c5c59a-030b-43f5-9852-195b34d64bf4",
+          "client_completion_ms": 392.3370840000189,
+          "acceptance_ms": 31.137209000007715,
+          "server_completion_ms": 222.267,
+          "queue_ms": 185.475,
+          "inference_ms": 24.663874999987456,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "35e0b5ff-cb9e-45ec-8f5a-7e7541d984e7",
+          "client_completion_ms": 405.2460420000443,
+          "acceptance_ms": 73.41150000002017,
+          "server_completion_ms": 172.148,
+          "queue_ms": 142.377,
+          "inference_ms": 15.137875000050371,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "10399818-1c49-4a15-89ad-eaa3f3bdde39",
+          "client_completion_ms": 433.03562500000226,
+          "acceptance_ms": 34.67074999991837,
+          "server_completion_ms": 218.911,
+          "queue_ms": 182.017,
+          "inference_ms": 25.128417000019,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d3f26a4d-4de3-4d0f-a4af-b5a425067438",
+          "client_completion_ms": 301.1900419999165,
+          "acceptance_ms": 99.08599999994294,
+          "server_completion_ms": 108.699,
+          "queue_ms": 66.363,
+          "inference_ms": 27.469791000044097,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6159f02c-d33a-4776-8238-62d230534eaf",
+          "client_completion_ms": 317.81979200002297,
+          "acceptance_ms": 116.54020799994669,
+          "server_completion_ms": 72.988,
+          "queue_ms": 35.265,
+          "inference_ms": 25.351249999971515,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "cbd711f1-04ac-4db4-a3ac-ed0c115dfa8c",
+          "client_completion_ms": 416.6825410000001,
+          "acceptance_ms": 163.17083299998103,
+          "server_completion_ms": 230.89100000000002,
+          "queue_ms": 199.679,
+          "inference_ms": 18.967333000091458,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e5e99333-cebb-423d-a800-4a9573587f2f",
+          "client_completion_ms": 385.1700829999345,
+          "acceptance_ms": 101.00566699998126,
+          "server_completion_ms": 207.322,
+          "queue_ms": 168.791,
+          "inference_ms": 26.416667000034977,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "303ce617-82d9-4572-9160-db918a6026cb",
+          "client_completion_ms": 382.4533330000577,
+          "acceptance_ms": 95.84583299999849,
+          "server_completion_ms": 255.849,
+          "queue_ms": 228.771,
+          "inference_ms": 15.348124999945867,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "0db5c3c0-80ae-408d-b551-8f1795bf3a7b",
+          "client_completion_ms": 392.0309999999745,
+          "acceptance_ms": 79.20008299993242,
+          "server_completion_ms": 289.71799999999996,
+          "queue_ms": 255.442,
+          "inference_ms": 21.76150000002508,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a214d882-baf8-46aa-9e83-0338d6310bc5",
+          "client_completion_ms": 191.70683400000144,
+          "acceptance_ms": 57.004667000001064,
+          "server_completion_ms": 126.647,
+          "queue_ms": 98.026,
+          "inference_ms": 17.184499999984837,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "18f9f1c8-acb5-4e8f-a214-128cd16c202c",
+          "client_completion_ms": 336.7720420000069,
+          "acceptance_ms": 44.449791999909394,
+          "server_completion_ms": 210.726,
+          "queue_ms": 183.337,
+          "inference_ms": 14.578832999973201,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c3f39a41-7f17-47cc-849e-92ddf3191132",
+          "client_completion_ms": 193.64729200003694,
+          "acceptance_ms": 39.80475000003025,
+          "server_completion_ms": 156.98000000000002,
+          "queue_ms": 108.194,
+          "inference_ms": 22.624208000024737,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "80eff509-2db7-4712-b212-f678b5108dae",
+          "client_completion_ms": 304.73237600006087,
+          "acceptance_ms": 34.26262499999666,
+          "server_completion_ms": 185.666,
+          "queue_ms": 156.556,
+          "inference_ms": 17.053792000069734,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d1093a92-2ff7-445e-8fd9-ca1f28176e58",
+          "client_completion_ms": 320.5969580000101,
+          "acceptance_ms": 58.58016700005919,
+          "server_completion_ms": 227.74099999999999,
+          "queue_ms": 176.664,
+          "inference_ms": 20.883832999970764,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6e0aa5b0-bcd5-454b-a5b4-faad4697b1b0",
+          "client_completion_ms": 311.57195799994497,
+          "acceptance_ms": 30.41862499992476,
+          "server_completion_ms": 218.424,
+          "queue_ms": 193.668,
+          "inference_ms": 12.910124999962136,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d192a7e5-b29c-4490-8814-32eb8d4ac664",
+          "client_completion_ms": 356.71337500002664,
+          "acceptance_ms": 56.439292000050045,
+          "server_completion_ms": 165.67299999999997,
+          "queue_ms": 104.897,
+          "inference_ms": 25.61937499990563,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "868429b9-c64a-49b6-ac77-e19cc9e7c502",
+          "client_completion_ms": 195.8431670000209,
+          "acceptance_ms": 32.290875000057895,
+          "server_completion_ms": 162.936,
+          "queue_ms": 116.752,
+          "inference_ms": 19.505209000044488,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4424b726-9c6d-48ff-a843-793e9b27c99e",
+          "client_completion_ms": 336.8409170000177,
+          "acceptance_ms": 53.44120899997051,
+          "server_completion_ms": 148.21,
+          "queue_ms": 115.307,
+          "inference_ms": 21.091667000064263,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "6bd81cf5-507a-420f-a621-6ea68ab1ab16",
+          "client_completion_ms": 319.8829589999832,
+          "acceptance_ms": 30.416333999937706,
+          "server_completion_ms": 206.209,
+          "queue_ms": 169.319,
+          "inference_ms": 25.702582999997503,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "bcc5bf18-da5c-4ac0-99a5-cd166347c463",
+          "client_completion_ms": 306.16987499990955,
+          "acceptance_ms": 32.295874999931584,
+          "server_completion_ms": 172.347,
+          "queue_ms": 134.609,
+          "inference_ms": 17.069832999936807,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "19fe0ded-48c6-4166-812b-223166017301",
+          "client_completion_ms": 299.4226249999201,
+          "acceptance_ms": 28.164416999970854,
+          "server_completion_ms": 136.015,
+          "queue_ms": 106.916,
+          "inference_ms": 16.834915999993427,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4edb2005-0121-4813-aa29-caf28678c096",
+          "client_completion_ms": 165.32041699997535,
+          "acceptance_ms": 33.737166999912915,
+          "server_completion_ms": 108.432,
+          "queue_ms": 77.076,
+          "inference_ms": 19.996332999994593,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e154d429-ea22-42f0-ac30-567d19b20e74",
+          "client_completion_ms": 199.35966700006702,
+          "acceptance_ms": 61.752459000103954,
+          "server_completion_ms": 143.186,
+          "queue_ms": 100.881,
+          "inference_ms": 17.736708000029466,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "370bbf6a-4323-4d22-a272-2697ddd37b02",
+          "client_completion_ms": 190.30641699998796,
+          "acceptance_ms": 30.955083999970157,
+          "server_completion_ms": 113.09700000000001,
+          "queue_ms": 85.235,
+          "inference_ms": 15.60066700005791,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4720965f-e756-4354-926f-79c61f883984",
+          "client_completion_ms": 175.06283299996994,
+          "acceptance_ms": 46.40179199998329,
+          "server_completion_ms": 129.458,
+          "queue_ms": 100.474,
+          "inference_ms": 18.539541999984976,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a53ab0e2-1ad8-48db-b6e0-1083fa218b0c",
+          "client_completion_ms": 328.1255000000556,
+          "acceptance_ms": 38.4702080000352,
+          "server_completion_ms": 185.614,
+          "queue_ms": 129.616,
+          "inference_ms": 7.550457999968785,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "46c32c73-0363-4c24-ba8a-362864832f0c",
+          "client_completion_ms": 323.7112919999845,
+          "acceptance_ms": 64.60970800003452,
+          "server_completion_ms": 157.952,
+          "queue_ms": 137.376,
+          "inference_ms": 11.10179199997674,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "30d211b4-0200-4efd-951d-ba94dbcd3684",
+          "client_completion_ms": 303.16883299997244,
+          "acceptance_ms": 27.447082999970007,
+          "server_completion_ms": 162.887,
+          "queue_ms": 142.581,
+          "inference_ms": 10.555583000041224,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "e752a1cd-84a1-4b4e-8e61-b91772b4a7e1",
+          "client_completion_ms": 316.2184579999803,
+          "acceptance_ms": 63.4482499999649,
+          "server_completion_ms": 144.63899999999998,
+          "queue_ms": 111.269,
+          "inference_ms": 21.82358300001397,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "09735ada-20fb-4043-84bf-bb9b2f2d68d1",
+          "client_completion_ms": 298.1811250000419,
+          "acceptance_ms": 34.229417000005924,
+          "server_completion_ms": 253.96699999999998,
+          "queue_ms": 222.307,
+          "inference_ms": 21.247334000008777,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a9b84ee8-7699-46f3-9014-32aee43f601b",
+          "client_completion_ms": 303.3730419999756,
+          "acceptance_ms": 44.56125000001521,
+          "server_completion_ms": 266.093,
+          "queue_ms": 247.646,
+          "inference_ms": 7.332832999964012,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "3a578e0e-2852-4c7f-87a1-1b5ac5771310",
+          "client_completion_ms": 428.4235830000398,
+          "acceptance_ms": 24.984457999948972,
+          "server_completion_ms": 302.99399999999997,
+          "queue_ms": 271.289,
+          "inference_ms": 21.494583000048806,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "37e3a1c1-ec11-4e5d-971e-05649d19844c",
+          "client_completion_ms": 426.15587500006313,
+          "acceptance_ms": 25.036583000087376,
+          "server_completion_ms": 295.351,
+          "queue_ms": 278.332,
+          "inference_ms": 7.674209000015253,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "adbff21b-5236-43cf-b73d-6c1a05a6882f",
+          "client_completion_ms": 292.97233299996606,
+          "acceptance_ms": 28.735666999978093,
+          "server_completion_ms": 176.11599999999999,
+          "queue_ms": 142.677,
+          "inference_ms": 19.678582999972605,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "c52f6908-ef5d-461f-85ff-384ab724f305",
+          "client_completion_ms": 304.0126250000412,
+          "acceptance_ms": 46.50550000008025,
+          "server_completion_ms": 161.343,
+          "queue_ms": 139.572,
+          "inference_ms": 9.088917000099173,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "ceb4dcfd-33b3-400a-a3cf-f910d77c11ac",
+          "client_completion_ms": 183.16575000005741,
+          "acceptance_ms": 33.77362499998071,
+          "server_completion_ms": 73.98,
+          "queue_ms": 34.794,
+          "inference_ms": 27.397542000016983,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "ce8696e6-a3e7-4af0-882c-7fec4a8c5794",
+          "client_completion_ms": 162.76070800006437,
+          "acceptance_ms": 30.698458000074424,
+          "server_completion_ms": 100.95700000000001,
+          "queue_ms": 57.392,
+          "inference_ms": 30.819415999985722,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "13a5e817-d658-4287-becb-9337081ed524",
+          "client_completion_ms": 197.64266599997882,
+          "acceptance_ms": 30.73949999998149,
+          "server_completion_ms": 155.502,
+          "queue_ms": 91.765,
+          "inference_ms": 16.115792000050533,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "025b040e-1e49-41c9-862a-f342083c9b93",
+          "client_completion_ms": 230.53029099992273,
+          "acceptance_ms": 57.42145799990794,
+          "server_completion_ms": 122.663,
+          "queue_ms": 104.236,
+          "inference_ms": 7.913458999951217,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "696889cc-0b30-4f87-b5d9-10f0b9567164",
+          "client_completion_ms": 332.37066700007745,
+          "acceptance_ms": 72.20479099999011,
+          "server_completion_ms": 194.556,
+          "queue_ms": 160.714,
+          "inference_ms": 24.022749999971893,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "cde26b17-30ad-4dca-bc3a-5274f635f7ec",
+          "client_completion_ms": 350.10400099997696,
+          "acceptance_ms": 69.3592920000583,
+          "server_completion_ms": 216.198,
+          "queue_ms": 186.305,
+          "inference_ms": 17.084791999991467,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "2680047d-9dd1-4a8e-a5ba-23c9064eb6f1",
+          "client_completion_ms": 327.54225000007864,
+          "acceptance_ms": 31.148208000104205,
+          "server_completion_ms": 257.023,
+          "queue_ms": 207.15,
+          "inference_ms": 19.375999999965643,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "3365b73c-5420-4dd2-9d5e-b878c36674bb",
+          "client_completion_ms": 335.6765419999874,
+          "acceptance_ms": 36.291791999929046,
+          "server_completion_ms": 277.537,
+          "queue_ms": 196.612,
+          "inference_ms": 27.65458299995771,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "90403c9f-111e-4e11-ae06-abf07049c79e",
+          "client_completion_ms": 368.6771249999765,
+          "acceptance_ms": 46.61850000002232,
+          "server_completion_ms": 202.77200000000002,
+          "queue_ms": 126.327,
+          "inference_ms": 9.363667000002351,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d7df4152-bc70-4233-9fca-5f31f35e8861",
+          "client_completion_ms": 355.7647500000485,
+          "acceptance_ms": 35.120207999966624,
+          "server_completion_ms": 223.155,
+          "queue_ms": 199.046,
+          "inference_ms": 14.507125000022825,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "a208c25b-aa2e-4c51-a07e-2480fb36a2c0",
+          "client_completion_ms": 361.98029199999837,
+          "acceptance_ms": 91.86045799992826,
+          "server_completion_ms": 166.375,
+          "queue_ms": 140.469,
+          "inference_ms": 16.21466699998564,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "9d0af84d-f9ee-4ee0-93e1-f8ad89d0bcf3",
+          "client_completion_ms": 222.1535410000115,
+          "acceptance_ms": 84.62854100002914,
+          "server_completion_ms": 121.019,
+          "queue_ms": 95.845,
+          "inference_ms": 14.655707999963852,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b3d593a0-3038-4ba3-b831-5038b3d4654b",
+          "client_completion_ms": 281.7890000000034,
+          "acceptance_ms": 34.47008299997378,
+          "server_completion_ms": 239.34,
+          "queue_ms": 212.589,
+          "inference_ms": 16.93404200000259,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "fe074392-3f6a-42a9-8274-5eb9055e733c",
+          "client_completion_ms": 299.4855839999673,
+          "acceptance_ms": 50.922624999998334,
+          "server_completion_ms": 229.388,
+          "queue_ms": 211.168,
+          "inference_ms": 7.784583999978167,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "f3c535b6-c8b9-41d7-b913-1c09719574e2",
+          "client_completion_ms": 431.94354199999907,
+          "acceptance_ms": 53.24804200006383,
+          "server_completion_ms": 293.812,
+          "queue_ms": 243.315,
+          "inference_ms": 16.98549999991883,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "fc09d612-a6fa-47c9-bd27-31abab5ed218",
+          "client_completion_ms": 437.64729199995145,
+          "acceptance_ms": 24.058125000010477,
+          "server_completion_ms": 321.88899999999995,
+          "queue_ms": 300.272,
+          "inference_ms": 12.314082999978382,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "30091705-38d0-4d4e-bfb7-e08a79ba2c1a",
+          "client_completion_ms": 299.4189589999223,
+          "acceptance_ms": 26.383874999964974,
+          "server_completion_ms": 173.123,
+          "queue_ms": 140.694,
+          "inference_ms": 20.18179100002726,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b8ff3cdf-da9b-47f3-a947-fd831e32cb07",
+          "client_completion_ms": 352.66325000009147,
+          "acceptance_ms": 55.4950830000962,
+          "server_completion_ms": 155.442,
+          "queue_ms": 119.202,
+          "inference_ms": 24.83883299998979,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "b1367625-55df-46ed-beb1-85f0e3d85d5d",
+          "client_completion_ms": 160.75670800000808,
+          "acceptance_ms": 29.477917000008347,
+          "server_completion_ms": 127.166,
+          "queue_ms": 95.923,
+          "inference_ms": 19.64850000001661,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "47592153-d156-4b5f-9c8a-ba61aeab5862",
+          "client_completion_ms": 187.19150000003992,
+          "acceptance_ms": 56.610291000083635,
+          "server_completion_ms": 126.497,
+          "queue_ms": 90.191,
+          "inference_ms": 17.981415999997807,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "2c470abb-7a72-4b04-a475-073d9fb60a65",
+          "client_completion_ms": 408.0887500000472,
+          "acceptance_ms": 32.62091700003111,
+          "server_completion_ms": 168.78,
+          "queue_ms": 91.536,
+          "inference_ms": 26.9250840000268,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "96b75e86-ba1b-4727-a210-a3c4c0307964",
+          "client_completion_ms": 501.64841700006946,
+          "acceptance_ms": 61.75587500001711,
+          "server_completion_ms": 202.84,
+          "queue_ms": 135.347,
+          "inference_ms": 28.984334000028866,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "4a1c0813-ab9c-4fb7-91c1-ef068aef9e2b",
+          "client_completion_ms": 396.8775829999913,
+          "acceptance_ms": 30.881165999971927,
+          "server_completion_ms": 267.207,
+          "queue_ms": 217.822,
+          "inference_ms": 28.213832999995248,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "d4822178-8904-47e7-9b46-79981f036a2c",
+          "client_completion_ms": 508.6218750000171,
+          "acceptance_ms": 78.8839580000058,
+          "server_completion_ms": 303.30899999999997,
+          "queue_ms": 238.196,
+          "inference_ms": 22.986833999993905,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "1b057e27-ebf4-4a81-b360-d275bfbc26e7",
+          "client_completion_ms": 226.29983299998457,
+          "acceptance_ms": 89.62829099993996,
+          "server_completion_ms": 99.68599999999999,
+          "queue_ms": 71.033,
+          "inference_ms": 16.26529100008156,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        },
+        {
+          "comment_id": "02ce04e4-4afb-4da1-98b8-c3ec65bd091b",
+          "client_completion_ms": 165.44275000001107,
+          "acceptance_ms": 35.53341700001056,
+          "server_completion_ms": 107.001,
+          "queue_ms": 67.492,
+          "inference_ms": 27.435708000098202,
+          "runtime_id": "73504bcb-3c2c-432e-87e3-b1397c33efc9"
+        }
+      ],
+      "acceptance_ms": {
+        "count": 100,
+        "p50": 44.5055209999623,
+        "p95": 126.26656934996845,
+        "mean": 57.948986269994975,
+        "max": 293.07125000002543
+      },
+      "client_completion_ms": {
+        "count": 100,
+        "p50": 320.23995849999665,
+        "p95": 603.2944652500069,
+        "mean": 396.24647594000186,
+        "max": 2782.9089589999967
+      },
+      "server_completion_ms": {
+        "count": 100,
+        "p50": 173.814,
+        "p95": 409.7851499999996,
+        "mean": 258.6906000000001,
+        "max": 2518.2090000000003
+      },
+      "queue_ms": {
+        "count": 100,
+        "p50": 140.5815,
+        "p95": 302.04649999999987,
+        "mean": 210.29571999999996,
+        "max": 2402.861
+      },
+      "inference_ms": {
+        "count": 100,
+        "p50": 19.440604500005065,
+        "p95": 30.384755950001363,
+        "mean": 26.643119990004607,
+        "max": 746.2632079999594
+      }
+    }
+  ],
+  "isolated_namespace": "benchmark event; excluded from user pages, dashboard and official classification scores"
+}

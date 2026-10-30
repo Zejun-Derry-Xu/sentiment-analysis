@@ -1,0 +1,37 @@
+{
+  "name": "sentiment-analysis",
+  "version": "0.1.0",
+  "description": "Campus Notes — English text emotion analysis demo",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zejun-Derry-Xu/sentiment-analysis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Zejun-Derry-Xu/sentiment-analysis/issues"
+  },
+  "homepage": "https://github.com/Zejun-Derry-Xu/sentiment-analysis#readme",
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  },
+  "private": true
+}

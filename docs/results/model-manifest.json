@@ -1,0 +1,37 @@
+{
+  "model_revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+  "model_license": "MIT",
+  "original_revision": "d75048347613a25d77de8cf6412eaae9fa7b26be",
+  "files": {
+    "onnx/model_quantized.onnx": {
+      "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/onnx/model_quantized.onnx",
+      "sha256": "0c1981c5b479674747911c8e2228f0c4ec90bf47bf66e830f7d4fc62be082958",
+      "bytes": 125397543
+    },
+    "config.json": {
+      "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/config.json",
+      "sha256": "3d4ef8e1465958e169761e2eb09d6e2c8d8806216973691ac40e405c97339d5c",
+      "bytes": 1924
+    },
+    "tokenizer.json": {
+      "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/tokenizer.json",
+      "sha256": "90e2336a1cdacffe5d4328ab323aa9e5c33889026e4e4881323bebdeeb0e179d",
+      "bytes": 2108856
+    },
+    "tokenizer_config.json": {
+      "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/tokenizer_config.json",
+      "sha256": "6735f2f38dc5399eb76a2c20dcba3ef27a9b2fbba0d05b6e2966038f28aefcf9",
+      "bytes": 380
+    },
+    "README.md": {
+      "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/README.md",
+      "sha256": "05fcf4d10db72edeba581d28c7257900ae3aa5df4a648bb2facaf11fdc2c4c0b",
+      "bytes": 6106
+    },
+    "LICENSE.model": {
+      "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions/resolve/d75048347613a25d77de8cf6412eaae9fa7b26be/LICENSE",
+      "sha256": "b96472c26654c10d3fdbcb1f469d34d5a42085b25d7e414670601306615e71e3",
+      "bytes": 1064
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "model": {
+    "repository": "SamLowe/roberta-base-go_emotions-onnx",
+    "revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+    "file": "onnx/model_quantized.onnx",
+    "bytes": 125397543,
+    "sha256": "0c1981c5b479674747911c8e2228f0c4ec90bf47bf66e830f7d4fc62be082958",
+    "license": "MIT",
+    "outputs": "logits",
+    "postprocessing": "single sigmoid; score > 0.5",
+    "max_tokens": 512
+  },
+  "original_model": {
+    "repository": "SamLowe/roberta-base-go_emotions",
+    "revision": "d75048347613a25d77de8cf6412eaae9fa7b26be",
+    "license": "MIT"
+  },
+  "dataset": {
+    "repository": "google-research-datasets/go_emotions",
+    "revision": "add492243ff905527e67aeb8b80c082af02207c3",
+    "configuration": "simplified",
+    "split": "test",
+    "file": "simplified/test-00000-of-00001.parquet",
+    "rows": 5427,
+    "sha256": "fd0953e535ba2569edc6a1daaa1133f8e4b9071691d540c9bab812fda132bc26",
+    "license": "Apache-2.0"
+  },
+  "policy": {
+    "train": false,
+    "fine_tune": false,
+    "quantize": false,
+    "threshold_search": false,
+    "author_numbers_are_local_results": false
+  },
+  "evaluation_reference": {
+    "repository": "samlowe/go_emotions-dataset",
+    "revision": "1af39292ee48dd6f5bcafcf82de9b82705ddaef4",
+    "file": "eval-roberta-base-go_emotions.ipynb",
+    "protocol": "Only fixed score > 0.5; no threshold search"
+  }
+}

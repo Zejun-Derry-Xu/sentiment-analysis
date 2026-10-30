@@ -1,0 +1,6 @@
+{
+  "cpu": "Apple M5",
+  "physical_memory_bytes": 17179869184,
+  "execution": "Docker Desktop Linux ARM64 on macOS; worker limited to 2 CPU / 3 GB; not Jetstream2",
+  "docker_version": "29.5.3"
+}

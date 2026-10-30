@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "startup_wait_seconds": 23.431687667034566,
+  "definition": "Compose up --wait after database restart and application stop; includes warmup and health-check intervals, not a pure model load timer",
+  "snapshot": {
+    "users": {
+      "count": 8,
+      "sha256": "bcd15d9f4d983b6c59c7e31a42ed25ecd84433568985dffacdbde65060503ef9"
+    },
+    "sessions": {
+      "count": 2,
+      "sha256": "b18737e4748a4347cb7f39aec8a84fb1c90158db0e11c8fbfa8ff206b5f9e3bb"
+    },
+    "events": {
+      "count": 4,
+      "sha256": "e293575c7d37007d5f2786b33ce468228b5078d2d61aa564b530ea47a7b3dfff"
+    },
+    "comments": {
+      "count": 207,
+      "sha256": "3bd99ace91afcd3c9952bb34afef0ed02a2e02ab59c338ee940f7e7b020422f9"
+    },
+    "jobs": {
+      "count": 211,
+      "sha256": "f05c69520a9b5f364054d52bc6429f40c27afb3362a3e1da4b9881dc6ca59935"
+    },
+    "analyses": {
+      "count": 208,
+      "sha256": "388726a9d20121e2a7ca2a02ffbd02f1740bd614ea82b0324700e899e196ae37"
+    },
+    "favorites": {
+      "count": 1,
+      "sha256": "4d341434a7b91e45ed1f59ec12cc17af2bf7cd16d83ba1a4f8b79a0e4793f10e"
+    },
+    "corrections": {
+      "count": 1,
+      "sha256": "9161956761109d21e0752278bedaa72e8b224ddebd186317a9a4d01066ae9b6f"
+    },
+    "handling_history": {
+      "count": 1,
+      "sha256": "805f632f5481343f9a6963b51680ab81d0c8369431d740d4c33fd8e1af1a1000"
+    },
+    "evaluations": {
+      "count": 2,
+      "sha256": "cba46d652a80500b382f64d21f1b4d6b6d2e656ac5f6aae65e6372f8b2d5e7ae"
+    },
+    "benchmarks": {
+      "count": 1,
+      "sha256": "ad555b0e1a9c02898ee3c3f968d4805c3ecd653be011d474abd22cd3aab76831"
+    }
+  }
+}
