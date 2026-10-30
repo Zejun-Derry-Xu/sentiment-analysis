@@ -10,7 +10,7 @@ from fastapi import FastAPI, Request, Response, HTTPException, Depends, Query
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 from psycopg.types.json import Jsonb
-from .db import connect, initialize, enqueue, enqueue_sentiment
+from .db import transaction as connect, initialize, enqueue, enqueue_sentiment
 from .config import LABELS, MODEL_REV, MODEL_REPO, DATA_REV, REPORT_DIR
 
 

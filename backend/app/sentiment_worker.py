@@ -8,7 +8,7 @@ import time
 from uuid import uuid4
 import httpx
 from psycopg.types.json import Jsonb
-from .db import connect, initialize
+from .db import transaction as connect, connect as dedicated_connect, initialize
 
 REVISION = "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7"
 LABELS = ("negative", "neutral", "positive")
@@ -140,7 +140,7 @@ def main():
     for sig in (signal.SIGTERM, signal.SIGINT):
         signal.signal(sig, lambda *_: STOP.set())
     with (
-        connect() as guard,
+        dedicated_connect() as guard,
         httpx.Client(
             base_url=os.getenv("SENTIMENT_URL", "http://sentiment:8000"), timeout=120
         ) as client,

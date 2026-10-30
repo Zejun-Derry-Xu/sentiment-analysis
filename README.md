@@ -1,6 +1,6 @@
 # Campus Notes · 校园回声
 
-带英文文本情绪分析的校园活动评论平台，DML 课程 MVP。React + TypeScript / FastAPI / PostgreSQL / ONNX Runtime CPU / Docker Compose。
+带英文文本情绪分析的校园活动评论平台，DML 课程 MVP。React + TypeScript / FastAPI / PostgreSQL / ONNX Runtime CPU + PyTorch CPU / Docker Compose。
 
 **当前为公开、免密码演示**：输入用户名即可进入，用户页与分析看板可自由切换，任何访客均可收藏、标记处理及追加人工纠正。它没有受保护的管理员角色，也不验证真实身份。仅使用虚构活动与演示内容；这是按项目要求选择的产品模式。
 
@@ -67,14 +67,16 @@ flowchart LR
     Browser[React 用户页 / 公开看板] --> Web[Nginx :5180]
     Web --> API[FastAPI · 不加载模型]
     API --> DB[(PostgreSQL)]
-    Worker[单一 worker · ONNX CPU] -->|原子领取任务 / 写入结果| DB
+    Worker[情绪 worker · ONNX CPU] -->|领取情绪任务 / 写入结果| DB
+    SentimentWorker[三分类 worker] -->|领取三分类任务 / 写入结果| DB
+    SentimentWorker --> Sentiment[常驻 PyTorch CPU 模型服务]
     CLI[评测 / 性能 CLI] -->|排入任务| DB
     Worker --> Assets[固定模型与测试数据缓存]
     Worker --> Reports[逐条预测与评测报告]
     API -->|只读| Reports
 ```
 
-评论提交事务同时保存评论和任务，HTTP 返回 202。前端每 3 秒轮询。状态为 `pending → processing → completed / failed`。后台失败最多自动尝试三次，之后保留评论并允许手动重试。每次分析单独记录；人工纠正从不修改分析表。数据库原子锁防止重复领取，5 分钟任务租约用于恢复中断工作，单例 advisory lock 防止多个 worker 重复加载模型。
+评论提交事务同时保存评论和任务，HTTP 返回 202。前端每 3 秒轮询。状态为 `pending → processing → completed / failed`。后台失败最多自动尝试三次，之后保留评论并允许手动重试。每次分析单独记录；人工纠正从不修改分析表。数据库原子锁防止重复领取，情绪任务 5 分钟、三分类任务 3 分钟的租约用于恢复中断工作，单例 advisory lock 防止多个 worker 重复加载模型。
 
 数据库包含 `users`、`sessions`、`events`、`comments`、`jobs`、`analyses`、`runtimes`、`favorites`、`handling_history`、`corrections`、`evaluations`、`benchmarks`。`schema_migrations` 记录迁移版本；版本 1 的 SQL 在 `backend/app/schema.sql`，初始化入口为 `python -m app.cli init`。未来结构调整应追加迁移版本，不能改写已应用迁移来升级既有数据库。
 
@@ -156,7 +158,7 @@ sh scripts/benchmark.sh
 
 API 阶段：同样 100 条文本分别以并发 1、4，通过真实 HTTP 请求、持久化、后台领取及推理完成。记录提交响应时间、数据库排队时间、单条推理时间、服务器保存到结果提交时间，以及客户端轮询观察到完成的时间。客户端每 100 ms 轮询，因此客户端完成时间包含轮询误差。吞吐量按每阶段全部完成的墙钟时间计算，不是仅 HTTP 202 接收速率。
 
-CPU 百分比是推理区间的进程 CPU 时间 / 墙钟时间，100% 表示占满一个核；内存为每条推理后采样的 RSS，报告的最大值不是系统级瞬时峰值。报告保存文本字符/token 长度分布、架构、容器 CPU 配额、模型版本、包版本、ORT 线程和 runtime ID。默认只有一个模型进程，intra-op 2 / inter-op 1，容器限制 2 CPU、3 GB 内存。
+CPU 百分比是推理区间的进程 CPU 时间 / 墙钟时间，100% 表示占满一个核；内存为每条推理后采样的 RSS，报告的最大值不是系统级瞬时峰值。报告保存文本字符/token 长度分布、架构、容器 CPU 配额、模型版本、包版本、ORT 线程和 runtime ID。本段为情绪模型基准：默认一个 ONNX 模型进程，intra-op 2 / inter-op 1，容器限制 2 CPU、3 GB 内存；新三分类有独立常驻进程，双模型端到端基准见文末。
 
 基准流量写入独立 benchmark 活动，默认活动列表、看板、统计和官方分类评测均排除。请勿在性能测试同时发布评论或跑其他重任务；已提交本地报告位于 `docs/results/local-benchmark/`。**Mac 上 Docker 的 Linux/ARM64 结果不是 Jetstream2 的实测结果**，部署后应按相同入口重测。
 
@@ -211,3 +213,5 @@ docker compose exec -T db pg_dump -U campus -d campus -Fc > reports/backups/camp
 三分类的模型、数据固定版本、许可边界及本地完整测试见 [验证报告](docs/cardiff-cpu-validation.md)。三分类模型声明 CC BY 4.0；TweetEval 原始数据条款核查仍待完成，仓库不分发其测试文本，不影响现场评论功能。官方两套测试成绩分别报告，现场评论统计不用于计算准确率。
 
 保留 [独立试验台](experiments/cardiff-cpu/README.md) 用于复现，运行 `sh experiments/cardiff-cpu/start.sh` 后访问 `http://localhost:5181`。这与默认集成服务使用不同的 Compose 项目和缓存。
+
+云端 16 核实例可在 `.env` 设置 `COMPOSE_FILE=compose.yaml:compose.jetstream.yaml`，启用基于实测的模型线程与 API/数据库资源预算。API 与两个队列使用各自有上限的数据库连接池，避免轮询反复创建 PostgreSQL 连接；模型单例锁保留专用连接，不放回池中。双模型完整评论路径测量入口：`python scripts/benchmark_dual.py --base http://localhost:5180 --output reports/dual-benchmark.json`（需要 httpx）。性能测试活动不进入用户评论与看板统计。

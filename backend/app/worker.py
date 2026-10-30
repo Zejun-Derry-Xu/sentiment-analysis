@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 import numpy as np
 from psycopg.types.json import Jsonb
-from .db import connect, initialize
+from .db import transaction as connect, connect as dedicated_connect, initialize
 from .config import MODEL_REV, DATA_REV, LABELS, REPORT_DIR
 from .assets import load_test
 from .metrics import calculate_metrics, distribution
@@ -321,7 +321,7 @@ def main():
         level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s"
     )
     initialize()
-    with connect() as lock:
+    with dedicated_connect() as lock:
         lock.autocommit = True
         if not lock.execute(
             "SELECT pg_try_advisory_lock(715803) AS acquired"

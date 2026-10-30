@@ -1,3 +1,5 @@
+import atexit
+import threading
 from pathlib import Path
 from uuid import uuid4
 import psycopg
@@ -85,3 +87,27 @@ def enqueue_sentiment(c, comment_id):
         "INSERT INTO sentiment_jobs(id,comment_id) VALUES (%s,%s)", (jid, comment_id)
     )
     return jid
+
+
+_pool = None
+_pool_lock = threading.Lock()
+
+
+def transaction():
+    """Bounded per-process pool; context commits/rolls back and returns connection."""
+    global _pool
+    with _pool_lock:
+        if _pool is None:
+            from psycopg_pool import ConnectionPool
+
+            _pool = ConnectionPool(
+                DATABASE_URL,
+                kwargs={"row_factory": dict_row},
+                min_size=1,
+                max_size=8,
+                timeout=10,
+                open=True,
+                check=ConnectionPool.check_connection,
+            )
+            atexit.register(_pool.close)
+    return _pool.connection()

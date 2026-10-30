@@ -75,6 +75,8 @@ psycopg==3.2.9
     # via -r backend/requirements.in
 psycopg-binary==3.2.9
     # via psycopg
+psycopg-pool==3.2.6
+    # via -r backend/requirements.in
 pyarrow==20.0.0
     # via -r backend/requirements.in
 pydantic==2.14.2
@@ -107,6 +109,7 @@ typing-extensions==4.16.0
     #   fastapi
     #   huggingface-hub
     #   psycopg
+    #   psycopg-pool
     #   pydantic
     #   pydantic-core
     #   typing-inspection
