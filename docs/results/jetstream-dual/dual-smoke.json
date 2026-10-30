@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "dual": true,
+  "comment_id": "9e2bc8d8-0c53-433d-8663-0349bba7a007",
+  "text": "The performances were wonderful! Thank you for organizing the concert.",
+  "emotion": {
+    "id": "e2ad76e2-bc12-44db-a061-0c770517aecd",
+    "comment_id": "9e2bc8d8-0c53-433d-8663-0349bba7a007",
+    "job_id": "69d062a7-cad5-4777-8a26-110161447572",
+    "runtime_id": "e838b409-81d2-4785-af44-fdf32c04a06c",
+    "started_at": "2026-10-30T03:37:23.125122+00:00",
+    "finished_at": "2026-10-30T03:37:23.165969+00:00",
+    "model_revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+    "status": "completed",
+    "scores": {
+      "joy": 0.010278982998874631,
+      "fear": 0.0007725901296364262,
+      "love": 0.0058960190128653275,
+      "anger": 0.0015610549442255726,
+      "grief": 0.0008199254651305363,
+      "pride": 0.0028223752336507322,
+      "caring": 0.00328750781561206,
+      "desire": 0.001448403588201116,
+      "relief": 0.0022382842393841485,
+      "disgust": 0.001505752119427408,
+      "neutral": 0.004113182204561112,
+      "remorse": 0.0009659095736017044,
+      "sadness": 0.002542111999861489,
+      "approval": 0.017152061793454784,
+      "optimism": 0.006146656134253815,
+      "surprise": 0.0032600842337426957,
+      "amusement": 0.003638272900838436,
+      "annoyance": 0.0036118752662646658,
+      "confusion": 0.0037635950855392547,
+      "curiosity": 0.004464037971781676,
+      "gratitude": 0.9710185852626708,
+      "admiration": 0.7226080774460717,
+      "excitement": 0.008108719613208987,
+      "disapproval": 0.0033233153192448388,
+      "nervousness": 0.00030627812457013,
+      "realization": 0.005888254376041695,
+      "embarrassment": 0.000536416720083353,
+      "disappointment": 0.0020300053844365153
+    },
+    "labels": [
+      "admiration",
+      "gratitude"
+    ],
+    "top_label": "gratitude",
+    "top_score": 0.9710185852626708,
+    "inference_ms": 23.994788999971206,
+    "token_count": 14,
+    "truncated": false,
+    "queue_ms": 67.805,
+    "rss_mb": 390.91796875,
+    "cpu_percent": 583.4600170902428,
+    "error": null
+  },
+  "sentiment": {
+    "id": "21557f7d-400d-4e32-9b15-78d9f5e94624",
+    "comment_id": "9e2bc8d8-0c53-433d-8663-0349bba7a007",
+    "job_id": "bf85924c-a4a6-4879-8c71-1c403dea0a3c",
+    "runtime_id": "6c0261e3-361e-4c26-9fbf-d0de188d0d90",
+    "started_at": "2026-10-30T03:37:23.089324+00:00",
+    "finished_at": "2026-10-30T03:37:23.185344+00:00",
+    "status": "completed",
+    "model_revision": "3216a57f2a0d9c45a2e6c20157c20c49fb4bf9c7",
+    "label": "positive",
+    "scores": {
+      "neutral": 0.007291623391211033,
+      "negative": 0.0031618860084563494,
+      "positive": 0.9895464777946472
+    },
+    "inference_ms": 76.76760300000751,
+    "queue_ms": 32.007,
+    "service_queue_ms": 0.001582999857419054,
+    "token_count": 14,
+    "rss_mb": 781.68359375,
+    "error": null
+  },
+  "status": "completed",
+  "sentiment_status": "completed",
+  "stats": {
+    "total": 2,
+    "completed": 2,
+    "waiting": 0,
+    "failed": 0,
+    "unread": 2,
+    "favorites": 0,
+    "sentiment": {
+      "negative": 0,
+      "neutral": 0,
+      "positive": 2
+    },
+    "sentiment_completed": 2,
+    "emotions": [
+      {
+        "label": "admiration",
+        "count": 2
+      },
+      {
+        "label": "gratitude",
+        "count": 2
+      }
+    ]
+  },
+  "ready": {
+    "database": "ok",
+    "worker": "ready",
+    "runtime_id": "e838b409-81d2-4785-af44-fdf32c04a06c",
+    "sentiment_worker": "ready",
+    "sentiment_runtime_id": "6c0261e3-361e-4c26-9fbf-d0de188d0d90"
+  }
+}

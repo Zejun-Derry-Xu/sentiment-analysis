@@ -770,7 +770,7 @@ function App() {
             </p>
           </form>
           <span className="login-footer">
-            POWERED BY GOEMOTIONS · RUNNING ON CPU
+            GOEMOTIONS + CARDIFFNLP · RUNNING ON CPU
           </span>
         </section>
       </main>
@@ -951,6 +951,18 @@ function App() {
               <span className="eyebrow">MEASURE, DON'T GUESS</span>
               <h1>让结果，经得起检验。</h1>
               <p>固定模型、固定官方测试集。分类质量与运行性能分别记录。</p>
+              <p className="fineprint muted">
+                下方为 GoEmotions 28 类情绪模型的评测。三分类另用 TweetEval
+                官方测试：本地 12,284 条 Accuracy 72.18%、Macro-F1 72.40%，见{" "}
+                <a
+                  href="https://github.com/Zejun-Derry-Xu/sentiment-analysis/blob/main/docs/cardiff-cpu-validation.md"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  三分类独立验证报告
+                </a>
+                。两套测试任务不同，不直接比较分数；现场评论分布不是准确率。
+              </p>
             </div>
             <div className="evaluation-source">
               <div>

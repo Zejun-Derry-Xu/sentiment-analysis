@@ -1,0 +1,107 @@
+[
+  {
+    "model": "emotion",
+    "threads": 1,
+    "samples": 40,
+    "p50_ms": 22.438706000059483,
+    "p95_ms": 28.782199500068373,
+    "throughput": 43.17938564659066,
+    "rss_mb": 377.4609375,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight warmups; no classification quality selection."
+  },
+  {
+    "model": "emotion",
+    "threads": 2,
+    "samples": 40,
+    "p50_ms": 14.54949500003977,
+    "p95_ms": 18.372782099999085,
+    "throughput": 66.18309831456104,
+    "rss_mb": 376.4453125,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight warmups; no classification quality selection."
+  },
+  {
+    "model": "emotion",
+    "threads": 4,
+    "samples": 40,
+    "p50_ms": 9.423276999996233,
+    "p95_ms": 11.710031049943835,
+    "throughput": 102.59760383860585,
+    "rss_mb": 377.28125,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight warmups; no classification quality selection."
+  },
+  {
+    "model": "emotion",
+    "threads": 6,
+    "samples": 40,
+    "p50_ms": 8.250697499988746,
+    "p95_ms": 9.760066249918964,
+    "throughput": 119.3406927954184,
+    "rss_mb": 378.60546875,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight warmups; no classification quality selection."
+  },
+  {
+    "model": "emotion",
+    "threads": 8,
+    "samples": 40,
+    "p50_ms": 14.569832500001212,
+    "p95_ms": 18.803284599954395,
+    "throughput": 67.66939388816806,
+    "rss_mb": 374.7265625,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight warmups; no classification quality selection."
+  },
+  {
+    "model": "sentiment",
+    "threads": 1,
+    "samples": 40,
+    "p50_ms": 62.144297999907394,
+    "p95_ms": 77.48251264998771,
+    "throughput": 15.561268333172885,
+    "rss_mb": 773.2265625,
+    "cpu_percent_mean": 100.11470933917364,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight additional warmups; no classification quality selection."
+  },
+  {
+    "model": "sentiment",
+    "threads": 2,
+    "samples": 40,
+    "p50_ms": 70.59084300010454,
+    "p95_ms": 86.29628155006226,
+    "throughput": 13.705109480943907,
+    "rss_mb": 780.66015625,
+    "cpu_percent_mean": 200.2364929422337,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight additional warmups; no classification quality selection."
+  },
+  {
+    "model": "sentiment",
+    "threads": 4,
+    "samples": 40,
+    "p50_ms": 35.00410750007177,
+    "p95_ms": 40.23900015005211,
+    "throughput": 28.05351082632747,
+    "rss_mb": 780.10546875,
+    "cpu_percent_mean": 401.83862499101076,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight additional warmups; no classification quality selection."
+  },
+  {
+    "model": "sentiment",
+    "threads": 6,
+    "samples": 40,
+    "p50_ms": 44.841607499961356,
+    "p95_ms": 47.30894065017992,
+    "throughput": 22.474315773221498,
+    "rss_mb": 786.2890625,
+    "cpu_percent_mean": 601.6453513035162,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight additional warmups; no classification quality selection."
+  },
+  {
+    "model": "sentiment",
+    "threads": 8,
+    "samples": 40,
+    "p50_ms": 45.44667700008631,
+    "p95_ms": 78.81850724994591,
+    "throughput": 20.022826653103014,
+    "rss_mb": 787.22265625,
+    "cpu_percent_mean": 799.921927288119,
+    "protocol": "Fixed four campus sentences repeated ten times; batch 1; eight additional warmups; no classification quality selection."
+  }
+]

@@ -1,6 +1,9 @@
 # Campus Notes · 校园回声
 
-带英文文本情绪分析的校园活动评论平台，DML 课程 MVP。React + TypeScript / FastAPI / PostgreSQL / ONNX Runtime CPU + PyTorch CPU / Docker Compose。
+带英文文本情绪分析的校园活动评论平台，DML 课程 MVP。
+
+[Jetstream2 在线演示](http://149.165.172.181/) · [双模型部署与实测报告](docs/jetstream-dual-validation.md)
+React + TypeScript / FastAPI / PostgreSQL / ONNX Runtime CPU + PyTorch CPU / Docker Compose。
 
 **当前为公开、免密码演示**：输入用户名即可进入，用户页与分析看板可自由切换，任何访客均可收藏、标记处理及追加人工纠正。它没有受保护的管理员角色，也不验证真实身份。仅使用虚构活动与演示内容；这是按项目要求选择的产品模式。
 

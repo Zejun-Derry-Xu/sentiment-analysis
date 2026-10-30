@@ -1,0 +1,136 @@
+{
+  "runtime_id": "65c768e1-a65f-48fd-92c9-f0613d1501ca",
+  "runtime": {
+    "model_revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+    "provider": [
+      "CPUExecutionProvider"
+    ],
+    "batch_size": 1,
+    "intra_threads": 6,
+    "inter_threads": 1,
+    "asset_preparation_ms": 171.33224300005168,
+    "model_load_ms": 414.1156390001015,
+    "platform": "Linux-7.0.0-42-generic-x86_64-with-glibc2.41",
+    "architecture": "x86_64",
+    "cpu_count": 16,
+    "cpu_model": "",
+    "memory_total_mb": 60258.2578125,
+    "packages": {
+      "onnxruntime": "1.22.1",
+      "tokenizers": "0.21.1",
+      "numpy": "2.2.6",
+      "scikit-learn": "1.6.1"
+    },
+    "cpu_limit": "600000 100000",
+    "memory_limit": "3221225472",
+    "manifest": {
+      "model_revision": "90ee0c1c4796d370e68968687b8ba51fc11224f4",
+      "model_license": "MIT",
+      "original_revision": "d75048347613a25d77de8cf6412eaae9fa7b26be",
+      "files": {
+        "onnx/model_quantized.onnx": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/onnx/model_quantized.onnx",
+          "sha256": "0c1981c5b479674747911c8e2228f0c4ec90bf47bf66e830f7d4fc62be082958",
+          "bytes": 125397543
+        },
+        "config.json": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/config.json",
+          "sha256": "3d4ef8e1465958e169761e2eb09d6e2c8d8806216973691ac40e405c97339d5c",
+          "bytes": 1924
+        },
+        "tokenizer.json": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/tokenizer.json",
+          "sha256": "90e2336a1cdacffe5d4328ab323aa9e5c33889026e4e4881323bebdeeb0e179d",
+          "bytes": 2108856
+        },
+        "tokenizer_config.json": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/tokenizer_config.json",
+          "sha256": "6735f2f38dc5399eb76a2c20dcba3ef27a9b2fbba0d05b6e2966038f28aefcf9",
+          "bytes": 380
+        },
+        "README.md": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions-onnx/resolve/90ee0c1c4796d370e68968687b8ba51fc11224f4/README.md",
+          "sha256": "05fcf4d10db72edeba581d28c7257900ae3aa5df4a648bb2facaf11fdc2c4c0b",
+          "bytes": 6106
+        },
+        "LICENSE.model": {
+          "url": "https://huggingface.co/SamLowe/roberta-base-go_emotions/resolve/d75048347613a25d77de8cf6412eaae9fa7b26be/LICENSE",
+          "sha256": "b96472c26654c10d3fdbcb1f469d34d5a42085b25d7e414670601306615e71e3",
+          "bytes": 1064
+        }
+      }
+    },
+    "first_inference_ms": 15.236246000085885,
+    "warmup_count": 20
+  },
+  "dataset": {
+    "dataset": "google-research-datasets/go_emotions",
+    "revision": "add492243ff905527e67aeb8b80c082af02207c3",
+    "config": "simplified",
+    "split": "test",
+    "rows": 5427,
+    "license": "Apache-2.0",
+    "labels": [
+      "admiration",
+      "amusement",
+      "anger",
+      "annoyance",
+      "approval",
+      "caring",
+      "confusion",
+      "curiosity",
+      "desire",
+      "disappointment",
+      "disapproval",
+      "disgust",
+      "embarrassment",
+      "excitement",
+      "fear",
+      "gratitude",
+      "grief",
+      "joy",
+      "love",
+      "nervousness",
+      "optimism",
+      "pride",
+      "realization",
+      "relief",
+      "remorse",
+      "sadness",
+      "surprise",
+      "neutral"
+    ],
+    "file": {
+      "url": "https://huggingface.co/datasets/google-research-datasets/go_emotions/resolve/add492243ff905527e67aeb8b80c082af02207c3/simplified/test-00000-of-00001.parquet",
+      "sha256": "fd0953e535ba2569edc6a1daaa1133f8e4b9071691d540c9bab812fda132bc26",
+      "bytes": 346630
+    }
+  },
+  "official": true,
+  "batch_size": 1,
+  "threshold": 0.5,
+  "comparison": ">",
+  "evaluation_wall_seconds": 109.26429706399995,
+  "inference_ms": {
+    "count": 5427,
+    "p50": 19.01641100039342,
+    "p95": 34.01289839994205,
+    "mean": 19.539362203243467,
+    "max": 154.43410399984714
+  },
+  "text_characters": {
+    "count": 5427,
+    "p50": 65.0,
+    "p95": 132.0,
+    "mean": 67.82476506357104,
+    "max": 184.0
+  },
+  "token_lengths": {
+    "count": 5427,
+    "p50": 18.0,
+    "p95": 33.0,
+    "mean": 18.786069651741293,
+    "max": 177.0
+  },
+  "note": "Evaluation wall time may include interleaved comment processing. Use the dedicated benchmark for performance."
+}

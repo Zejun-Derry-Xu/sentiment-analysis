@@ -2217,3 +2217,21 @@ td b {
     grid-template-columns: 1fr;
   }
 }
+
+.sentiment-scores progress {
+  appearance: none;
+  height: 7px;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #dee5d6;
+}
+.sentiment-scores progress::-webkit-progress-bar {
+  background: #dee5d6;
+}
+.sentiment-scores progress::-webkit-progress-value {
+  background: #80966f;
+}
+.sentiment-scores progress::-moz-progress-bar {
+  background: #80966f;
+}

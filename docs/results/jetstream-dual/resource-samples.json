@@ -1,0 +1,412 @@
+[
+  {
+    "utc": "2026-10-30T03:49:33.047673+00:00",
+    "containers": [
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "6.35%",
+        "Container": "90c4635737284d4f18ba3a5d2d21805759871305fafa0ac66a70182573d75c16",
+        "ID": "90c463573728",
+        "MemPerc": "0.04%",
+        "MemUsage": "23.52MiB / 58.85GiB",
+        "Name": "dml-campus-emotions-cli-run-cbbc3fca8464",
+        "NetIO": "1.28MB / 232kB",
+        "PIDs": "2"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "214.69%",
+        "Container": "92f18f951facbb61d2886980a5c1f174646acc061999dfbf374296dbc476a719",
+        "ID": "92f18f951fac",
+        "MemPerc": "10.62%",
+        "MemUsage": "326.2MiB / 3GiB",
+        "Name": "dml-campus-emotions-worker-1",
+        "NetIO": "1.08MB / 946kB",
+        "PIDs": "11"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "20.83%",
+        "Container": "45ee5aef6cac7c22a8e11381aab74c9eb49846b8f8a44d9ad8297d4c6b97cfa8",
+        "ID": "45ee5aef6cac",
+        "MemPerc": "3.85%",
+        "MemUsage": "39.46MiB / 1GiB",
+        "Name": "dml-campus-emotions-api-1",
+        "NetIO": "2.67MB / 2.13MB",
+        "PIDs": "6"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "2.77%",
+        "Container": "11126a8613affbfde196643df2077df45574685b9ac845025ce808d1ed0db9ee",
+        "ID": "11126a8613af",
+        "MemPerc": "7.59%",
+        "MemUsage": "29.14MiB / 384MiB",
+        "Name": "dml-campus-emotions-sentiment-worker-1",
+        "NetIO": "1.1MB / 898kB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 12.3kB",
+        "CPUPerc": "1.79%",
+        "Container": "836dc89229f28af2ec8b70985df01ef0850b11a23cc82ce1b057d1a8574d501b",
+        "ID": "836dc89229f2",
+        "MemPerc": "11.33%",
+        "MemUsage": "14.51MiB / 128MiB",
+        "Name": "dml-campus-emotions-web-1",
+        "NetIO": "9.86MB / 11.1MB",
+        "PIDs": "17"
+      },
+      {
+        "BlockIO": "0B / 1.03MB",
+        "CPUPerc": "12.54%",
+        "Container": "8c1b371fd0bbdd5161746bfee2184004ddec97f3f6f82f6ba44a2e328cdaebce",
+        "ID": "8c1b371fd0bb",
+        "MemPerc": "2.05%",
+        "MemUsage": "41.91MiB / 2GiB",
+        "Name": "dml-campus-emotions-db-1",
+        "NetIO": "3.03MB / 4.73MB",
+        "PIDs": "14"
+      },
+      {
+        "BlockIO": "0B / 4.1kB",
+        "CPUPerc": "228.59%",
+        "Container": "3da1eb02fa4b5b7383e5b4cfc04599da1d706b04fd79243061a80311b23df5f9",
+        "ID": "3da1eb02fa4b",
+        "MemPerc": "8.09%",
+        "MemUsage": "331.5MiB / 4GiB",
+        "Name": "dml-campus-emotions-sentiment-1",
+        "NetIO": "203kB / 424kB",
+        "PIDs": "11"
+      }
+    ]
+  },
+  {
+    "utc": "2026-10-30T03:49:35.090422+00:00",
+    "containers": [
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "15.67%",
+        "Container": "90c4635737284d4f18ba3a5d2d21805759871305fafa0ac66a70182573d75c16",
+        "ID": "90c463573728",
+        "MemPerc": "0.04%",
+        "MemUsage": "24.46MiB / 58.85GiB",
+        "Name": "dml-campus-emotions-cli-run-cbbc3fca8464",
+        "NetIO": "1.74MB / 307kB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "241.59%",
+        "Container": "92f18f951facbb61d2886980a5c1f174646acc061999dfbf374296dbc476a719",
+        "ID": "92f18f951fac",
+        "MemPerc": "10.62%",
+        "MemUsage": "326.1MiB / 3GiB",
+        "Name": "dml-campus-emotions-worker-1",
+        "NetIO": "1.16MB / 1.02MB",
+        "PIDs": "11"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "55.39%",
+        "Container": "45ee5aef6cac7c22a8e11381aab74c9eb49846b8f8a44d9ad8297d4c6b97cfa8",
+        "ID": "45ee5aef6cac",
+        "MemPerc": "4.07%",
+        "MemUsage": "41.65MiB / 1GiB",
+        "Name": "dml-campus-emotions-api-1",
+        "NetIO": "3.56MB / 2.88MB",
+        "PIDs": "9"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "51.49%",
+        "Container": "11126a8613affbfde196643df2077df45574685b9ac845025ce808d1ed0db9ee",
+        "ID": "11126a8613af",
+        "MemPerc": "13.09%",
+        "MemUsage": "50.25MiB / 384MiB",
+        "Name": "dml-campus-emotions-sentiment-worker-1",
+        "NetIO": "1.17MB / 962kB",
+        "PIDs": "6"
+      },
+      {
+        "BlockIO": "0B / 12.3kB",
+        "CPUPerc": "3.54%",
+        "Container": "836dc89229f28af2ec8b70985df01ef0850b11a23cc82ce1b057d1a8574d501b",
+        "ID": "836dc89229f2",
+        "MemPerc": "11.24%",
+        "MemUsage": "14.39MiB / 128MiB",
+        "Name": "dml-campus-emotions-web-1",
+        "NetIO": "10.4MB / 11.7MB",
+        "PIDs": "17"
+      },
+      {
+        "BlockIO": "0B / 1.03MB",
+        "CPUPerc": "32.22%",
+        "Container": "8c1b371fd0bbdd5161746bfee2184004ddec97f3f6f82f6ba44a2e328cdaebce",
+        "ID": "8c1b371fd0bb",
+        "MemPerc": "2.40%",
+        "MemUsage": "49.06MiB / 2GiB",
+        "Name": "dml-campus-emotions-db-1",
+        "NetIO": "3.46MB / 5.61MB",
+        "PIDs": "16"
+      },
+      {
+        "BlockIO": "0B / 4.1kB",
+        "CPUPerc": "213.46%",
+        "Container": "3da1eb02fa4b5b7383e5b4cfc04599da1d706b04fd79243061a80311b23df5f9",
+        "ID": "3da1eb02fa4b",
+        "MemPerc": "8.08%",
+        "MemUsage": "331.1MiB / 4GiB",
+        "Name": "dml-campus-emotions-sentiment-1",
+        "NetIO": "213kB / 441kB",
+        "PIDs": "11"
+      }
+    ]
+  },
+  {
+    "utc": "2026-10-30T03:49:37.130187+00:00",
+    "containers": [
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "29.54%",
+        "Container": "90c4635737284d4f18ba3a5d2d21805759871305fafa0ac66a70182573d75c16",
+        "ID": "90c463573728",
+        "MemPerc": "0.04%",
+        "MemUsage": "25.27MiB / 58.85GiB",
+        "Name": "dml-campus-emotions-cli-run-cbbc3fca8464",
+        "NetIO": "2.63MB / 444kB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "359.98%",
+        "Container": "92f18f951facbb61d2886980a5c1f174646acc061999dfbf374296dbc476a719",
+        "ID": "92f18f951fac",
+        "MemPerc": "10.62%",
+        "MemUsage": "326.4MiB / 3GiB",
+        "Name": "dml-campus-emotions-worker-1",
+        "NetIO": "1.27MB / 1.14MB",
+        "PIDs": "11"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "79.38%",
+        "Container": "45ee5aef6cac7c22a8e11381aab74c9eb49846b8f8a44d9ad8297d4c6b97cfa8",
+        "ID": "45ee5aef6cac",
+        "MemPerc": "4.08%",
+        "MemUsage": "41.79MiB / 1GiB",
+        "Name": "dml-campus-emotions-api-1",
+        "NetIO": "5.26MB / 4.26MB",
+        "PIDs": "9"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "6.76%",
+        "Container": "11126a8613affbfde196643df2077df45574685b9ac845025ce808d1ed0db9ee",
+        "ID": "11126a8613af",
+        "MemPerc": "7.55%",
+        "MemUsage": "28.98MiB / 384MiB",
+        "Name": "dml-campus-emotions-sentiment-worker-1",
+        "NetIO": "1.29MB / 1.06MB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 12.3kB",
+        "CPUPerc": "6.65%",
+        "Container": "836dc89229f28af2ec8b70985df01ef0850b11a23cc82ce1b057d1a8574d501b",
+        "ID": "836dc89229f2",
+        "MemPerc": "12.03%",
+        "MemUsage": "15.4MiB / 128MiB",
+        "Name": "dml-campus-emotions-web-1",
+        "NetIO": "11.4MB / 12.9MB",
+        "PIDs": "17"
+      },
+      {
+        "BlockIO": "0B / 1.03MB",
+        "CPUPerc": "29.45%",
+        "Container": "8c1b371fd0bbdd5161746bfee2184004ddec97f3f6f82f6ba44a2e328cdaebce",
+        "ID": "8c1b371fd0bb",
+        "MemPerc": "2.41%",
+        "MemUsage": "49.28MiB / 2GiB",
+        "Name": "dml-campus-emotions-db-1",
+        "NetIO": "4.15MB / 7.25MB",
+        "PIDs": "16"
+      },
+      {
+        "BlockIO": "0B / 4.1kB",
+        "CPUPerc": "349.44%",
+        "Container": "3da1eb02fa4b5b7383e5b4cfc04599da1d706b04fd79243061a80311b23df5f9",
+        "ID": "3da1eb02fa4b",
+        "MemPerc": "8.06%",
+        "MemUsage": "330.2MiB / 4GiB",
+        "Name": "dml-campus-emotions-sentiment-1",
+        "NetIO": "229kB / 465kB",
+        "PIDs": "11"
+      }
+    ]
+  },
+  {
+    "utc": "2026-10-30T03:49:39.168711+00:00",
+    "containers": [
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "27.94%",
+        "Container": "90c4635737284d4f18ba3a5d2d21805759871305fafa0ac66a70182573d75c16",
+        "ID": "90c463573728",
+        "MemPerc": "0.04%",
+        "MemUsage": "24.74MiB / 58.85GiB",
+        "Name": "dml-campus-emotions-cli-run-cbbc3fca8464",
+        "NetIO": "3.6MB / 587kB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "352.90%",
+        "Container": "92f18f951facbb61d2886980a5c1f174646acc061999dfbf374296dbc476a719",
+        "ID": "92f18f951fac",
+        "MemPerc": "10.62%",
+        "MemUsage": "326.1MiB / 3GiB",
+        "Name": "dml-campus-emotions-worker-1",
+        "NetIO": "1.36MB / 1.25MB",
+        "PIDs": "11"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "65.64%",
+        "Container": "45ee5aef6cac7c22a8e11381aab74c9eb49846b8f8a44d9ad8297d4c6b97cfa8",
+        "ID": "45ee5aef6cac",
+        "MemPerc": "4.02%",
+        "MemUsage": "41.18MiB / 1GiB",
+        "Name": "dml-campus-emotions-api-1",
+        "NetIO": "7.08MB / 5.74MB",
+        "PIDs": "9"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "4.52%",
+        "Container": "11126a8613affbfde196643df2077df45574685b9ac845025ce808d1ed0db9ee",
+        "ID": "11126a8613af",
+        "MemPerc": "7.47%",
+        "MemUsage": "28.7MiB / 384MiB",
+        "Name": "dml-campus-emotions-sentiment-worker-1",
+        "NetIO": "1.39MB / 1.15MB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 12.3kB",
+        "CPUPerc": "5.56%",
+        "Container": "836dc89229f28af2ec8b70985df01ef0850b11a23cc82ce1b057d1a8574d501b",
+        "ID": "836dc89229f2",
+        "MemPerc": "12.22%",
+        "MemUsage": "15.64MiB / 128MiB",
+        "Name": "dml-campus-emotions-web-1",
+        "NetIO": "12.5MB / 14.2MB",
+        "PIDs": "17"
+      },
+      {
+        "BlockIO": "0B / 1.03MB",
+        "CPUPerc": "29.75%",
+        "Container": "8c1b371fd0bbdd5161746bfee2184004ddec97f3f6f82f6ba44a2e328cdaebce",
+        "ID": "8c1b371fd0bb",
+        "MemPerc": "2.44%",
+        "MemUsage": "49.98MiB / 2GiB",
+        "Name": "dml-campus-emotions-db-1",
+        "NetIO": "4.84MB / 8.97MB",
+        "PIDs": "16"
+      },
+      {
+        "BlockIO": "0B / 4.1kB",
+        "CPUPerc": "361.96%",
+        "Container": "3da1eb02fa4b5b7383e5b4cfc04599da1d706b04fd79243061a80311b23df5f9",
+        "ID": "3da1eb02fa4b",
+        "MemPerc": "8.06%",
+        "MemUsage": "330MiB / 4GiB",
+        "Name": "dml-campus-emotions-sentiment-1",
+        "NetIO": "244kB / 490kB",
+        "PIDs": "11"
+      }
+    ]
+  },
+  {
+    "utc": "2026-10-30T03:49:41.213809+00:00",
+    "containers": [
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "26.53%",
+        "Container": "90c4635737284d4f18ba3a5d2d21805759871305fafa0ac66a70182573d75c16",
+        "ID": "90c463573728",
+        "MemPerc": "0.04%",
+        "MemUsage": "25.95MiB / 58.85GiB",
+        "Name": "dml-campus-emotions-cli-run-cbbc3fca8464",
+        "NetIO": "4.45MB / 726kB",
+        "PIDs": "9"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "297.09%",
+        "Container": "92f18f951facbb61d2886980a5c1f174646acc061999dfbf374296dbc476a719",
+        "ID": "92f18f951fac",
+        "MemPerc": "10.61%",
+        "MemUsage": "325.9MiB / 3GiB",
+        "Name": "dml-campus-emotions-worker-1",
+        "NetIO": "1.47MB / 1.36MB",
+        "PIDs": "11"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "70.29%",
+        "Container": "45ee5aef6cac7c22a8e11381aab74c9eb49846b8f8a44d9ad8297d4c6b97cfa8",
+        "ID": "45ee5aef6cac",
+        "MemPerc": "4.14%",
+        "MemUsage": "42.4MiB / 1GiB",
+        "Name": "dml-campus-emotions-api-1",
+        "NetIO": "8.78MB / 7.13MB",
+        "PIDs": "13"
+      },
+      {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "4.26%",
+        "Container": "11126a8613affbfde196643df2077df45574685b9ac845025ce808d1ed0db9ee",
+        "ID": "11126a8613af",
+        "MemPerc": "7.48%",
+        "MemUsage": "28.73MiB / 384MiB",
+        "Name": "dml-campus-emotions-sentiment-worker-1",
+        "NetIO": "1.5MB / 1.23MB",
+        "PIDs": "5"
+      },
+      {
+        "BlockIO": "0B / 12.3kB",
+        "CPUPerc": "5.23%",
+        "Container": "836dc89229f28af2ec8b70985df01ef0850b11a23cc82ce1b057d1a8574d501b",
+        "ID": "836dc89229f2",
+        "MemPerc": "12.54%",
+        "MemUsage": "16.05MiB / 128MiB",
+        "Name": "dml-campus-emotions-web-1",
+        "NetIO": "13.5MB / 15.3MB",
+        "PIDs": "17"
+      },
+      {
+        "BlockIO": "0B / 1.03MB",
+        "CPUPerc": "39.53%",
+        "Container": "8c1b371fd0bbdd5161746bfee2184004ddec97f3f6f82f6ba44a2e328cdaebce",
+        "ID": "8c1b371fd0bb",
+        "MemPerc": "2.77%",
+        "MemUsage": "56.73MiB / 2GiB",
+        "Name": "dml-campus-emotions-db-1",
+        "NetIO": "5.55MB / 10.6MB",
+        "PIDs": "19"
+      },
+      {
+        "BlockIO": "0B / 4.1kB",
+        "CPUPerc": "333.48%",
+        "Container": "3da1eb02fa4b5b7383e5b4cfc04599da1d706b04fd79243061a80311b23df5f9",
+        "ID": "3da1eb02fa4b",
+        "MemPerc": "8.06%",
+        "MemUsage": "330.2MiB / 4GiB",
+        "Name": "dml-campus-emotions-sentiment-1",
+        "NetIO": "260kB / 512kB",
+        "PIDs": "11"
+      }
+    ]
+  }
+]

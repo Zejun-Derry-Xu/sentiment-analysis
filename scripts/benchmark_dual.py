@@ -92,6 +92,9 @@ def run(base, samples):
                 "sentiment_queue_ms": s["queue_ms"],
                 "sentiment_service_queue_ms": s["service_queue_ms"],
                 "sentiment_inference_ms": s["inference_ms"],
+                "emotion_token_count": a["token_count"],
+                "sentiment_token_count": s["token_count"],
+                "text_characters": len(TEXTS[i % 4]),
                 "emotion_rss_mib": a["rss_mb"],
                 "sentiment_rss_mib": s["rss_mb"],
             }

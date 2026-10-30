@@ -1,0 +1,112 @@
+{
+  "passed": true,
+  "protocol": "Stop both queue workers after benchmark completed, fingerprint all business rows, restart PostgreSQL, start workers, compare exact counts and hashes. Runtime heartbeat tables excluded.",
+  "before": {
+    "users": {
+      "count": 5,
+      "checksum": "fd2db5c812e7efd40e872210c6f1f2f4"
+    },
+    "sessions": {
+      "count": 5,
+      "checksum": "d21a601c139a9e145efd36841a456e52"
+    },
+    "events": {
+      "count": 4,
+      "checksum": "9750f2ec57c57e66a6f23530fb6eb041"
+    },
+    "comments": {
+      "count": 386,
+      "checksum": "209f6b194451c2a2d23965a635527d21"
+    },
+    "jobs": {
+      "count": 386,
+      "checksum": "d0c261fa62445b614b1f754e51ba4857"
+    },
+    "analyses": {
+      "count": 386,
+      "checksum": "cf07e039ff41a239f3dabab0ae22024b"
+    },
+    "sentiment_jobs": {
+      "count": 386,
+      "checksum": "823a8e8cb2a16ac672b0a2e4d1793824"
+    },
+    "sentiment_analyses": {
+      "count": 386,
+      "checksum": "b5f22e7244a8a2a3dcfb3047a046717b"
+    },
+    "favorites": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "corrections": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "handling_history": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "evaluations": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "benchmarks": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  },
+  "after": {
+    "users": {
+      "count": 5,
+      "checksum": "fd2db5c812e7efd40e872210c6f1f2f4"
+    },
+    "sessions": {
+      "count": 5,
+      "checksum": "d21a601c139a9e145efd36841a456e52"
+    },
+    "events": {
+      "count": 4,
+      "checksum": "9750f2ec57c57e66a6f23530fb6eb041"
+    },
+    "comments": {
+      "count": 386,
+      "checksum": "209f6b194451c2a2d23965a635527d21"
+    },
+    "jobs": {
+      "count": 386,
+      "checksum": "d0c261fa62445b614b1f754e51ba4857"
+    },
+    "analyses": {
+      "count": 386,
+      "checksum": "cf07e039ff41a239f3dabab0ae22024b"
+    },
+    "sentiment_jobs": {
+      "count": 386,
+      "checksum": "823a8e8cb2a16ac672b0a2e4d1793824"
+    },
+    "sentiment_analyses": {
+      "count": 386,
+      "checksum": "b5f22e7244a8a2a3dcfb3047a046717b"
+    },
+    "favorites": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "corrections": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "handling_history": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "evaluations": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "benchmarks": {
+      "count": 0,
+      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  }
+}
