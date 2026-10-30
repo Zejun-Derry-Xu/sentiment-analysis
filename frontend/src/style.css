@@ -2137,3 +2137,83 @@ td b {
     padding: 11px 17px;
   }
 }
+
+/* Independent emotion and sentiment results in the same comment. */
+.sentiment-analysis {
+  margin-top: 12px;
+  background: #f7f8f2;
+}
+.sentiment-winner {
+  font-size: 22px;
+  font-weight: 650;
+  margin: 14px 0;
+}
+.sentiment-negative {
+  color: #a65b45;
+}
+.sentiment-neutral {
+  color: #71816c;
+}
+.sentiment-positive {
+  color: #49714d;
+}
+.sentiment-scores {
+  display: grid;
+  gap: 8px;
+}
+.sentiment-scores > div {
+  display: grid;
+  grid-template-columns: 50px 1fr 60px;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+}
+.sentiment-scores progress {
+  width: 100%;
+  accent-color: #8b9f71;
+}
+.dual-distributions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 20px 0;
+}
+.distribution-panel {
+  border: 1px solid var(--line, #d8dece);
+  border-radius: 12px;
+  padding: 22px;
+  background: #fcfcf7;
+}
+.sentiment-totals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.sentiment-total {
+  background: #f1f3e9;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.sentiment-total strong {
+  font-size: 27px;
+}
+.emotion-totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 180px;
+  overflow: auto;
+}
+.emotion-totals button {
+  cursor: pointer;
+}
+@media (max-width: 750px) {
+  .dual-distributions {
+    grid-template-columns: 1fr;
+  }
+}

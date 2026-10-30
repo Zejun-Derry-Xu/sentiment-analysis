@@ -23,6 +23,18 @@ type Analysis = {
   token_count: number;
   truncated: boolean;
 };
+type Sentiment = {
+  label: string;
+  scores: Record<string, number>;
+  inference_ms: number;
+  queue_ms: number;
+  model_revision: string;
+};
+const sentiments: Record<string, string> = {
+  negative: "负面",
+  neutral: "中性",
+  positive: "正面",
+};
 type Correction = {
   labels: string[];
   reason: string;
@@ -41,6 +53,10 @@ type Note = {
   completed_at: string | null;
   favorite: boolean;
   analysis: Analysis | null;
+  sentiment: Sentiment | null;
+  sentiment_status: string;
+  sentiment_error: string | null;
+  sentiment_attempts?: { status: string; started_at: string }[];
   correction: Correction | null;
   last_error: string | null;
   correction_history?: Correction[];
@@ -52,6 +68,9 @@ type Stats = {
   waiting: number;
   unread: number;
   favorites: number;
+  sentiment?: Record<string, number>;
+  sentiment_completed?: number;
+  emotions?: { label: string; count: number }[];
 };
 type Metric = {
   label: string;
@@ -239,6 +258,8 @@ function App() {
     [page, setPage] = useState(1);
   const [filterEvent, setFilterEvent] = useState(""),
     [filterLabel, setFilterLabel] = useState(""),
+    [filterSentiment, setFilterSentiment] = useState(""),
+    [filterSentimentStatus, setFilterSentimentStatus] = useState(""),
     [filterStatus, setFilterStatus] = useState(""),
     [filterHandling, setFilterHandling] = useState(""),
     [after, setAfter] = useState(""),
@@ -257,7 +278,17 @@ function App() {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]),
     [evaluationId, setEvaluationId] = useState(""),
     [benches, setBenches] = useState<Bench[]>([]);
-  const draftKey = useRef(crypto.randomUUID());
+  const uuid = () =>
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+          (
+            Number(c) ^
+            (crypto.getRandomValues(new Uint8Array(1))[0] &
+              (15 >> (Number(c) / 4)))
+          ).toString(16),
+        );
+  const draftKey = useRef(uuid());
   useEffect(() => {
     api<User>("/api/session")
       .then(setUser)
@@ -271,6 +302,8 @@ function App() {
     selected?.id,
     filterEvent,
     filterLabel,
+    filterSentiment,
+    filterSentimentStatus,
     filterStatus,
     filterHandling,
     after,
@@ -308,6 +341,9 @@ function App() {
           if (["board", "favorites", "mine"].includes(view)) {
             if (filterEvent) q.set("event_id", filterEvent);
             if (filterLabel) q.set("label", filterLabel);
+            if (filterSentiment) q.set("sentiment", filterSentiment);
+            if (filterSentimentStatus)
+              q.set("sentiment_status", filterSentimentStatus);
             if (filterStatus) q.set("status", filterStatus);
             if (filterHandling) q.set("handling", filterHandling);
             if (after)
@@ -342,6 +378,8 @@ function App() {
     page,
     filterEvent,
     filterLabel,
+    filterSentiment,
+    filterSentimentStatus,
     filterStatus,
     filterHandling,
     after,
@@ -360,6 +398,8 @@ function App() {
     setTotal(0);
     setFilterEvent("");
     setFilterLabel("");
+    setFilterSentiment("");
+    setFilterSentimentStatus("");
     setFilterStatus("");
     setFilterHandling("");
     setAfter("");
@@ -410,7 +450,7 @@ function App() {
       })
     ) {
       setText("");
-      draftKey.current = crypto.randomUUID();
+      draftKey.current = uuid();
       setNotice("评论已保存，正在等待分析。");
       setPage(1);
     }
@@ -418,7 +458,7 @@ function App() {
   }
   function editText(value: string) {
     setText(value);
-    draftKey.current = crypto.randomUUID();
+    draftKey.current = uuid();
   }
   function openCorrection(n: Note) {
     setCorrecting(n);
@@ -538,6 +578,52 @@ function App() {
             )}
           </div>
         )}
+        <div className="analysis sentiment-analysis">
+          <div className="analysis-heading">
+            <span className="eyebrow">TEXT SENTIMENT · 三分类</span>
+            <span className={"status " + n.sentiment_status}>
+              {statusName[n.sentiment_status]}
+            </span>
+          </div>
+          {n.sentiment ? (
+            <>
+              <div
+                className={"sentiment-winner sentiment-" + n.sentiment.label}
+              >
+                {sentiments[n.sentiment.label]} · {n.sentiment.label}
+              </div>
+              <div className="sentiment-scores">
+                {Object.entries(sentiments).map(([label, name]) => (
+                  <div key={label}>
+                    <span>{name}</span>
+                    <progress max="1" value={n.sentiment!.scores[label]} />
+                    <b>{n.sentiment!.scores[label].toFixed(4)}</b>
+                  </div>
+                ))}
+              </div>
+              <p className="fineprint muted">
+                模型得分 · 单标签三分类；与上方多标签情绪独立。推理{" "}
+                {ms(n.sentiment.inference_ms)} · 排队 {ms(n.sentiment.queue_ms)}
+              </p>
+            </>
+          ) : (
+            <p className="muted">
+              {n.sentiment_status === "failed"
+                ? n.sentiment_error || "三分类暂时失败，评论已保存。"
+                : "评论已保存，后台正在分析正面／中性／负面倾向。"}
+            </p>
+          )}
+          {n.sentiment_status === "failed" && (
+            <button
+              className="text-button"
+              onClick={() =>
+                void act(`/api/comments/${n.id}/sentiment/retry`, "POST")
+              }
+            >
+              重试三分类 ↻
+            </button>
+          )}
+        </div>
         {n.correction && (
           <div className="correction">
             <span className="eyebrow">人工纠正 · 独立记录</span>
@@ -1187,7 +1273,7 @@ function App() {
                 <div className="stats-grid">
                   {[
                     ["所有评论", stats.total, "01"],
-                    ["已完成分析", stats.completed, "02"],
+                    ["两套分析均完成", stats.completed, "02"],
                     ["等待 / 分析中", stats.waiting, "03"],
                     ["尚未查看", stats.unread, "04"],
                   ].map(([t, n, i]) => (
@@ -1198,6 +1284,58 @@ function App() {
                     </div>
                   ))}
                 </div>
+                <section className="dual-distributions" aria-label="双模型统计">
+                  <div className="distribution-panel">
+                    <span className="eyebrow">SENTIMENT · 三分类分布</span>
+                    <p className="fineprint muted">
+                      全站真实评论 · 已完成 {stats.sentiment_completed || 0} 条
+                    </p>
+                    <div className="sentiment-totals">
+                      {Object.entries(sentiments).map(([label, name]) => (
+                        <button
+                          key={label}
+                          className={"sentiment-total sentiment-" + label}
+                          onClick={() => {
+                            setFilterSentiment(label);
+                            setPage(1);
+                          }}
+                        >
+                          <span>{name}</span>
+                          <strong>{stats.sentiment?.[label] || 0}</strong>
+                          <small>
+                            {stats.sentiment_completed
+                              ? percent(
+                                  (stats.sentiment?.[label] || 0) /
+                                    stats.sentiment_completed,
+                                )
+                              : "—"}
+                          </small>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="distribution-panel">
+                    <span className="eyebrow">EMOTION · 阈值标签分布</span>
+                    <p className="fineprint muted">
+                      全站模型原始输出 · 一条评论可有多个标签
+                    </p>
+                    <div className="emotion-totals">
+                      {stats.emotions?.length ? (
+                        stats.emotions.map((e) => (
+                          <button
+                            key={e.label}
+                            className="tag"
+                            onClick={() => setFilterLabel(e.label)}
+                          >
+                            {labelName(e.label)} <b>{e.count}</b>
+                          </button>
+                        ))
+                      ) : (
+                        <span className="muted">分析完成后显示情绪分布。</span>
+                      )}
+                    </div>
+                  </div>
+                </section>
                 <section className="filters" aria-label="评论筛选">
                   <label>
                     活动
@@ -1228,7 +1366,7 @@ function App() {
                     </select>
                   </label>
                   <label>
-                    分析状态
+                    情绪分析状态
                     <select
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value)}
@@ -1238,6 +1376,36 @@ function App() {
                         (s) => (
                           <option key={s} value={s}>
                             {statusName[s]}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </label>
+                  <label>
+                    三分类结果
+                    <select
+                      value={filterSentiment}
+                      onChange={(e) => setFilterSentiment(e.target.value)}
+                    >
+                      <option value="">全部倾向</option>
+                      {Object.entries(sentiments).map(([l, n]) => (
+                        <option key={l} value={l}>
+                          {n} · {l}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    三分类状态
+                    <select
+                      value={filterSentimentStatus}
+                      onChange={(e) => setFilterSentimentStatus(e.target.value)}
+                    >
+                      <option value="">全部状态</option>
+                      {["pending", "processing", "completed", "failed"].map(
+                        (l) => (
+                          <option key={l} value={l}>
+                            {statusName[l]}
                           </option>
                         ),
                       )}
@@ -1278,6 +1446,8 @@ function App() {
                     onClick={() => {
                       setFilterEvent("");
                       setFilterLabel("");
+                      setFilterSentiment("");
+                      setFilterSentimentStatus("");
                       setFilterStatus("");
                       setFilterHandling("");
                       setAfter("");
@@ -1356,7 +1526,7 @@ function App() {
         </div>
         <span className={"worker-state " + (ready ? "online" : "")}>
           <i />
-          {ready ? "CPU 模型服务在线" : "模型服务准备中"}
+          {ready ? "两套 CPU 模型服务在线" : "模型服务准备中"}
         </span>
         <span className="muted">DML · PUBLIC DEMO · 2026</span>
       </footer>
@@ -1467,7 +1637,20 @@ function App() {
             ) : (
               <p className="muted">等待首次分析。</p>
             )}
-            <h3>人工纠正历史</h3>
+            <h3>三分类分析尝试</h3>
+            {history.sentiment_attempts?.length ? (
+              history.sentiment_attempts.map((a, i) => (
+                <p className="history-row" key={i}>
+                  <b>
+                    #{i + 1} · {statusName[a.status]}
+                  </b>
+                  <span>{date(a.started_at)}</span>
+                </p>
+              ))
+            ) : (
+              <p className="muted">等待三分类首次分析。</p>
+            )}
+            <h3>人工纠正历史（情绪标签）</h3>
             {history.correction_history?.length ? (
               history.correction_history.map((c, i) => (
                 <div className="history-entry" key={i}>

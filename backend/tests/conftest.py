@@ -30,7 +30,7 @@ from fastapi.testclient import TestClient
 def reset():
     initialize()
     with connect() as c:
-        c.execute("TRUNCATE users,runtimes,evaluations,benchmarks CASCADE")
+        c.execute("TRUNCATE users,runtimes,sentiment_runtimes,evaluations,benchmarks CASCADE")
     yield
 
 

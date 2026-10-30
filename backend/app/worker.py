@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import signal
 import threading
 import time
@@ -364,7 +365,7 @@ def main():
             if job:
                 execute(job, engine, runtime_id)
             else:
-                STOP.wait(0.2)
+                STOP.wait(float(os.getenv("WORKER_POLL_SECONDS", "0.05")))
 
 
 if __name__ == "__main__":

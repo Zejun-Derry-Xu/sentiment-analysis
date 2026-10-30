@@ -10,7 +10,7 @@ from fastapi import FastAPI, Request, Response, HTTPException, Depends, Query
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 from psycopg.types.json import Jsonb
-from .db import connect, initialize, enqueue
+from .db import connect, initialize, enqueue, enqueue_sentiment
 from .config import LABELS, MODEL_REV, MODEL_REPO, DATA_REV, REPORT_DIR
 
 
@@ -131,6 +131,7 @@ class Correction(BaseModel):
 
 SELECT_COMMENT = """SELECT c.*,u.username,e.title AS event_title,
  EXISTS(SELECT 1 FROM favorites f WHERE f.comment_id=c.id AND f.user_id=%s) AS favorite,
+ (SELECT row_to_json(s) FROM sentiment_analyses s WHERE s.comment_id=c.id AND s.status='completed' ORDER BY s.started_at DESC LIMIT 1) AS sentiment,
  (SELECT row_to_json(a) FROM analyses a WHERE a.comment_id=c.id AND a.status='completed' ORDER BY a.started_at DESC LIMIT 1) AS analysis,
  (SELECT json_build_object('id',r.id,'labels',r.labels,'reason',r.reason,'created_at',r.created_at,'username',ru.username)
   FROM corrections r JOIN users ru ON ru.id=r.user_id WHERE r.comment_id=c.id ORDER BY r.created_at DESC LIMIT 1) AS correction
@@ -157,7 +158,17 @@ def ready():
         ).fetchone()
     if not runtime:
         raise HTTPException(503, "模型 worker 尚未就绪。")
-    return {"database": "ok", "worker": "ready", "runtime_id": runtime["id"]}
+    result = {"database": "ok", "worker": "ready", "runtime_id": runtime["id"]}
+    if os.getenv("ENABLE_SENTIMENT", "false").lower() == "true":
+        with connect() as c:
+            sentiment = c.execute(
+                "SELECT id FROM sentiment_runtimes WHERE heartbeat>now()-interval '30 seconds' ORDER BY started_at DESC LIMIT 1"
+            ).fetchone()
+        if not sentiment:
+            raise HTTPException(503, "三分类 worker 尚未就绪。")
+        result["sentiment_worker"] = "ready"
+        result["sentiment_runtime_id"] = sentiment["id"]
+    return result
 
 
 @app.post("/api/session")
@@ -237,6 +248,14 @@ def runtime_info():
         ).fetchone()
 
 
+@app.get("/api/sentiment/runtime")
+def sentiment_runtime_info():
+    with connect() as c:
+        return c.execute(
+            "SELECT * FROM sentiment_runtimes ORDER BY started_at DESC LIMIT 1"
+        ).fetchone()
+
+
 @app.post("/api/comments", status_code=202)
 def post_comment(body: NewComment, user=Depends(session_user)):
     with connect() as c:
@@ -251,6 +270,7 @@ def post_comment(body: NewComment, user=Depends(session_user)):
         ).fetchone()
         if row:
             enqueue(c, "comment", row["id"])
+            enqueue_sentiment(c, row["id"])
         else:
             row = c.execute(
                 "SELECT id,event_id,text FROM comments WHERE user_id=%s AND idempotency_key=%s",
@@ -265,6 +285,9 @@ def post_comment(body: NewComment, user=Depends(session_user)):
 def comments(
     event_id: str | None = None,
     label: str | None = None,
+    sentiment: Literal["negative", "neutral", "positive"] | None = None,
+    sentiment_status: Literal["pending", "processing", "completed", "failed"]
+    | None = None,
     status: Literal["pending", "processing", "completed", "failed"] | None = None,
     handling: Literal["unread", "viewed", "processed"] | None = None,
     after: datetime | None = None,
@@ -285,6 +308,14 @@ def comments(
         if val is not None:
             conditions.append(col + "=%s")
             params.append(val)
+    if sentiment_status:
+        conditions.append("c.sentiment_status=%s")
+        params.append(sentiment_status)
+    if sentiment:
+        conditions.append(
+            "EXISTS(SELECT 1 FROM sentiment_analyses s WHERE s.comment_id=c.id AND s.status='completed' AND s.label=%s)"
+        )
+        params.append(sentiment)
     if label:
         if label not in LABELS:
             raise HTTPException(422, "未知情绪标签。")
@@ -327,15 +358,48 @@ def comments(
 @app.get("/api/stats")
 def stats(user=Depends(session_user)):
     with connect() as c:
-        return c.execute(
+        result = c.execute(
             """SELECT count(*) AS total,
-        count(*) FILTER(WHERE c.status='completed') AS completed,
-        count(*) FILTER(WHERE c.status IN ('pending','processing')) AS waiting,
+        count(*) FILTER(WHERE c.status='completed' AND c.sentiment_status='completed') AS completed,
+        count(*) FILTER(WHERE c.status IN ('pending','processing') OR c.sentiment_status IN ('pending','processing')) AS waiting,
+        count(*) FILTER(WHERE c.status='failed' OR c.sentiment_status='failed') AS failed,
         count(*) FILTER(WHERE c.handling='unread') AS unread,
         count(*) FILTER(WHERE EXISTS(SELECT 1 FROM favorites f WHERE f.comment_id=c.id AND f.user_id=%s)) AS favorites
         FROM comments c JOIN events e ON e.id=c.event_id WHERE NOT e.is_benchmark""",
             (user["id"],),
         ).fetchone()
+        counts = c.execute("""SELECT s.label,count(*) AS n FROM comments c JOIN events e ON e.id=c.event_id
+        JOIN LATERAL (SELECT label FROM sentiment_analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) s ON true
+        WHERE NOT e.is_benchmark GROUP BY s.label""").fetchall()
+        result["sentiment"] = {
+            label: 0 for label in ("negative", "neutral", "positive")
+        }
+        result["sentiment"].update({r["label"]: r["n"] for r in counts})
+        result["sentiment_completed"] = sum(result["sentiment"].values())
+        result["emotions"] = (
+            c.execute("""SELECT label,count(*) AS count FROM comments c JOIN events e ON e.id=c.event_id
+        JOIN LATERAL (SELECT labels FROM analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) a ON true
+        CROSS JOIN LATERAL jsonb_array_elements_text(a.labels) AS label WHERE NOT e.is_benchmark GROUP BY label ORDER BY count(*) DESC,label""").fetchall()
+        )
+        return result
+
+
+@app.post("/api/comments/{comment_id}/sentiment/retry", status_code=202)
+def retry_sentiment(comment_id: UUID, user=Depends(session_user)):
+    with connect() as c:
+        row = c.execute(
+            "SELECT * FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
+        ).fetchone()
+        if not row:
+            raise HTTPException(404, "评论不存在。")
+        if row["sentiment_status"] != "failed":
+            raise HTTPException(409, "仅失败的三分类任务可以重试。")
+        c.execute(
+            "UPDATE comments SET sentiment_status='pending',sentiment_error=NULL WHERE id=%s",
+            (comment_id,),
+        )
+        enqueue_sentiment(c, comment_id)
+        return get_comment(c, comment_id, user["id"])
 
 
 @app.get("/api/comments/{comment_id}")
@@ -352,6 +416,10 @@ def comment_detail(comment_id: UUID, user=Depends(session_user)):
         ).fetchall()
         row["attempts"] = c.execute(
             "SELECT id,status,started_at,finished_at,error FROM analyses WHERE comment_id=%s ORDER BY started_at",
+            (comment_id,),
+        ).fetchall()
+        row["sentiment_attempts"] = c.execute(
+            "SELECT id,status,started_at,finished_at,error FROM sentiment_analyses WHERE comment_id=%s ORDER BY started_at",
             (comment_id,),
         ).fetchall()
         return row

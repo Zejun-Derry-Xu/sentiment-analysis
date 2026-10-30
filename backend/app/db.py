@@ -19,6 +19,12 @@ def initialize():
         if not c.execute("SELECT 1 FROM schema_migrations WHERE version=1").fetchone():
             c.execute(Path(__file__).with_name("schema.sql").read_text())
             c.execute("INSERT INTO schema_migrations(version) VALUES (1)")
+        if not c.execute("SELECT 1 FROM schema_migrations WHERE version=2").fetchone():
+            c.execute(Path(__file__).with_name("sentiment.sql").read_text())
+            # Backfill only the new model; never change original emotion results.
+            for row in c.execute("SELECT id FROM comments").fetchall():
+                enqueue_sentiment(c, row["id"])
+            c.execute("INSERT INTO schema_migrations(version) VALUES (2)")
         events = [
             (
                 "spring-sounds",
@@ -69,5 +75,13 @@ def enqueue(c, kind, comment_id=None, payload=None):
     c.execute(
         "INSERT INTO jobs(id,kind,comment_id,payload) VALUES (%s,%s,%s,%s)",
         (jid, kind, comment_id, Jsonb(payload or {})),
+    )
+    return jid
+
+
+def enqueue_sentiment(c, comment_id):
+    jid = uuid4()
+    c.execute(
+        "INSERT INTO sentiment_jobs(id,comment_id) VALUES (%s,%s)", (jid, comment_id)
     )
     return jid

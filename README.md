@@ -200,8 +200,14 @@ docker compose exec -T db pg_dump -U campus -d campus -Fc > reports/backups/camp
 
 源代码采用 MIT；模型及数据保留各自许可证。大权重、数据库、会话、`.env` 不进入 Git。
 
-## 并行三分类 CPU 试验
+## 双模型评论分析
 
-Cardiff 的正面/中性/负面分类器在独立目录和 Compose 项目中运行，不替换本平台。
-启动：`sh experiments/cardiff-cpu/start.sh`，访问 `http://localhost:5181`。
-固定版本、完整官方测试与 CPU 性能复测见 [独立试验说明](experiments/cardiff-cpu/README.md)。
+默认 Compose 现在同时启动情绪与三分类两套 CPU 服务。在同一个活动页面发布英文评论后，分别显示 28 类多标签情绪、正面/中性/负面三分类及各自状态和模型得分。看板提供两套分布、三分类结果/状态筛选；分布统计全站非性能测试评论，不随列表筛选改变。情绪分布一条评论可以多计，三分类分布每条已完成评论只计一次。看板“已完成”要求两套均完成。
+
+迁移 2 为已有评论自动排队补充三分类，不改动原始情绪分析。两个队列原子领取、独立有限重试和中断恢复；模型故障不丢评论、不覆盖另一套已完成结果。人工纠正当前仅针对情绪标签，独立保存。独立推理服务不发布外部端口，只有前端 5180 可访问。
+
+运行方式保持 `sh scripts/setup.sh`。首次需要另下载作者约 501 MB FP32 三分类权重；默认每套模型各 2 核、batch 1。通过 `ORT_INTRA_THREADS` / `EMOTION_CPUS` 和 `TORCH_THREADS` / `SENTIMENT_CPUS` 分别控制线程和 CPU 限额。不要盲目增加进程；每套常驻一份模型。
+
+三分类的模型、数据固定版本、许可边界及本地完整测试见 [验证报告](docs/cardiff-cpu-validation.md)。三分类模型声明 CC BY 4.0；TweetEval 原始数据条款核查仍待完成，仓库不分发其测试文本，不影响现场评论功能。官方两套测试成绩分别报告，现场评论统计不用于计算准确率。
+
+保留 [独立试验台](experiments/cardiff-cpu/README.md) 用于复现，运行 `sh experiments/cardiff-cpu/start.sh` 后访问 `http://localhost:5181`。这与默认集成服务使用不同的 Compose 项目和缓存。
