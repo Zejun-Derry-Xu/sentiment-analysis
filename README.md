@@ -2,7 +2,7 @@
 
 An English campus discussion forum with two independent CPU classifiers: multi-label emotion and three-class sentiment. React + TypeScript, FastAPI, PostgreSQL, ONNX Runtime CPU, PyTorch CPU, and Docker Compose.
 
-[Live Jetstream2 demo](http://149.165.155.184/) · [Cloud deployment and measurements](docs/jetstream-dual-validation.md)
+[Live Jetstream2 demo](https://sentiment-analysis.cis240466.projects.jetstream-cloud.org/) · [Cloud deployment and measurements](docs/jetstream-dual-validation.md)
 
 ## Product
 
@@ -58,7 +58,8 @@ There are no fixed demo passwords. Choose any display name. The cookie lasts up 
 
 ```mermaid
 flowchart LR
-  Browser[Campus Forum] --> Web[Nginx / React]
+  Browser[Campus Forum] --> TLS[Cloud HTTPS / Caddy]
+  TLS --> Web[Nginx / React]
   Web --> API[FastAPI]
   API --> DB[(PostgreSQL)]
   Emotion[Singleton emotion worker / ONNX CPU] --> DB
@@ -154,17 +155,19 @@ Dual performance includes real PostgreSQL saves and both queues. The report dist
 
 Use an independent checkout, Compose project, database, ports, and volumes. Check actual hardware and running services first. Never stop unrelated projects. The deployed instance uses `/home/exouser/sentiment-analysis`.
 
-For the measured 16-vCPU Jetstream configuration, set in private `.env`:
+For the measured 16-vCPU Jetstream configuration with public HTTPS, set in private `.env`:
 
 ```dotenv
-COMPOSE_FILE=compose.yaml:compose.jetstream.yaml
-APP_BIND=0.0.0.0
-APP_PORT=80
-APP_ORIGINS=http://YOUR_HOST,http://YOUR_IP
+COMPOSE_FILE=compose.yaml:compose.jetstream.yaml:compose.https.yaml
+PUBLIC_HOST=YOUR_PUBLIC_DNS_HOSTNAME
+APP_BIND=127.0.0.1
+APP_PORT=5180
+APP_ORIGINS=https://YOUR_PUBLIC_DNS_HOSTNAME
+COOKIE_SECURE=true
 HOST_LABEL=YOUR_ACTUAL_HARDWARE
 ```
 
-The overlay uses six emotion threads and four sentiment threads, with CPU budgets for API/database. These were selected from 1/2/4/6/8-thread sweeps; extra threads were not always faster. Re-measure on other hardware. Set `COOKIE_SECURE=true` when serving through HTTPS and include the actual HTTPS origin. Default local configuration remains private on 5180.
+The overlay uses six emotion threads and four sentiment threads, with CPU budgets for API/database. These were selected from 1/2/4/6/8-thread sweeps; extra threads were not always faster. Re-measure on other hardware. The HTTPS overlay adds a seventh long-running container (Caddy), publishing TCP 80/443 while the Web debug port stays on loopback. Caddy obtains a publicly trusted certificate, redirects HTTP to the canonical HTTPS hostname, and renews certificates using persistent `caddy_data` / `caddy_config` volumes. DNS must resolve to the current VM and ports 80/443 must be reachable. Do not delete certificate volumes or commit private keys. Default local configuration remains private HTTP on 5180. Production API benchmarks must use the public HTTPS base URL so Secure session cookies are sent. See [HTTPS verification](docs/https-deployment.md).
 
 ```sh
 # Start/update without removing volumes

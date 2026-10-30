@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "https_url": "https://sentiment-analysis.cis240466.projects.jetstream-cloud.org",
+  "certificate_verified_by_system_trust": true,
+  "tls": {
+    "version": "TLSv1.3",
+    "issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Let's Encrypt"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "YE2"
+        ]
+      ]
+    ],
+    "subject": [
+      [
+        [
+          "commonName",
+          "sentiment-analysis.cis240466.projects.jetstream-cloud.org"
+        ]
+      ]
+    ],
+    "not_after": "Jan 28 16:39:21 2027 GMT",
+    "dns_names": [
+      [
+        "DNS",
+        "sentiment-analysis.cis240466.projects.jetstream-cloud.org"
+      ]
+    ]
+  },
+  "secure_httponly_samesite_cookie": true,
+  "hsts": "max-age=31536000",
+  "http_ip_redirects_to_canonical_https": true,
+  "untrusted_origin_rejected": true,
+  "real_dual_model_post": {
+    "id": "5484dd65-ed28-4fe6-a945-fdb540bc6f10",
+    "emotion": [
+      "admiration",
+      "gratitude"
+    ],
+    "sentiment": "positive",
+    "both_completed": true
+  },
+  "sentiment_report_samples": 12284
+}
