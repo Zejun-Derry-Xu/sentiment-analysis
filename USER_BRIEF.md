@@ -1,0 +1,11 @@
+## Who is the user? 
+Our target users are Georgetown students who want to understand the emotions expressed in campus discussion posts. They can use this feedback to identify students’ reactions and improve future campus activities. 
+## Where should you go? 
+- Application: https://sentiment-analysis.cis240466.projects.jetstream-cloud.org/   
+- README: https://github.com/Zejun-Derry-Xu/sentiment-analysis/blob/main/README.md  
+## What can it do, and what can it not do? 
+Campus Forum allows users to submit English-language posts on different boards: Halloween Haunted House, Campus Food, and DSAN Feedback, etc. Each post receives two separate analyses: emotion labels and positive, neutral, or negative sentiment. Emotion results also appear as animated emoji stickers. Users can filter results, view summary statistics and processing status, and make separate human corrections to emotion and sentiment results. The application is designed for English text. It uses pretrained models without training or fine-tuning on Georgetown student posts, so predictions may be inaccurate. It analyzes emotions expressed in text, not users’ mental health. Human corrections are stored separately and do not change the original model outputs or automatically retrain the models. 
+## How should you get started and test the application? 
+Enter a display name, choose a campus discussion board, and submit an English comment. Wait for both analyses: emotion detection and positive/neutral/negative sentiment classification. Try positive, negative, neutral, and mixed-emotion comments. Click Switch to Admin to explore the dashboard, filter comments, mark them as reviewed or handled, and manually correct emotion labels. Visit Evaluation to see results from labeled benchmark datasets. Please check whether posting works reliably, analysis statuses are clear, results are understandable, and dashboard statistics reflect submitted comments. This is a public demo; please use fictional content. 
+## What feedback are you seeking? 
+We want feedback on ease of use, clarity of the two model outputs, response speed, useful dashboard features, and any bugs. Examples of confusing or unexpected predictions are especially helpful. Please file each finding as one GitHub issue on our repository (README link above): feature tested, what you expected, what actually happened. 
