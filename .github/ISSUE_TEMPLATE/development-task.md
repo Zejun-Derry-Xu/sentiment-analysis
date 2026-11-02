@@ -9,4 +9,4 @@ assignees: ""
 ## What needs to be done?
 
 ## Done when
-- [ ] 
+- [ ] <!-- Completion criterion -->
