@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from time import perf_counter
 from uuid import UUID, uuid4, uuid5
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from .db import transaction
@@ -29,6 +29,15 @@ def check_code(code):
         raise HTTPException(503, "Load demo is disabled on this deployment.")
     if not secrets.compare_digest((code or "").encode(), expected.encode()):
         raise HTTPException(403, "Incorrect load demo code.")
+
+
+def demo_enabled():
+    return os.getenv("LOAD_DEMO_ENABLED", "true").lower() == "true"
+
+
+def require_demo_enabled():
+    if not demo_enabled():
+        raise HTTPException(503, "Load demo is disabled on this deployment.")
 
 
 def clear_pending_runs():
@@ -107,11 +116,15 @@ def routes(admin_user, save_comment):
                 SELECT id,created_at,expires_at,phase FROM load_runs
                 WHERE phase<>'cleared' ORDER BY created_at DESC LIMIT 20
             """).fetchall()
-        return {"enabled": bool(os.getenv("LOAD_DEMO_CODE")), "runs": runs}
+            cooldown = c.execute("""
+                SELECT max(created_at + interval '2 minutes') AS until FROM load_runs
+                WHERE created_at > clock_timestamp()-interval '2 minutes'
+            """).fetchone()["until"]
+        return {"enabled": demo_enabled(), "cooldown_until": cooldown, "runs": runs}
 
     @router.post("", status_code=201)
-    def start(x_load_demo_code: str | None = Header(default=None)):
-        check_code(x_load_demo_code)
+    def start():
+        require_demo_enabled()
         with transaction() as c:
             c.execute("SELECT pg_advisory_xact_lock(715805)")
             if c.execute("""
@@ -148,9 +161,8 @@ def routes(admin_user, save_comment):
         run_id: UUID,
         sample: int,
         user=Depends(admin_user),
-        x_load_demo_code: str | None = Header(default=None),
     ):
-        check_code(x_load_demo_code)
+        require_demo_enabled()
         if not 1 <= sample <= SIZE:
             raise HTTPException(422, "Sample must be between 1 and 100.")
         started = perf_counter()
@@ -195,9 +207,8 @@ def routes(admin_user, save_comment):
     def record(
         run_id: UUID,
         samples: list[HttpSample],
-        x_load_demo_code: str | None = Header(default=None),
     ):
-        check_code(x_load_demo_code)
+        require_demo_enabled()
         if len(samples) > SIZE:
             raise HTTPException(422, "Too many measurements.")
         with transaction() as c:
@@ -247,8 +258,7 @@ def routes(admin_user, save_comment):
         return {**run, "samples": rows, "target": SIZE}
 
     @router.delete("/{run_id}", status_code=202)
-    def clear(run_id: UUID, x_load_demo_code: str | None = Header(default=None)):
-        check_code(x_load_demo_code)
+    def clear(run_id: UUID):
         with transaction() as c:
             run = get_run(c, run_id, lock=" FOR UPDATE")
             if run["phase"] == "open":

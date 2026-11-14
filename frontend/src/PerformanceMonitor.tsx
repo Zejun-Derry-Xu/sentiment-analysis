@@ -279,7 +279,7 @@ export function PerformanceMonitor() {
   const [report, setReport] = useState<Report | null>(null);
   const [mode, setMode] = useState<Mode>("completion");
   const [sample, pick] = useState<number | null>(null);
-  const [code, setCode] = useState("");
+  const [cooldownUntil, setCooldownUntil] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
   const sendingRef = useRef(false);
@@ -293,9 +293,14 @@ export function PerformanceMonitor() {
       if (pending) return;
       pending = true;
       try {
-        const data = await request<{ runs: Run[]; enabled: boolean }>("");
+        const data = await request<{
+          runs: Run[];
+          enabled: boolean;
+          cooldown_until: string | null;
+        }>("");
         if (!active) return;
         setEnabled(data.enabled);
+        setCooldownUntil(data.cooldown_until);
         setRuns(data.runs);
         if (!selected && data.runs[0]) select(data.runs[0].id);
         if (selected) {
@@ -316,10 +321,6 @@ export function PerformanceMonitor() {
     };
   }, [selected]);
 
-  const headers = {
-    "X-Load-Demo-Code": code,
-    "Content-Type": "application/json",
-  };
   async function start() {
     if (sendingRef.current) return;
     sendingRef.current = true;
@@ -330,7 +331,6 @@ export function PerformanceMonitor() {
     try {
       const run = await request<Run>("", {
         method: "POST",
-        headers,
         signal: controller.signal,
       });
       select(run.id);
@@ -345,7 +345,6 @@ export function PerformanceMonitor() {
           try {
             await request(`/${run.id}/samples/${n}`, {
               method: "POST",
-              headers,
               signal: AbortSignal.any([
                 controller.signal,
                 AbortSignal.timeout(10000),
@@ -368,7 +367,7 @@ export function PerformanceMonitor() {
       if (!controller.signal.aborted)
         await request(`/${run.id}/measurements`, {
           method: "PUT",
-          headers,
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(measurements),
           signal: controller.signal,
         });
@@ -385,7 +384,6 @@ export function PerformanceMonitor() {
     try {
       const response = await request<{ phase: Run["phase"] }>("/" + selected, {
         method: "DELETE",
-        headers,
       });
       abortRun.current?.abort();
       setReport((old) =>
@@ -420,9 +418,9 @@ export function PerformanceMonitor() {
       r.sentiment_status === "failed",
   );
   const timedOut = rows.filter((r) => r.submit_error === "timeout");
-  const cooling = runs.some(
-    (r) => r.phase === "clearing" || stamp(r.expires_at) > Date.now(),
-  );
+  const cooling =
+    runs.some((r) => r.phase === "clearing") ||
+    (cooldownUntil !== null && stamp(cooldownUntil) > Date.now());
   return (
     <>
       <div className="page-heading">
@@ -437,17 +435,9 @@ export function PerformanceMonitor() {
         className="distribution-panel monitor-controls"
         aria-label="Load demo controls"
       >
-        <label htmlFor="load-code">Load demo code</label>
-        <input
-          id="load-code"
-          type="password"
-          value={code}
-          autoComplete="off"
-          onChange={(e) => setCode(e.target.value)}
-        />
         <button
           className="primary"
-          disabled={!enabled || !code || sending || cooling}
+          disabled={!enabled || sending || cooling}
           onClick={() => void start()}
         >
           {sending ? "Submitting…" : "Run Load Demo"}
@@ -455,8 +445,6 @@ export function PerformanceMonitor() {
         <button
           className="text-button"
           disabled={
-            !enabled ||
-            !code ||
             !selected ||
             current?.phase === "cleared" ||
             current?.phase === "clearing"

@@ -191,9 +191,9 @@ Do not use `down -v` unless explicitly intending to destroy persistent data. Kee
 
 ## Performance Monitor
 
-Set a random `LOAD_DEMO_CODE` in the deployment's private `.env` and recreate the API service. The standalone API benchmark scripts also take this environment variable. Keep the code separate from the demo account password.
+The browser demo uses your administrator session. Set `LOAD_DEMO_ENABLED=false` and recreate the API to disable new runs. Standalone CLI benchmarks still use the separate `LOAD_DEMO_CODE` in the private environment.
 
-1. Sign in as admin and open **Performance Monitor**. Enter the code and click **Run Load Demo**.
+1. Sign in as admin and open **Performance Monitor**. Click **Run Load Demo**.
 2. The browser submits 100 fixed English posts with at most 16 outstanding requests. The server accepts one run at a time, with a two-minute submission window and cooldown. The run uses the same database insert and worker queues as forum posts.
 3. Switch between **Database insert to both model results** and **HTTP submit (browser measured)**. Read p50, p95, and p99 on the logarithmic rank chart. Click a bar to inspect that sample's event log and per-model queue and inference timings. Failed HTTP requests and timeouts are counted separately.
 4. Click **Clear Run**. The cleaner cancels queued work, waits for processing attempts to finish, then deletes the run's test posts, jobs, analyses and measurements. Ordinary posts and previous benchmark or evaluation reports are preserved.

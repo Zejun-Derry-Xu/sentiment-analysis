@@ -37,6 +37,60 @@ const sentiments: Record<string, string> = {
   neutral: "Neutral",
   positive: "Positive",
 };
+const topicSentiments = [
+  { label: "negative", emoji: "🙁" },
+  { label: "neutral", emoji: "😐" },
+  { label: "positive", emoji: "😄" },
+] as const;
+
+function TopicSentimentChart({
+  counts,
+  scale,
+}: {
+  counts?: Record<string, number>;
+  scale: number;
+}) {
+  return (
+    <span className="topic-sentiment-chart">
+      {topicSentiments.map(({ label, emoji }) => {
+        const count = counts?.[label] ?? 0;
+        const height = (count / scale) * 62;
+        return (
+          <span
+            className={`topic-sentiment-column topic-sentiment-${label}`}
+            key={label}
+          >
+            <strong className="topic-sentiment-count">{count}</strong>
+            <svg aria-hidden="true" width="40" height="64" viewBox="0 0 40 64">
+              <rect
+                className="topic-sentiment-baseline"
+                x="0"
+                y="62"
+                width="40"
+                height="2"
+                rx="1"
+              />
+              {count > 0 && (
+                <rect
+                  className="topic-sentiment-bar"
+                  x="3"
+                  y={62 - height}
+                  width="34"
+                  height={height}
+                  rx="4"
+                />
+              )}
+            </svg>
+            <span aria-hidden="true" className="topic-sentiment-emoji">
+              {emoji}
+            </span>
+            <span className="topic-sentiment-label">{sentiments[label]}</span>
+          </span>
+        );
+      })}
+    </span>
+  );
+}
 type Correction = {
   labels: string[];
   reason: string;
@@ -984,6 +1038,12 @@ function App() {
       setError((e as Error).message);
     }
   }
+  const topicSentimentScale = Math.max(
+    1,
+    ...Object.values(stats.topics ?? {}).flatMap((topic) =>
+      Object.values(topic.sentiment ?? {}),
+    ),
+  );
   const activeEvaluation =
     evaluations.find((x) => x.id === evaluationId) ||
     evaluations.find((x) => x.official && x.status === "completed") ||
@@ -2008,45 +2068,14 @@ function App() {
                             }
                           >
                             <strong>{topic.title}</strong>
-                            <span>{summary?.total || 0} posts</span>
-                            <span>
-                              {Object.entries(sentiments)
-                                .map(
-                                  ([label, name]) =>
-                                    `${name} ${summary?.sentiment?.[label] || 0}`,
-                                )
-                                .join(" · ")}
-                            </span>
-                            <span>
-                              {summary?.emotions
-                                ?.slice(0, 3)
-                                .map((e) => `${labelName(e.label)} ${e.count}`)
-                                .join(" · ") || "No emotion labels yet"}
-                            </span>
+                            <TopicSentimentChart
+                              counts={summary?.sentiment}
+                              scale={topicSentimentScale}
+                            />
                           </button>
                         );
                       })}
                     </div>
-                    {filterEvent && (
-                      <section className="distribution-panel">
-                        <h3>
-                          {events.find((e) => e.id === filterEvent)?.title} ·
-                          Emotion distribution
-                        </h3>
-                        <div className="emotion-totals">
-                          {stats.topics?.[filterEvent]?.emotions?.map((e) => (
-                            <span className="tag" key={e.label}>
-                              {labelName(e.label)} <b>{e.count}</b>
-                            </span>
-                          ))}
-                          {!stats.topics?.[filterEvent]?.emotions?.length && (
-                            <p className="muted">
-                              No emotion labels in this range.
-                            </p>
-                          )}
-                        </div>
-                      </section>
-                    )}
                   </>
                 )}
                 <section className="filters" aria-label="Post filters">

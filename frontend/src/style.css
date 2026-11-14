@@ -2573,3 +2573,20 @@ td b {
 .latency-marker line { stroke: #285c93; stroke-width: 1.5; }
 .latency-marker text { fill: #285c93; font-size: 17px; font-weight: 700; }
 .trace-events time { margin-right: .5rem; }
+
+.topic-sentiment-chart {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: .3rem;
+  padding-top: .45rem;
+  text-align: center;
+}
+.topic-sentiment-column { display: grid; justify-items: center; gap: .18rem; }
+.topic-sentiment-count { font-size: 1rem; font-variant-numeric: tabular-nums; }
+.topic-sentiment-baseline { fill: #d4dbd3; }
+.topic-sentiment-negative .topic-sentiment-bar { fill: #c3645a; }
+.topic-sentiment-neutral .topic-sentiment-bar { fill: #87939f; }
+.topic-sentiment-positive .topic-sentiment-bar { fill: #589475; }
+.topic-sentiment-emoji { font-size: 1.25rem; line-height: 1.45; }
+.topic-sentiment-label { font-size: .78rem; font-weight: 600; }
