@@ -1,0 +1,6 @@
+# Run Ollama natively on the Mac so inference can use Metal.
+services:
+  api:
+    environment:
+      SUMMARY_OLLAMA_URL: ${SUMMARY_OLLAMA_URL:-http://host.docker.internal:11434}
+      SUMMARY_MODEL: ${SUMMARY_MODEL:-qwen3.5:4b}

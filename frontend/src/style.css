@@ -2590,3 +2590,9 @@ td b {
 .topic-sentiment-positive .topic-sentiment-bar { fill: #589475; }
 .topic-sentiment-emoji { font-size: 1.25rem; line-height: 1.45; }
 .topic-sentiment-label { font-size: .78rem; font-weight: 600; }
+
+.topic-summary-panel { margin-block: 1rem; }
+.topic-summary-panel .section-title { margin-top: 0; gap: 1rem; flex-wrap: wrap; }
+.topic-summary-point { margin-block: 1rem; }
+.topic-summary-point h3 { margin-bottom: .35rem; }
+.topic-summary-point blockquote { margin: .6rem 0; padding-left: .7rem; border-left: 2px solid #cbd8ca; }

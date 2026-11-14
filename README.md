@@ -199,3 +199,31 @@ The browser demo uses your administrator session. Set `LOAD_DEMO_ENABLED=false` 
 4. Click **Clear Run**. The cleaner cancels queued work, waits for processing attempts to finish, then deletes the run's test posts, jobs, analyses and measurements. Ordinary posts and previous benchmark or evaluation reports are preserved.
 
 Back up PostgreSQL before upgrading an existing deployment. The account migration ends anonymous sessions and preserves their posts and model outputs. The load-run migration adds isolated test records.
+
+## Topic summary experiment
+
+The experimental topic page offers **Summarize** to any signed-in reader. It uses
+the original post text, returns up to four discussion points with source posts,
+and displays the number of posts covered. Small topics are read in full. For
+larger topics it reads the newest 30 posts within a 10 KB text budget. The
+classifier workers and their persisted outputs continue to operate separately.
+
+On the local Mac, start Ollama in one terminal:
+
+```sh
+OLLAMA_HOST=127.0.0.1:11434 OLLAMA_NO_CLOUD=1 OLLAMA_NUM_PARALLEL=1 ollama serve
+```
+
+In a second terminal, with the standard local stack already running:
+
+```sh
+ollama pull qwen3.5:4b
+docker compose -f compose.yaml -f compose.summary.yaml up -d --build --no-deps api web
+```
+
+The API container reaches the host through `host.docker.internal`. The
+optional overlay enables the feature. It uses one generation at a time with a
+55-second request timeout. To try the smaller model, pull `qwen3.5:0.8b` and
+set `SUMMARY_MODEL=qwen3.5:0.8b` on the Compose command. This is an interactive
+prototype and regenerates on request. Source numbering and existence are
+checked, but a source can still fail to support the model's interpretation.

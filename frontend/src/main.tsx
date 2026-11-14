@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import { TopicSummary } from "./TopicSummary";
 import { PerformanceMonitor } from "./PerformanceMonitor";
 
 type User = { id: string; username: string; role: "admin" | "student" };
@@ -1859,6 +1860,7 @@ function App() {
                     ✳
                   </span>
                 </div>
+                <TopicSummary key={selected.id} topicId={selected.id} />
                 <form className="composer" onSubmit={submit}>
                   <div className="composer-title">
                     <h3>Start a discussion</h3>

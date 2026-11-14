@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field, field_validator
 from psycopg.types.json import Jsonb
 from .db import transaction as connect, initialize, enqueue, enqueue_sentiment
 from .load_monitor import check_code, cleanup_loop, routes as monitor_routes
+from .topic_summary import routes as summary_routes
 from .accounts import DEMO_ACCOUNTS, create_account, verify_password
 from .config import LABELS, MODEL_REV, MODEL_REPO, DATA_REV, REPORT_DIR
 
@@ -309,6 +310,7 @@ def model_info():
         "language": "English",
         "mode": "public_demo",
         "max_tokens": 512,
+        "topic_summary_enabled": bool(os.getenv("SUMMARY_OLLAMA_URL")),
         "description": "Scores describe emotions expressed in English text, not a person’s mental state. No automatic moderation.",
     }
 
@@ -667,3 +669,4 @@ def benchmarks():
 
 
 app.include_router(monitor_routes(admin_user, save_comment))
+app.include_router(summary_routes(session_user))
