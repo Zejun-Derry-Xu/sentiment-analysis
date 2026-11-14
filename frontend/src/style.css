@@ -2546,3 +2546,30 @@ td b {
     display: none;
   }
 }
+
+.topic-create, .topic-summary, .monitor-controls { display: grid; gap: .65rem; }
+.topic-create { margin-block: 1rem; }
+.topic-stats, .monitor-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(185px,1fr));
+  gap: .75rem;
+  margin-block: 1rem;
+}
+.topic-summary { text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.topic-summary[aria-pressed="true"] { outline: 2px solid #285c93; }
+.monitor-controls { grid-template-columns: repeat(auto-fit,minmax(135px,1fr)); align-items: center; }
+.monitor-controls input, .monitor-controls select { min-width: 0; }
+.monitor-metrics strong { display: block; font-size: 1.55rem; }
+.latency-scroll { overflow-x: auto; }
+.latency-chart { display: block; min-width: 650px; width: 100%; }
+.latency-chart text { font-size: 14px; fill: #1c2936; font-family: system-ui,sans-serif; }
+.latency-chart rect { cursor: pointer; }
+.latency-chart rect:hover, .latency-chart rect:focus { stroke: #153f72; stroke-width: 2; }
+.latency-grid { stroke: #d4dfe5; }
+.latency-axis { fill: none; stroke: #344550; }
+.latency-green { fill: #6ba34b; }
+.latency-yellow { fill: #dea407; }
+.latency-red { fill: #bc3336; }
+.latency-marker line { stroke: #285c93; stroke-width: 1.5; }
+.latency-marker text { fill: #285c93; font-size: 17px; font-weight: 700; }
+.trace-events time { margin-right: .5rem; }

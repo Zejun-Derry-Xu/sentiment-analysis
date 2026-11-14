@@ -34,14 +34,24 @@ class BrokenEngine:
 
 def test_session_and_validation(client):
     assert client.get("/api/session").json()["username"] == "Alex"
-    assert client.post("/api/session", json={"username": "   "}).status_code == 422
-    assert client.post("/api/session", json={"username": "x" * 33}).status_code == 422
+    assert (
+        client.post(
+            "/api/session", json={"username": "   ", "password": "123456"}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.post(
+            "/api/session", json={"username": "x" * 33, "password": "123456"}
+        ).status_code
+        == 422
+    )
     assert (
         client.post(
             "/api/comments",
             json={
                 "event_id": "spring-sounds",
-                "text": " ",
+                "text": " \u200b\u200d ",
                 "idempotency_key": str(uuid4()),
             },
         ).status_code
@@ -82,7 +92,7 @@ def test_session_and_validation(client):
     assert client.get("/api/comments?mine=true").status_code == 401
 
 
-def test_save_idempotency_and_browser_identity(client):
+def test_save_idempotency_and_account_identity(client):
     body = {
         "event_id": "spring-sounds",
         "text": "Great concert!",
@@ -96,14 +106,47 @@ def test_save_idempotency_and_browser_identity(client):
         == 409
     )
     with TestClient(app) as other:
-        other.post("/api/session", json={"username": "Alex"})
+        assert (
+            other.post(
+                "/api/register", json={"username": "aLEX", "password": "1"}
+            ).status_code
+            == 409
+        )
+        assert (
+            other.post(
+                "/api/session", json={"username": "Alex", "password": "wrong"}
+            ).status_code
+            == 401
+        )
+        assert (
+            other.post(
+                "/api/register", json={"username": "Other", "password": "1"}
+            ).status_code
+            == 201
+        )
         assert other.get("/api/comments?mine=true").json()["total"] == 0
         assert other.get("/api/comments").json()["total"] == 1
         assert (
             other.put(
                 f"/api/comments/{one['id']}/handling", json={"status": "viewed"}
             ).status_code
-            == 200
+            == 403
+        )
+        assert other.post(f"/api/comments/{one['id']}/retry").status_code == 403
+        assert other.get("/api/stats").status_code == 403
+        assert (
+            other.post(
+                "/api/events", json={"title": "X", "description": "Y"}
+            ).status_code
+            == 403
+        )
+        signed_in = other.post(
+            "/api/session", json={"username": "alex", "password": "123456"}
+        )
+        assert signed_in.json()["role"] == "admin"
+        assert "password_hash" not in signed_in.json()
+        assert (
+            other.get("/api/comments?mine=true").json()["items"][0]["id"] == one["id"]
         )
     assert client.get("/api/comments?mine=true").json()["total"] == 1
 
@@ -159,14 +202,18 @@ def test_analysis_review_filters_and_immutability(client, new_comment, runtime):
     )
     assert client.post(f"/api/comments/{cid}/retry").status_code == 409
     with TestClient(app) as other:
-        other.post("/api/session", json={"username": "Jordan"})
-        # Public demo intentionally allows dashboard actions for all sessions.
+        assert (
+            other.post(
+                "/api/register", json={"username": "Jordan", "password": "123456"}
+            ).status_code
+            == 201
+        )
         assert (
             other.post(
                 f"/api/comments/{cid}/corrections",
                 json={"labels": ["joy"], "reason": "Another public review"},
             ).status_code
-            == 201
+            == 403
         )
 
 
@@ -251,6 +298,7 @@ def test_benchmark_isolation_and_readiness(client, runtime):
             "text": "Thanks!",
             "idempotency_key": str(uuid4()),
         },
+        headers={"X-Load-Demo-Code": "test-load-code"},
     )
     assert r.status_code == 202
     assert client.get("/api/comments").json()["total"] == 0

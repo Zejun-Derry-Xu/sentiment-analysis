@@ -8,11 +8,11 @@ An English campus discussion forum with two independent CPU classifiers: multi-l
 
 Three discussion boards: **Halloween Haunted House**, **Campus Food**, and **DSAN Feedback**.
 
-Enter a display name without a password. Browse boards, publish English posts, and check **My Posts**. Each post shows separate emotion and sentiment results, scores, states, and retries. The **Switch to Admin** button sits immediately before the avatar and display name in the top-right corner. It opens the dashboard; **Switch to Student** returns to the forum.
+Register a username and password or sign in with a provisioned demo account. Browse topics, publish English posts, and check **My Posts**. The same account retains its history after signing in again, including from another browser. Admins have **Admin Dashboard** and **Performance Monitor** links in the header.
 
-The admin dashboard provides both model distributions, board/emotion/sentiment/date/status filters, viewed/processed handling, audit history, and separate human emotion reviews. Favorites have been removed from navigation, post actions, API responses, filters, and endpoints.
+The admin dashboard shows overall and per-topic model distributions for the selected dates. Admins can create topics, filter posts, update handling status, and save separate human emotion reviews.
 
-**Public demonstration:** the admin switch is a view mode, not authentication. Every visitor can use admin tools. A name does not verify identity. The browser cookie identifies posts from that browser; using the same name elsewhere does not recover that identity. Do not use this demo access model for real private student data.
+**Course demo.** Signed-in users share the forum. My Posts and drafts are account-specific. Anyone using the same shared demo credentials accesses that account and its history. Existing anonymous posts remain in their topics. Registering under an old display name does not claim those posts.
 
 All interface text, validation errors, board metadata, dates, and model labels are English. User-authored content and historical reviews are retained as submitted. Models support English text only. They describe text expression, not a person's mental state or a moderation decision. No automatic removal, banning, training, or fine-tuning.
 
@@ -40,15 +40,21 @@ docker compose down
 docker compose up -d
 ```
 
-There are no fixed demo passwords. Choose any display name. The cookie lasts up to 30 days; signing out ends that browser identity.
+To provision the shared demo accounts, run:
+
+```sh
+docker compose --profile tools run --rm cli python -m app.cli seed-accounts
+```
+
+This creates `admin`, `student1`, and `student2` with initial password `123456`. Set `DEMO_ADMIN_PASSWORD` before the first provisioning to use a different administrator password. Running the command again preserves existing credentials. Password hashes use scrypt and an independent random salt.
 
 ## Demo flow
 
-1. Enter a display name and open a board.
+1. Sign in as `student1` or register an account, then open a topic.
 2. Publish an English post; it is saved before either inference begins.
 3. See emotion labels and independent positive/neutral/negative sentiment on the same post.
 4. Open **My Posts** to follow your own submissions.
-5. Click **Switch to Admin** beside your name.
+5. Click **Admin Dashboard** (sign in as an administrator) beside your name.
 6. Inspect distributions, filter negative feedback, and mark a post **Viewed** or **Processed**.
 7. Add a separate **Human review** of emotion labels; original outputs remain unchanged.
 8. Open **Evaluation** to inspect separate sentiment and emotion results, per-class metrics, confusion matrices, and downloadable reports. The sentiment report is the recorded local Apple M5 full-test run, clearly labeled by environment.
@@ -79,8 +85,9 @@ Persistent data includes users/sessions, boards, posts, emotion/sentiment jobs a
 
 | Endpoint | Purpose |
 | --- | --- |
-| `POST/GET/DELETE /api/session` | Display-name browser session |
-| `GET /api/events` | Forum boards; internal API name retained for compatibility |
+| `POST /api/register` | Create a student account and sign in |
+| `POST/GET/DELETE /api/session` | Sign in with username/password, inspect or end session |
+| `GET/POST /api/events` | List topics or create a topic as an admin |
 | `POST /api/comments` | Save a post and both jobs; HTTP 202; idempotency UUID required |
 | `GET /api/comments` | Pagination, board, emotion, sentiment, analysis state, handling, time range, `mine` |
 | `GET /api/comments/{id}` | Post, independent outputs, and audit history |
@@ -88,14 +95,15 @@ Persistent data includes users/sessions, boards, posts, emotion/sentiment jobs a
 | `POST /api/comments/{id}/sentiment/retry` | Retry failed sentiment analysis |
 | `PUT /api/comments/{id}/handling` | Unread/viewed/processed audit record |
 | `POST /api/comments/{id}/corrections` | Append a separate human emotion review |
-| `GET /api/stats` | Global non-benchmark post distributions |
+| `GET /api/stats` | Admin distributions with optional topic/date filters and topic summaries |
+| `/api/admin/load-runs` | Admin load runs, measurements, sample traces and scoped cleanup |
 | `GET /api/model`, `/api/runtime`, `/api/sentiment/runtime` | Fixed configuration and runtime information |
 | `GET /api/evaluations`, `/api/evaluations/{id}` | Official emotion evaluation runs |
 | `GET /api/sentiment/evaluation`, `/api/sentiment/evaluation/download` | Recorded official sentiment report and JSON download |
 | `GET /api/evaluations/{id}/files/{filename}` | Saved metrics, metadata, and predictions |
 | `GET /health`, `/ready` | Process health and database/both-worker readiness |
 
-Human reviews do not overwrite model outputs, alter official test labels, or trigger training. Emotion filtering uses original labels above threshold. Sentiment statistics count one completed result per post; emotion counts may include several labels per post. Dashboard distributions cover all non-benchmark posts and do not change with list filters. A post counts as complete only when both models finish.
+Human reviews do not overwrite model outputs, alter official test labels, or trigger training. Emotion filtering uses original labels above threshold. Sentiment statistics count one completed result per post; emotion counts may include several labels per post. Dashboard distributions use the selected dates. The top section covers all topics, and topic summaries break it down by topic. The other list filters apply only to the post list. A post counts as complete only when both models finish.
 
 ## Fixed pretrained models and sources
 
@@ -147,7 +155,7 @@ docker compose --profile tools run --rm --no-deps -T cli python - \
 docker compose --profile tools run --rm tests
 ```
 
-Tests cover session ownership, validation, public-demo behavior, idempotency, independent dual outputs, filters, handling/review history, failure retries, atomic claims, interrupted-job recovery, fixed postprocessing/metrics, favorite API removal, and a non-destructive forum migration. Demo seeding queues both models idempotently. Pure-English UI/board/error checks and browser verification accompany the change.
+Tests cover session ownership, validation, role enforcement, load-run isolation, idempotency, independent dual outputs, filters, handling/review history, failure retries, atomic claims, interrupted-job recovery, fixed postprocessing/metrics, favorite API removal, and a non-destructive forum migration. Demo seeding queues both models idempotently. Pure-English UI/board/error checks and browser verification accompany the change.
 
 Dual performance includes real PostgreSQL saves and both queues. The report distinguishes model inference, queue time, database completion, and client HTTP/polling observation. Batch size is 1; threads, hardware, text/token lengths, concurrency, RSS, and model revision are recorded. Performance traffic uses an excluded benchmark board. RSS sampling is not a system peak; 100% CPU means one core. Cached load/first inference excludes download time. Author reports and Mac/Jetstream measurements are separate.
 
@@ -179,3 +187,15 @@ docker compose exec -T db pg_dump -U campus -d campus -Fc > reports/backups/camp
 ```
 
 Do not use `down -v` unless explicitly intending to destroy persistent data. Keep `.env`, credentials, model caches, database dumps, and local report folders out of Git. Source code is MIT; models and datasets retain their own licenses. Historical validation snapshots describe the versions measured at that time.
+
+
+## Performance Monitor
+
+Set a random `LOAD_DEMO_CODE` in the deployment's private `.env` and recreate the API service. The standalone API benchmark scripts also take this environment variable. Keep the code separate from the demo account password.
+
+1. Sign in as admin and open **Performance Monitor**. Enter the code and click **Run Load Demo**.
+2. The browser submits 100 fixed English posts with at most 16 outstanding requests. The server accepts one run at a time, with a two-minute submission window and cooldown. The run uses the same database insert and worker queues as forum posts.
+3. Switch between **Database insert to both model results** and **HTTP submit (browser measured)**. Read p50, p95, and p99 on the logarithmic rank chart. Click a bar to inspect that sample's event log and per-model queue and inference timings. Failed HTTP requests and timeouts are counted separately.
+4. Click **Clear Run**. The cleaner cancels queued work, waits for processing attempts to finish, then deletes the run's test posts, jobs, analyses and measurements. Ordinary posts and previous benchmark or evaluation reports are preserved.
+
+Back up PostgreSQL before upgrading an existing deployment. The account migration ends anonymous sessions and preserves their posts and model outputs. The load-run migration adds isolated test records.

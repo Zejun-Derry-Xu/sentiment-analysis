@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import { PerformanceMonitor } from "./PerformanceMonitor";
 
-type User = { id: string; username: string };
+type User = { id: string; username: string; role: "admin" | "student" };
 type Event = {
   id: string;
   title: string;
@@ -29,6 +30,7 @@ type Sentiment = {
   inference_ms: number;
   queue_ms: number;
   model_revision: string;
+  token_count: number;
 };
 const sentiments: Record<string, string> = {
   negative: "Negative",
@@ -42,6 +44,7 @@ type Correction = {
   created_at: string;
 };
 type Note = {
+  user_id: string;
   id: string;
   event_id: string;
   event_title: string;
@@ -62,6 +65,7 @@ type Note = {
   attempts?: { status: string; started_at: string }[];
 };
 type Stats = {
+  topics?: Record<string, Stats>;
   total: number;
   completed: number;
   waiting: number;
@@ -162,7 +166,35 @@ type Bench = {
     }[];
   };
 };
-type View = "events" | "event" | "mine" | "board" | "evaluation";
+type View = "events" | "event" | "mine" | "board" | "evaluation" | "monitor";
+function readRoute(): { view: View; topic: string } {
+  const path = window.location.hash.slice(1);
+  const topic = /^\/boards\/([a-zA-Z0-9-]+)$/.exec(path)?.[1];
+  if (topic) return { view: "event", topic };
+  const views: Record<string, View> = {
+    "/mine": "mine",
+    "/evaluation": "evaluation",
+    "/admin": "board",
+    "/admin/performance": "monitor",
+  };
+  return { view: views[path] || "events", topic: "" };
+}
+function saveDraft(key: string, value: string) {
+  if (!key) return;
+  try {
+    if (value) sessionStorage.setItem(key, value);
+    else sessionStorage.removeItem(key);
+  } catch {
+    /* The composer still works if storage is unavailable. */
+  }
+}
+function loadDraft(key: string) {
+  try {
+    return key ? sessionStorage.getItem(key) || "" : "";
+  } catch {
+    return "";
+  }
+}
 const labels = [
   "admiration",
   "amusement",
@@ -629,11 +661,23 @@ function App() {
   const [user, setUser] = useState<User | null>(null),
     [checking, setChecking] = useState(true),
     [username, setUsername] = useState(""),
+    [password, setPassword] = useState(""),
+    [registering, setRegistering] = useState(false),
     [loginBusy, setLoginBusy] = useState(false);
-  const [adminMode, setAdminMode] = useState(false);
-  const [view, setView] = useState<View>("events"),
-    [events, setEvents] = useState<Event[]>([]),
-    [selected, setSelected] = useState<Event | null>(null);
+  const [route, setRoute] = useState(readRoute);
+  const admin = user?.role === "admin";
+  const view =
+    !admin && ["board", "monitor"].includes(route.view) ? "events" : route.view;
+  const adminMode = admin && view === "board";
+  const [events, setEvents] = useState<Event[]>([]);
+  const [eventsLoaded, setEventsLoaded] = useState(false);
+  const selected = events.find((e) => e.id === route.topic);
+  const draftStorageKey =
+    user && route.topic ? `campus-draft:${user.id}:${route.topic}` : "";
+  const [topicForm, setTopicForm] = useState(false);
+  const [topicTitle, setTopicTitle] = useState("");
+  const [topicDescription, setTopicDescription] = useState("");
+  const [creatingTopic, setCreatingTopic] = useState(false);
   const [stats, setStats] = useState<Stats>({
       total: 0,
       completed: 0,
@@ -679,6 +723,18 @@ function App() {
         );
   const draftKey = useRef(uuid());
   useEffect(() => {
+    setText(loadDraft(draftStorageKey));
+    draftKey.current = uuid();
+  }, [draftStorageKey]);
+  useEffect(() => {
+    const changed = () => {
+      setRoute(readRoute());
+      resetNavigation();
+    };
+    window.addEventListener("hashchange", changed);
+    return () => window.removeEventListener("hashchange", changed);
+  }, []);
+  useEffect(() => {
     api<User>("/api/session")
       .then(setUser)
       .catch(() => {})
@@ -699,17 +755,35 @@ function App() {
     before,
   ]);
   useEffect(() => {
-    if (!user) return;
+    if (!user || view === "monitor") return;
     let active = true;
     async function refresh() {
       try {
+        const dates = new URLSearchParams();
+        if (after)
+          dates.set("after", new Date(after + "T00:00:00").toISOString());
+        if (before)
+          dates.set("before", new Date(before + "T23:59:59.999").toISOString());
+        if (after && before && after > before) {
+          if (active)
+            setError("The start date must not be after the end date.");
+          return;
+        }
         const [es, ss] = await Promise.all([
           api<Event[]>("/api/events"),
-          api<Stats>("/api/stats"),
+          view === "board"
+            ? api<Stats>("/api/stats?include_topics=true&" + dates)
+            : Promise.resolve(null),
         ]);
         if (!active) return;
+        setError((message) =>
+          message === "The start date must not be after the end date."
+            ? ""
+            : message,
+        );
         setEvents(es);
-        setStats(ss);
+        setEventsLoaded(true);
+        if (ss) setStats(ss);
         if (view === "evaluation") {
           const [ev, bb, se] = await Promise.all([
             api<Evaluation[]>("/api/evaluations"),
@@ -721,7 +795,7 @@ function App() {
             setBenches(bb);
             setSentimentEvaluation(se);
           }
-        } else if (view !== "events") {
+        } else if (view !== "events" && (view !== "event" || selected)) {
           const q = new URLSearchParams({
             page: String(page),
             page_size: "12",
@@ -736,10 +810,7 @@ function App() {
               q.set("sentiment_status", filterSentimentStatus);
             if (filterStatus) q.set("status", filterStatus);
             if (filterHandling) q.set("handling", filterHandling);
-            if (after)
-              q.set("after", new Date(after + "T00:00:00").toISOString());
-            if (before)
-              q.set("before", new Date(before + "T23:59:59.999").toISOString());
+            dates.forEach((value, key) => q.set(key, value));
           }
           const result = await api<{ items: Note[]; total: number }>(
             "/api/comments?" + q,
@@ -781,8 +852,7 @@ function App() {
     const t = setTimeout(() => setNotice(""), 4500);
     return () => clearTimeout(t);
   }, [notice]);
-  function navigate(v: View) {
-    setView(v);
+  function resetNavigation() {
     setError("");
     setNotes([]);
     setTotal(0);
@@ -797,17 +867,31 @@ function App() {
     setPage(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+  function navigate(v: View, topic?: string) {
+    const paths = {
+      events: "/",
+      event: "/boards/" + topic,
+      mine: "/mine",
+      board: "/admin",
+      evaluation: "/evaluation",
+      monitor: "/admin/performance",
+    };
+    window.location.hash = paths[v];
+    setRoute(readRoute());
+    resetNavigation();
+  }
   async function login(e: React.FormEvent) {
     e.preventDefault();
     setLoginBusy(true);
     setError("");
     try {
       setUser(
-        await api<User>("/api/session", {
+        await api<User>(registering ? "/api/register" : "/api/session", {
           method: "POST",
-          body: JSON.stringify({ username }),
+          body: JSON.stringify({ username, password }),
         }),
       );
+      setPassword("");
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -830,8 +914,9 @@ function App() {
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selected) return;
+    if (!selected || sending || !hasVisibleText(text) || hasCjk) return;
     setSending(true);
+    const submittedKey = draftKey.current;
     if (
       await act("/api/comments", "POST", {
         event_id: selected.id,
@@ -839,16 +924,36 @@ function App() {
         idempotency_key: draftKey.current,
       })
     ) {
-      setText("");
-      draftKey.current = uuid();
+      if (loadDraft(draftStorageKey) === text) saveDraft(draftStorageKey, "");
+      if (draftKey.current === submittedKey) {
+        setText("");
+        draftKey.current = uuid();
+      }
       setNotice("Post saved. Both analyses are queued.");
       setPage(1);
     }
     setSending(false);
   }
   function editText(value: string) {
+    saveDraft(draftStorageKey, value);
     setText(value);
     draftKey.current = uuid();
+  }
+  async function createTopic(e: React.FormEvent) {
+    e.preventDefault();
+    setCreatingTopic(true);
+    if (
+      await act("/api/events", "POST", {
+        title: topicTitle,
+        description: topicDescription,
+      })
+    ) {
+      setTopicForm(false);
+      setTopicTitle("");
+      setTopicDescription("");
+      setNotice("Topic published.");
+    }
+    setCreatingTopic(false);
   }
   function openCorrection(n: Note) {
     setCorrecting(n);
@@ -884,6 +989,7 @@ function App() {
     evaluations.find((x) => x.official && x.status === "completed") ||
     evaluations[0];
   const benchmark = benches.find((x) => x.status === "completed")?.report;
+  const hasVisibleText = (value: string) => /[^\s\p{Cf}\p{Cc}]/u.test(value);
   const hasCjk = /[\u3400-\u9fff]/.test(text);
   function noteCard(n: Note) {
     return (
@@ -978,6 +1084,13 @@ function App() {
             )}
           </div>
         )}
+        {(n.analysis || n.sentiment) && (
+          <p className="fineprint muted">
+            Emotion identifies feelings expressed in English text. Sentiment
+            estimates overall tone. Sarcasm, mixed opinions, and context can
+            affect both predictions.
+          </p>
+        )}
         <div className="analysis sentiment-analysis">
           <div className="analysis-heading">
             <span className="eyebrow">TEXT SENTIMENT · THREE CLASSES</span>
@@ -992,6 +1105,12 @@ function App() {
               >
                 {sentiments[n.sentiment.label]}
               </div>
+              {n.sentiment.token_count >= 512 && (
+                <p className="fineprint muted">
+                  Reached the 512-token limit. Some text may not have been
+                  analyzed.
+                </p>
+              )}
               <div className="sentiment-scores">
                 {Object.entries(sentiments).map(([label, name]) => (
                   <div key={label}>
@@ -1015,18 +1134,19 @@ function App() {
                 : "Post saved. Sentiment analysis is queued."}
             </p>
           )}
-          {n.sentiment_status === "failed" && (
-            <button
-              className="text-button"
-              onClick={() =>
-                void act(`/api/comments/${n.id}/sentiment/retry`, "POST")
-              }
-            >
-              Retry sentiment ↻
-            </button>
-          )}
+          {n.sentiment_status === "failed" &&
+            (admin || user?.id === n.user_id) && (
+              <button
+                className="text-button"
+                onClick={() =>
+                  void act(`/api/comments/${n.id}/sentiment/retry`, "POST")
+                }
+              >
+                Retry sentiment ↻
+              </button>
+            )}
         </div>
-        {n.status === "failed" && (
+        {n.status === "failed" && (admin || user?.id === n.user_id) && (
           <button
             className="text-button"
             onClick={() => void act(`/api/comments/${n.id}/retry`, "POST")}
@@ -1130,8 +1250,10 @@ function App() {
           <form onSubmit={login}>
             <span className="eyebrow">WELCOME IN</span>
             <h2>Join the conversation.</h2>
-            <p className="muted">Choose a display name to start posting.</p>
-            <label htmlFor="username">Your name</label>
+            <p className="muted">
+              Sign in with your account to keep your post history.
+            </p>
+            <label htmlFor="username">Username</label>
             <input
               id="username"
               value={username}
@@ -1139,13 +1261,39 @@ function App() {
               maxLength={32}
               required
               placeholder="e.g. Alex"
-              autoComplete="nickname"
+              autoComplete="username"
+            />
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              required
+              maxLength={128}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete={registering ? "new-password" : "current-password"}
             />
             <button
               className="primary"
-              disabled={loginBusy || !username.trim()}
+              disabled={loginBusy || !username.trim() || !password}
             >
-              {loginBusy ? "Joining…" : "Enter Campus Forum"} <span>↗</span>
+              {loginBusy
+                ? "Please wait…"
+                : registering
+                  ? "Create account"
+                  : "Sign in"}{" "}
+              <span>↗</span>
+            </button>
+            <button
+              type="button"
+              className="text-button"
+              disabled={loginBusy}
+              onClick={() => {
+                setRegistering(!registering);
+                setError("");
+              }}
+            >
+              {registering ? "Back to sign in" : "Register a new account"}
             </button>
             {error && (
               <p className="error" role="alert">
@@ -1153,10 +1301,10 @@ function App() {
               </p>
             )}
             <div className="demo-notice">
-              <strong>No password · Public demo</strong>
+              <strong>Course demo</strong>
               <p>
-                Anyone can switch to the admin dashboard in this demo. Display
-                names do not verify identity.
+                Shared demo accounts share the same post history. Register your
+                own account to keep your history separate.
               </p>
             </div>
             <p className="fineprint muted">
@@ -1210,28 +1358,30 @@ function App() {
           ))}
         </nav>
         <div className="user">
-          <button
-            className={"admin-switch " + (adminMode ? "is-admin" : "")}
-            aria-pressed={adminMode}
-            onClick={() => {
-              const next = !adminMode;
-              setAdminMode(next);
-              navigate(next ? "board" : "events");
-            }}
-          >
-            {adminMode ? "Switch to Student" : "Switch to Admin"}
-          </button>
+          {admin && (
+            <button className="admin-switch" onClick={() => navigate("board")}>
+              Admin Dashboard
+            </button>
+          )}
+          {admin && (
+            <button className="text-button" onClick={() => navigate("monitor")}>
+              Performance Monitor
+            </button>
+          )}
           <span className="avatar">
             {user.username.slice(0, 1).toUpperCase()}
           </span>
           <span className="user-name">{user.username}</span>
           <button
-            title="Signing out ends this browser identity. Reusing a name will not restore it."
+            title="Sign back in to recover your post history."
             className="text-button"
             onClick={async () => {
               await api("/api/session", { method: "DELETE" });
               setUser(null);
-              setAdminMode(false);
+              setHistory(null);
+              setCorrecting(null);
+              setEvents([]);
+              setEventsLoaded(false);
               navigate("events");
             }}
           >
@@ -1242,7 +1392,7 @@ function App() {
       <div className="demo-banner">
         <span>
           <i />
-          Public demo · Admin tools are open to every visitor
+          Course demo · Posts are visible to signed-in users
         </span>
         <span>
           English text analysis only <span className="banner-divider">/</span>{" "}
@@ -1258,7 +1408,16 @@ function App() {
             </button>
           </div>
         )}
-        {view === "events" ? (
+        {view === "monitor" ? (
+          <PerformanceMonitor />
+        ) : view === "event" && !selected ? (
+          <div className="page-heading">
+            <h1>{eventsLoaded ? "Topic not found" : "Loading topic…"}</h1>
+            <button className="text-button" onClick={() => navigate("events")}>
+              Back to forum
+            </button>
+          </div>
+        ) : view === "events" ? (
           <>
             <section className="hero">
               <div>
@@ -1317,17 +1476,20 @@ function App() {
                 <button
                   className="event-card"
                   key={e.id}
-                  onClick={() => {
-                    setSelected(e);
-                    navigate("event");
-                  }}
+                  onClick={() => navigate("event", e.id)}
                 >
-                  <div className={"event-art art-" + i}>
+                  <div className={"event-art art-" + (i % 3)}>
                     <span className="event-number">0{i + 1}</span>
                     <span className="event-date">DISCUSS</span>
                     <div className="event-shape" />
                     <span className="event-art-title">
-                      {["AFTER\nDARK.", "CAMPUS\nBITES.", "DSAN\nVOICE."][i]}
+                      {(
+                        {
+                          "spring-sounds": "AFTER\nDARK.",
+                          "campus-makers": "CAMPUS\nBITES.",
+                          "night-run": "DSAN\nVOICE.",
+                        } as Record<string, string>
+                      )[e.id] || "CAMPUS\nTOPIC."}
                     </span>
                   </div>
                   <div className="event-info">
@@ -1360,8 +1522,9 @@ function App() {
               <span className="eyebrow">MEASURE, DON'T GUESS</span>
               <h1>Results you can inspect.</h1>
               <p>
-                Fixed models and official test sets. Quality and runtime
-                performance are reported separately.
+                Emotion scores come from the GoEmotions test split. Sentiment
+                scores come from the TweetEval sentiment test split. Forum posts
+                and human reviews are excluded from these scores.
               </p>
               <p className="fineprint muted">
                 Emotion and sentiment use different official datasets and tasks.
@@ -1630,7 +1793,7 @@ function App() {
                   <span
                     className={
                       "mini-art art-" +
-                      events.findIndex((e) => e.id === selected.id)
+                      (events.findIndex((e) => e.id === selected.id) % 3)
                     }
                   >
                     ✳
@@ -1654,12 +1817,12 @@ function App() {
                     <span className={hasCjk ? "language-warning" : "muted"}>
                       {hasCjk
                         ? "These models support English only. Please write your post in English."
-                        : "Your post is saved before analysis. Emotion never triggers automatic removal."}
+                        : "The models are designed for English text. Results in other languages may be unreliable."}
                       <small>{text.length} / 2000</small>
                     </span>
                     <button
                       className="primary"
-                      disabled={sending || !text.trim() || hasCjk}
+                      disabled={sending || !hasVisibleText(text) || hasCjk}
                     >
                       {sending ? "Saving…" : "Publish post"} <span>↗</span>
                     </button>
@@ -1667,7 +1830,20 @@ function App() {
                   <div className="examples">
                     <span>Try a prompt:</span>
                     {(postExamples[selected.id] || []).map((s) => (
-                      <button type="button" key={s} onClick={() => editText(s)}>
+                      <button
+                        type="button"
+                        key={s}
+                        onClick={() => {
+                          if (
+                            !text.trim() ||
+                            text === s ||
+                            window.confirm(
+                              "Replace your current draft with this example?",
+                            )
+                          )
+                            editText(s);
+                        }}
+                      >
                         {s}
                       </button>
                     ))}
@@ -1695,13 +1871,50 @@ function App() {
                   </h1>
                   <p>
                     {view === "mine"
-                      ? "Posts and analysis submitted from this browser identity."
+                      ? "Posts and analysis submitted from your account."
                       : "Emotion labels describe text, not misconduct or a person’s mental state."}
                   </p>
                 </div>
                 {view === "board" && (
                   <>
-                    {" "}
+                    <button
+                      className="primary"
+                      onClick={() => setTopicForm(!topicForm)}
+                    >
+                      New Topic
+                    </button>
+                    {topicForm && (
+                      <form
+                        className="composer topic-create"
+                        onSubmit={createTopic}
+                      >
+                        <label htmlFor="topic-title">Title</label>
+                        <input
+                          id="topic-title"
+                          value={topicTitle}
+                          maxLength={80}
+                          required
+                          onChange={(e) => setTopicTitle(e.target.value)}
+                        />
+                        <label htmlFor="topic-description">Description</label>
+                        <textarea
+                          id="topic-description"
+                          value={topicDescription}
+                          maxLength={500}
+                          required
+                          onChange={(e) => setTopicDescription(e.target.value)}
+                        />
+                        <button className="primary" disabled={creatingTopic}>
+                          Publish topic
+                        </button>
+                      </form>
+                    )}
+                    <h2>Overall statistics</h2>
+                    <p className="muted">
+                      {after || before
+                        ? `Date range: ${after || "Any start"} to ${before || "Any end"}`
+                        : "All dates"}
+                    </p>
                     <div className="stats-grid">
                       {[
                         ["All posts", stats.total, "01"],
@@ -1778,6 +1991,62 @@ function App() {
                         </div>
                       </div>
                     </section>
+                    <h2>Statistics by topic</h2>
+                    <div className="topic-stats">
+                      {events.map((topic) => {
+                        const summary = stats.topics?.[topic.id];
+                        return (
+                          <button
+                            type="button"
+                            className="distribution-panel topic-summary"
+                            key={topic.id}
+                            aria-pressed={filterEvent === topic.id}
+                            onClick={() =>
+                              setFilterEvent(
+                                filterEvent === topic.id ? "" : topic.id,
+                              )
+                            }
+                          >
+                            <strong>{topic.title}</strong>
+                            <span>{summary?.total || 0} posts</span>
+                            <span>
+                              {Object.entries(sentiments)
+                                .map(
+                                  ([label, name]) =>
+                                    `${name} ${summary?.sentiment?.[label] || 0}`,
+                                )
+                                .join(" · ")}
+                            </span>
+                            <span>
+                              {summary?.emotions
+                                ?.slice(0, 3)
+                                .map((e) => `${labelName(e.label)} ${e.count}`)
+                                .join(" · ") || "No emotion labels yet"}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {filterEvent && (
+                      <section className="distribution-panel">
+                        <h3>
+                          {events.find((e) => e.id === filterEvent)?.title} ·
+                          Emotion distribution
+                        </h3>
+                        <div className="emotion-totals">
+                          {stats.topics?.[filterEvent]?.emotions?.map((e) => (
+                            <span className="tag" key={e.label}>
+                              {labelName(e.label)} <b>{e.count}</b>
+                            </span>
+                          ))}
+                          {!stats.topics?.[filterEvent]?.emotions?.length && (
+                            <p className="muted">
+                              No emotion labels in this range.
+                            </p>
+                          )}
+                        </div>
+                      </section>
+                    )}
                   </>
                 )}
                 <section className="filters" aria-label="Post filters">

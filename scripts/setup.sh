@@ -7,7 +7,10 @@ if [ ! -f .env ]; then
 from pathlib import Path
 import secrets
 example=Path('.env.example').read_text()
-Path('.env').write_text(example.replace('replace-with-a-local-random-value',secrets.token_hex(24)))
+Path('.env').write_text(
+    example.replace('replace-with-a-local-random-value', secrets.token_hex(24))
+    .replace('LOAD_DEMO_CODE=\n', 'LOAD_DEMO_CODE=' + secrets.token_urlsafe(24) + '\n')
+)
 PY
 fi
 docker compose up -d --build

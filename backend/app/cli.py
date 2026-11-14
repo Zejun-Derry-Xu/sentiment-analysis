@@ -1,10 +1,12 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
+import os
 import time
 from uuid import uuid4
 from pathlib import Path
 from psycopg.types.json import Jsonb
+from .accounts import DEMO_ACCOUNTS, create_account
 from .config import MODEL_REV, DATA_REV, REPORT_DIR, LABELS
 from .db import connect, initialize, enqueue, enqueue_sentiment
 from .assets import load_test, prepare_model
@@ -52,6 +54,7 @@ def evaluate(limit):
 def benchmark(samples, base_url):
     import httpx
 
+    load_code = os.environ["LOAD_DEMO_CODE"]
     run_id = uuid4()
     with connect() as c:
         if c.execute(
@@ -71,7 +74,11 @@ def benchmark(samples, base_url):
         cases = []
         with httpx.Client(base_url=base_url, timeout=30) as client:
             response = client.post(
-                "/api/session", json={"username": "benchmark-" + str(run_id)[:8]}
+                "/api/session",
+                json={
+                    "username": "admin",
+                    "password": os.getenv("DEMO_ADMIN_PASSWORD", "123456"),
+                },
             )
             response.raise_for_status()
             for concurrency in (1, 4):
@@ -80,6 +87,7 @@ def benchmark(samples, base_url):
                     begin = time.perf_counter()
                     r = client.post(
                         "/api/comments",
+                        headers={"X-Load-Demo-Code": load_code},
                         json={
                             "event_id": "benchmark",
                             "text": sample["text"],
@@ -234,6 +242,7 @@ def main():
     commands.add_parser("init")
     commands.add_parser("prepare")
     commands.add_parser("seed-demo")
+    commands.add_parser("seed-accounts")
     e = commands.add_parser("evaluate")
     e.add_argument(
         "--limit", type=int, default=5427, choices=range(1, 5428), metavar="1..5427"
@@ -250,7 +259,17 @@ def main():
         rescore(args.predictions)
         return
     initialize()
-    if args.command == "seed-demo":
+    if args.command == "seed-accounts":
+        with connect() as c:
+            for username, role in DEMO_ACCOUNTS.items():
+                password = (
+                    os.getenv("DEMO_ADMIN_PASSWORD", "123456")
+                    if role == "admin"
+                    else "123456"
+                )
+                create_account(c, username, password, role)
+        print("Demo accounts available: admin, student1, student2.")
+    elif args.command == "seed-demo":
         seed_demo()
     elif args.command == "prepare":
         print(json.dumps(prepare_model(), indent=2))

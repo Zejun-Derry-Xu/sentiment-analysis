@@ -21,23 +21,37 @@ with psycopg.connect(make_conninfo(**params), autocommit=True) as admin:
     ).fetchone():
         admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(dbname)))
 os.environ["DATABASE_URL"] = test_url
+from app.accounts import create_account
 from app.db import initialize, connect
 from app.main import app
 from fastapi.testclient import TestClient
 
 
 @pytest.fixture(autouse=True)
-def reset():
+def reset(monkeypatch):
+    monkeypatch.setenv("LOAD_DEMO_CODE", "test-load-code")
     initialize()
     with connect() as c:
-        c.execute("TRUNCATE users,runtimes,sentiment_runtimes,evaluations,benchmarks CASCADE")
+        c.execute(
+            "TRUNCATE users,runtimes,sentiment_runtimes,evaluations,benchmarks,load_runs CASCADE"
+        )
+        c.execute(
+            "DELETE FROM events WHERE id NOT IN ('spring-sounds','campus-makers','night-run','benchmark')"
+        )
     yield
 
 
 @pytest.fixture
 def client():
+    with connect() as c:
+        create_account(c, "Alex", "123456", "admin")
     with TestClient(app) as client:
-        assert client.post("/api/session", json={"username": "Alex"}).status_code == 200
+        assert (
+            client.post(
+                "/api/session", json={"username": "Alex", "password": "123456"}
+            ).status_code
+            == 200
+        )
         yield client
 
 

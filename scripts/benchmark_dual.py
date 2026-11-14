@@ -4,6 +4,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import json
+import os
 from pathlib import Path
 import time
 from uuid import uuid4
@@ -36,10 +37,15 @@ def dist(values):
 
 
 def run(base, samples):
+    load_code = os.environ["LOAD_DEMO_CODE"]
     with httpx.Client(base_url=base, timeout=120) as c:
         c.get("/ready").raise_for_status()
         c.post(
-            "/api/session", json={"username": "Dual CPU benchmark"}
+            "/api/session",
+            json={
+                "username": "admin",
+                "password": os.getenv("DEMO_ADMIN_PASSWORD", "123456"),
+            },
         ).raise_for_status()
         report = {
             "samples_per_case": samples,
@@ -55,6 +61,7 @@ def run(base, samples):
             start = time.perf_counter()
             r = c.post(
                 "/api/comments",
+                headers={"X-Load-Demo-Code": load_code},
                 json={
                     "event_id": "benchmark",
                     "text": TEXTS[i % 4],

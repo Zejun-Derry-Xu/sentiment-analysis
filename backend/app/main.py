@@ -1,25 +1,36 @@
+import asyncio
 import hashlib
 import json
 from pathlib import Path
 import os
 import re
 import secrets
-from contextlib import asynccontextmanager
+import unicodedata
+from contextlib import asynccontextmanager, suppress
 from datetime import datetime, timezone
 from typing import Literal
 from uuid import UUID, uuid4
-from fastapi import FastAPI, Request, Response, HTTPException, Depends, Query
+from fastapi import FastAPI, Request, Response, HTTPException, Depends, Header, Query
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 from psycopg.types.json import Jsonb
 from .db import transaction as connect, initialize, enqueue, enqueue_sentiment
+from .load_monitor import check_code, cleanup_loop, routes as monitor_routes
+from .accounts import DEMO_ACCOUNTS, create_account, verify_password
 from .config import LABELS, MODEL_REV, MODEL_REPO, DATA_REV, REPORT_DIR
 
 
 @asynccontextmanager
 async def lifespan(app):
     initialize()
-    yield
+    cleanup = asyncio.create_task(cleanup_loop())
+    try:
+        yield
+    finally:
+        cleanup.cancel()
+        with suppress(asyncio.CancelledError):
+            await cleanup
 
 
 app = FastAPI(
@@ -49,6 +60,15 @@ async def origin_check(request: Request, call_next):
     return response
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_error(request, exc):
+    # Never reflect submitted credentials (including invalid ones) in responses.
+    return JSONResponse(
+        {"detail": [{"loc": e["loc"], "msg": e["msg"]} for e in exc.errors()]},
+        status_code=422,
+    )
+
+
 @app.exception_handler(Exception)
 async def internal_error(request: Request, exc: Exception):
     import logging
@@ -68,10 +88,10 @@ async def internal_error(request: Request, exc: Exception):
 def session_user(request: Request):
     token = request.cookies.get("campus_session", "")
     if not token:
-        raise HTTPException(401, "Enter a display name to continue.")
+        raise HTTPException(401, "Sign in to continue.")
     with connect() as c:
         user = c.execute(
-            "SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=%s AND s.expires_at>now()",
+            "SELECT u.id,u.username,u.role FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token_hash=%s AND s.expires_at>now() AND u.password_hash IS NOT NULL",
             (hashlib.sha256(token.encode()).hexdigest(),),
         ).fetchone()
     if not user:
@@ -79,15 +99,24 @@ def session_user(request: Request):
     return user
 
 
+def admin_user(user=Depends(session_user)):
+    if user["role"] != "admin":
+        raise HTTPException(403, "Administrator access required.")
+    return user
+
+
 def clean_text(v):
     v = v.strip()
-    if not v or any(ord(x) < 32 and x not in "\n\t\r" for x in v):
+    if not any(
+        not x.isspace() and unicodedata.category(x) not in {"Cf", "Cc"} for x in v
+    ) or any(ord(x) < 32 and x not in "\n\t\r" for x in v):
         raise ValueError("Enter valid text.")
     return v
 
 
 class Login(BaseModel):
     username: str = Field(min_length=1, max_length=32)
+    password: str = Field(min_length=1, max_length=128)
 
     @field_validator("username")
     @classmethod
@@ -175,24 +204,18 @@ def ready():
     return result
 
 
-@app.post("/api/session")
-def login(body: Login, request: Request, response: Response):
-    try:
-        old = session_user(request)
-    except HTTPException:
-        old = None
-    if old and old["username"] == body.username:
-        return old
-    token = secrets.token_urlsafe(32)
-    with connect() as c:
-        user = c.execute(
-            "INSERT INTO users(id,username) VALUES (%s,%s) RETURNING *",
-            (uuid4(), body.username),
-        ).fetchone()
+def start_session(c, request, response, user):
+    old = request.cookies.get("campus_session", "")
+    if old:
         c.execute(
-            "INSERT INTO sessions VALUES (%s,%s,now()+interval '30 days')",
-            (hashlib.sha256(token.encode()).hexdigest(), user["id"]),
+            "DELETE FROM sessions WHERE token_hash=%s",
+            (hashlib.sha256(old.encode()).hexdigest(),),
         )
+    token = secrets.token_urlsafe(32)
+    c.execute(
+        "INSERT INTO sessions VALUES (%s,%s,now()+interval '30 days')",
+        (hashlib.sha256(token.encode()).hexdigest(), user["id"]),
+    )
     response.set_cookie(
         "campus_session",
         token,
@@ -202,6 +225,31 @@ def login(body: Login, request: Request, response: Response):
         max_age=30 * 86400,
     )
     return user
+
+
+@app.post("/api/register", status_code=201)
+def register(body: Login, request: Request, response: Response):
+    if body.username.casefold() in DEMO_ACCOUNTS:
+        raise HTTPException(409, "This username is reserved.")
+    with connect() as c:
+        user = create_account(c, body.username, body.password)
+        if not user:
+            raise HTTPException(409, "This username is already in use.")
+        return start_session(c, request, response, user)
+
+
+@app.post("/api/session")
+def login(body: Login, request: Request, response: Response):
+    with connect() as c:
+        user = c.execute(
+            "SELECT id,username,role,password_hash FROM users WHERE login_name=%s",
+            (body.username.casefold(),),
+        ).fetchone()
+        if not verify_password(
+            body.password, user.pop("password_hash") if user else None
+        ):
+            raise HTTPException(401, "Incorrect username or password.")
+        return start_session(c, request, response, user)
 
 
 @app.get("/api/session")
@@ -221,11 +269,32 @@ def logout(request: Request, response: Response):
 
 
 @app.get("/api/events")
-def events():
+def events(user=Depends(session_user)):
     with connect() as c:
         return c.execute(
             "SELECT e.*,count(c.id) AS comment_count FROM events e LEFT JOIN comments c ON c.event_id=e.id WHERE NOT e.is_benchmark GROUP BY e.id ORDER BY starts_at"
         ).fetchall()
+
+
+class Topic(BaseModel):
+    title: str = Field(min_length=1, max_length=80)
+    description: str = Field(min_length=1, max_length=500)
+
+    @field_validator("title", "description")
+    @classmethod
+    def validate_text(cls, value):
+        return clean_text(value)
+
+
+@app.post("/api/events", status_code=201)
+def create_topic(body: Topic, user=Depends(admin_user)):
+    with connect() as c:
+        row = c.execute(
+            """INSERT INTO events(id,title,category,description,location,starts_at)
+            VALUES (%s,%s,'CAMPUS DISCUSSION',%s,'Campus Forum',now()) RETURNING *""",
+            (str(uuid4()), body.title, body.description),
+        ).fetchone()
+        return {**row, "comment_count": 0}
 
 
 @app.get("/api/model")
@@ -261,30 +330,55 @@ def sentiment_runtime_info():
 
 
 @app.post("/api/comments", status_code=202)
-def post_comment(body: NewComment, user=Depends(session_user)):
+def post_comment(
+    body: NewComment,
+    user=Depends(session_user),
+    x_load_demo_code: str | None = Header(default=None),
+):
+    if body.event_id == "benchmark":
+        admin_user(user)
+        check_code(x_load_demo_code)
     with connect() as c:
         if not c.execute(
             "SELECT 1 FROM events WHERE id=%s", (body.event_id,)
         ).fetchone():
             raise HTTPException(404, "Forum board not found.")
-        # ON CONFLICT also handles a simultaneous duplicate browser submission.
+        cid = save_comment(
+            c, body.event_id, user["id"], body.text, body.idempotency_key
+        )
+        return get_comment(c, cid, user["id"])
+
+
+def save_comment(c, event_id, user_id, body_text, key, load_run_id=None):
+    # ON CONFLICT also handles a simultaneous duplicate browser submission.
+    row = c.execute(
+        "INSERT INTO comments(id,event_id,user_id,text,idempotency_key,load_run_id) VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT(user_id,idempotency_key) DO NOTHING RETURNING id",
+        (uuid4(), event_id, user_id, body_text, key, load_run_id),
+    ).fetchone()
+    if row:
+        enqueue(c, "comment", row["id"])
+        enqueue_sentiment(c, row["id"])
+    else:
         row = c.execute(
-            "INSERT INTO comments(id,event_id,user_id,text,idempotency_key) VALUES (%s,%s,%s,%s,%s) ON CONFLICT(user_id,idempotency_key) DO NOTHING RETURNING id",
-            (uuid4(), body.event_id, user["id"], body.text, body.idempotency_key),
+            "SELECT id,event_id,text FROM comments WHERE user_id=%s AND idempotency_key=%s",
+            (user_id, key),
         ).fetchone()
-        if row:
-            enqueue(c, "comment", row["id"])
-            enqueue_sentiment(c, row["id"])
-        else:
-            row = c.execute(
-                "SELECT id,event_id,text FROM comments WHERE user_id=%s AND idempotency_key=%s",
-                (user["id"], body.idempotency_key),
-            ).fetchone()
-            if row["event_id"] != body.event_id or row["text"] != body.text:
-                raise HTTPException(
-                    409, "This submission key was already used for a different post."
-                )
-        return get_comment(c, row["id"], user["id"])
+        if row["event_id"] != event_id or row["text"] != body_text:
+            raise HTTPException(
+                409, "This submission key was already used for a different post."
+            )
+    return row["id"]
+
+
+def add_date_filters(conditions, params, after, before):
+    for value, operator in [(after, ">="), (before, "<=")]:
+        if value:
+            if value.tzinfo is None:
+                raise HTTPException(422, "Dates must include a time zone.")
+            conditions.append("c.created_at " + operator + " %s")
+            params.append(value)
+    if after and before and after > before:
+        raise HTTPException(422, "The start date must not be after the end date.")
 
 
 @app.get("/api/comments")
@@ -328,14 +422,7 @@ def comments(
             "EXISTS(SELECT 1 FROM analyses a WHERE a.comment_id=c.id AND a.status='completed' AND a.labels @> %s)"
         )
         params.append(Jsonb([label]))
-    for value, operator in [(after, ">="), (before, "<=")]:
-        if value:
-            if value.tzinfo is None:
-                raise HTTPException(422, "Dates must include a time zone.")
-            conditions.append("c.created_at " + operator + " %s")
-            params.append(value)
-    if after and before and after > before:
-        raise HTTPException(422, "The start date must not be after the end date.")
+    add_date_filters(conditions, params, after, before)
     if mine:
         conditions.append("c.user_id=%s")
         params.append(user["id"])
@@ -355,30 +442,62 @@ def comments(
     return {"items": items, "total": total, "page": page, "page_size": page_size}
 
 
+def scoped_stats(c, after, before, event_id=None):
+    conditions = ["NOT e.is_benchmark"]
+    params = []
+    add_date_filters(conditions, params, after, before)
+    if event_id is not None:
+        conditions.append("c.event_id=%s")
+        params.append(event_id)
+    where = " WHERE " + " AND ".join(conditions)
+    result = c.execute(
+        """SELECT count(*) AS total,
+    count(*) FILTER(WHERE c.status='completed' AND c.sentiment_status='completed') AS completed,
+    count(*) FILTER(WHERE c.status IN ('pending','processing') OR c.sentiment_status IN ('pending','processing')) AS waiting,
+    count(*) FILTER(WHERE c.status='failed' OR c.sentiment_status='failed') AS failed,
+    count(*) FILTER(WHERE c.handling='unread') AS unread
+    FROM comments c JOIN events e ON e.id=c.event_id """
+        + where,
+        params,
+    ).fetchone()
+    counts = c.execute(
+        """SELECT s.label,count(*) AS n FROM comments c JOIN events e ON e.id=c.event_id
+    JOIN LATERAL (SELECT label FROM sentiment_analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) s ON true
+    """
+        + where
+        + " GROUP BY s.label",
+        params,
+    ).fetchall()
+    result["sentiment"] = {label: 0 for label in ("negative", "neutral", "positive")}
+    result["sentiment"].update({r["label"]: r["n"] for r in counts})
+    result["sentiment_completed"] = sum(result["sentiment"].values())
+    result["emotions"] = c.execute(
+        """SELECT label,count(*) AS count FROM comments c JOIN events e ON e.id=c.event_id
+    JOIN LATERAL (SELECT labels FROM analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) a ON true
+    CROSS JOIN LATERAL jsonb_array_elements_text(a.labels) AS label"""
+        + where
+        + " GROUP BY label ORDER BY count(*) DESC,label",
+        params,
+    ).fetchall()
+    return result
+
+
 @app.get("/api/stats")
-def stats(user=Depends(session_user)):
+def stats(
+    after: datetime | None = None,
+    before: datetime | None = None,
+    event_id: str | None = None,
+    include_topics: bool = False,
+    user=Depends(admin_user),
+):
     with connect() as c:
-        result = c.execute(
-            """SELECT count(*) AS total,
-        count(*) FILTER(WHERE c.status='completed' AND c.sentiment_status='completed') AS completed,
-        count(*) FILTER(WHERE c.status IN ('pending','processing') OR c.sentiment_status IN ('pending','processing')) AS waiting,
-        count(*) FILTER(WHERE c.status='failed' OR c.sentiment_status='failed') AS failed,
-        count(*) FILTER(WHERE c.handling='unread') AS unread
-        FROM comments c JOIN events e ON e.id=c.event_id WHERE NOT e.is_benchmark""",
-        ).fetchone()
-        counts = c.execute("""SELECT s.label,count(*) AS n FROM comments c JOIN events e ON e.id=c.event_id
-        JOIN LATERAL (SELECT label FROM sentiment_analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) s ON true
-        WHERE NOT e.is_benchmark GROUP BY s.label""").fetchall()
-        result["sentiment"] = {
-            label: 0 for label in ("negative", "neutral", "positive")
-        }
-        result["sentiment"].update({r["label"]: r["n"] for r in counts})
-        result["sentiment_completed"] = sum(result["sentiment"].values())
-        result["emotions"] = (
-            c.execute("""SELECT label,count(*) AS count FROM comments c JOIN events e ON e.id=c.event_id
-        JOIN LATERAL (SELECT labels FROM analyses WHERE comment_id=c.id AND status='completed' ORDER BY started_at DESC LIMIT 1) a ON true
-        CROSS JOIN LATERAL jsonb_array_elements_text(a.labels) AS label WHERE NOT e.is_benchmark GROUP BY label ORDER BY count(*) DESC,label""").fetchall()
-        )
+        c.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY")
+        result = scoped_stats(c, after, before, event_id)
+        if include_topics:
+            result["topics"] = {
+                row["id"]: scoped_stats(c, after, before, row["id"])
+                for row in c.execute("SELECT id FROM events WHERE NOT is_benchmark")
+            }
         return result
 
 
@@ -388,8 +507,12 @@ def retry_sentiment(comment_id: UUID, user=Depends(session_user)):
         row = c.execute(
             "SELECT * FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
         ).fetchone()
-        if not row:
+        if not row or row["load_run_id"]:
             raise HTTPException(404, "Post not found.")
+        if user["role"] != "admin" and row["user_id"] != user["id"]:
+            raise HTTPException(
+                403, "Only the author or an administrator can retry this post."
+            )
         if row["sentiment_status"] != "failed":
             raise HTTPException(409, "Only failed sentiment jobs can be retried.")
         c.execute(
@@ -404,6 +527,12 @@ def retry_sentiment(comment_id: UUID, user=Depends(session_user)):
 def comment_detail(comment_id: UUID, user=Depends(session_user)):
     with connect() as c:
         row = get_comment(c, comment_id, user["id"])
+        if row["load_run_id"] or (
+            row["event_id"] == "benchmark" and user["role"] != "admin"
+        ):
+            raise HTTPException(404, "Post not found.")
+        if user["role"] != "admin":
+            return row
         row["correction_history"] = c.execute(
             "SELECT r.*,u.username FROM corrections r JOIN users u ON u.id=r.user_id WHERE comment_id=%s ORDER BY created_at DESC",
             (comment_id,),
@@ -429,8 +558,12 @@ def retry(comment_id: UUID, user=Depends(session_user)):
         row = c.execute(
             "SELECT * FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
         ).fetchone()
-        if not row:
+        if not row or row["load_run_id"]:
             raise HTTPException(404, "Post not found.")
+        if user["role"] != "admin" and row["user_id"] != user["id"]:
+            raise HTTPException(
+                403, "Only the author or an administrator can retry this post."
+            )
         if row["status"] != "failed":
             raise HTTPException(409, "Only failed emotion jobs can be retried.")
         c.execute(
@@ -442,10 +575,11 @@ def retry(comment_id: UUID, user=Depends(session_user)):
 
 
 @app.put("/api/comments/{comment_id}/handling")
-def handle(comment_id: UUID, body: Handling, user=Depends(session_user)):
+def handle(comment_id: UUID, body: Handling, user=Depends(admin_user)):
     with connect() as c:
         row = c.execute(
-            "SELECT handling FROM comments WHERE id=%s FOR UPDATE", (comment_id,)
+            "SELECT handling FROM comments WHERE id=%s AND load_run_id IS NULL FOR UPDATE",
+            (comment_id,),
         ).fetchone()
         if not row:
             raise HTTPException(404, "Post not found.")
@@ -460,9 +594,11 @@ def handle(comment_id: UUID, body: Handling, user=Depends(session_user)):
 
 
 @app.post("/api/comments/{comment_id}/corrections", status_code=201)
-def correct(comment_id: UUID, body: Correction, user=Depends(session_user)):
+def correct(comment_id: UUID, body: Correction, user=Depends(admin_user)):
     with connect() as c:
         row = get_comment(c, comment_id, user["id"])
+        if row["load_run_id"]:
+            raise HTTPException(404, "Post not found.")
         if row["status"] != "completed":
             raise HTTPException(
                 409, "Emotion analysis must complete before adding a human review."
@@ -528,3 +664,6 @@ def benchmarks():
         return c.execute(
             "SELECT * FROM benchmarks ORDER BY created_at DESC LIMIT 20"
         ).fetchall()
+
+
+app.include_router(monitor_routes(admin_user, save_comment))

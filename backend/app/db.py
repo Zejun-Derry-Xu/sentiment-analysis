@@ -79,6 +79,17 @@ def initialize():
                     )
             c.execute("INSERT INTO schema_migrations(version) VALUES (3)")
 
+        if not c.execute("SELECT 1 FROM schema_migrations WHERE version=4").fetchone():
+            c.execute("""
+                ALTER TABLE users ADD COLUMN login_name text UNIQUE;
+                ALTER TABLE users ADD COLUMN password_hash text;
+                DELETE FROM sessions;
+                INSERT INTO schema_migrations(version) VALUES (4);
+            """)
+        if not c.execute("SELECT 1 FROM schema_migrations WHERE version=5").fetchone():
+            c.execute(Path(__file__).with_name("load_demo.sql").read_text())
+            c.execute("INSERT INTO schema_migrations(version) VALUES (5)")
+
 
 def enqueue(c, kind, comment_id=None, payload=None):
     jid = uuid4()
