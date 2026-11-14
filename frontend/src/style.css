@@ -2599,3 +2599,10 @@ td b {
 .llm-monitor { margin-top: 1rem; }
 .llm-monitor .section-title { margin-top: 0; }
 .llm-monitor .primary + .text-button { margin-left: .75rem; }
+
+.monitor-views { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.4rem; }
+.monitor-views .text-button { padding: .55rem .9rem; border-radius: .55rem; border: 1px solid #cbd8ca; }
+.monitor-views .text-button[aria-pressed="true"] { background: #e6ede5; color: #184a3b; font-weight: 700; }
+.model-latency { margin-block: 1rem; overflow-x: auto; }
+.model-latency table { width: 100%; border-collapse: collapse; }
+.model-latency th, .model-latency td { padding: .45rem; text-align: left; border-bottom: 1px solid #dce1d8; }

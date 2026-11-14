@@ -85,7 +85,18 @@ export function SummaryMonitor() {
     }
   }
 
-  if (!state?.enabled) return null;
+  if (!state?.enabled) {
+    return (
+      <section className="distribution-panel" aria-label="LLM performance">
+        <h2>LLM performance</h2>
+        <p>
+          {state
+            ? "The local summary model is disabled on this deployment."
+            : "Loading LLM monitor…"}
+        </p>
+      </section>
+    );
+  }
   const run = state.run;
   const rows = run?.samples ?? [];
   const selected = rows.find((row) => row.sample === sampleId);

@@ -234,7 +234,7 @@ when needed. The smaller model described praise of the actors as criticism.
 The 4B remains the default.
 
 
-**Performance Monitor → LLM performance** shows cache hits, successful
+**Performance Monitor → LLM Summary** shows cache hits, successful
 generations, and failures from the last 100 recorded topic requests in this API
 process. **Run LLM Load Test** submits eight requests using fictional posts and
 a maximum concurrency of two over a single inference slot. Each sample
@@ -242,5 +242,5 @@ bypasses the application cache. Ollama can still reuse the loaded model and
 prompt cache. The chart uses nearest-rank p50, p95, and p99, so p95 and p99
 both select the slowest request in an eight-sample run. Select a bar to inspect
 queue wait, model load, prompt processing, and token generation. Results are
-kept in memory. **Clear LLM Run** removes the finished test only. The original
-dual-classifier load test remains available in the same monitor.
+kept in memory. **Clear LLM Run** removes the finished test only. The **Post Classifiers** tab is the default view and shows queue and inference
+percentiles for both classifiers alongside the original end-to-end chart.

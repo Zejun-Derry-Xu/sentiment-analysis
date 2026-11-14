@@ -260,6 +260,66 @@ function SampleTrace({ sample }: { sample: Sample }) {
   );
 }
 
+function ModelLatencyTable({ samples }: { samples: Sample[] }) {
+  const metrics = (["emotion", "sentiment"] as const).flatMap((model) => {
+    const completedAttempts = samples.flatMap((sample) =>
+      (sample[model] ?? [])
+        .filter((attempt) => attempt.status === "completed")
+        .slice(-1),
+    );
+    return (["queue_ms", "inference_ms"] as const).map((metric) => ({
+      model,
+      metric,
+      values: completedAttempts
+        .flatMap((attempt) => {
+          const value = attempt[metric];
+          return value === null ? [] : [value];
+        })
+        .sort((a, b) => a - b),
+    }));
+  });
+  return (
+    <section className="distribution-panel model-latency">
+      <h2>Classifier latency by model</h2>
+      <p className="muted">
+        Measured on successful model attempts in this run.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Model</th>
+            <th scope="col">Measure</th>
+            <th scope="col">Samples</th>
+            {[50, 95, 99].map((p) => (
+              <th scope="col" key={p}>
+                p{p}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {metrics.map(({ model, metric, values }) => (
+            <tr key={model + metric}>
+              <th scope="row">
+                {model === "emotion" ? "Emotion" : "Sentiment"}
+              </th>
+              <td>{metric === "queue_ms" ? "Queue wait" : "Inference"}</td>
+              <td>{values.length}</td>
+              {[50, 95, 99].map((p) => (
+                <td key={p}>
+                  {values.length
+                    ? duration(values[Math.ceil((values.length * p) / 100) - 1])
+                    : "—"}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  );
+}
+
 export function PerformanceMonitor() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [enabled, setEnabled] = useState(false);
@@ -411,14 +471,11 @@ export function PerformanceMonitor() {
     (cooldownUntil !== null && stamp(cooldownUntil) > Date.now());
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">METRICS · LOGS · TRACES</span>
-        <h1>Performance Monitor</h1>
-        <p>
-          Send 100 test posts with up to 16 concurrent submissions. Follow the
-          queue through both CPU models.
-        </p>
-      </div>
+      <h2>Post analysis load test</h2>
+      <p>
+        Send 100 test posts with up to 16 concurrent submissions. Follow the
+        queue through the emotion and sentiment classifiers.
+      </p>
       <section
         className="distribution-panel monitor-controls"
         aria-label="Load demo controls"
@@ -502,6 +559,7 @@ export function PerformanceMonitor() {
               </div>
             ))}
           </section>
+          <ModelLatencyTable samples={rows} />
           <section className="distribution-panel">
             <h2>Percentile latency</h2>
             <label>
