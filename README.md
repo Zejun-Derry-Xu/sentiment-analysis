@@ -203,7 +203,7 @@ Back up PostgreSQL before upgrading an existing deployment. The account migratio
 ## Topic summary experiment
 
 The experimental topic page offers **Summarize** to any signed-in reader. It uses
-the original post text, returns up to four discussion points with source posts,
+the original post text, returns up to three short bullets about what users discussed,
 and displays the number of posts covered. Small topics are read in full. For
 larger topics it reads the newest 30 posts within a 10 KB text budget. The
 classifier workers and their persisted outputs continue to operate separately.
@@ -225,5 +225,10 @@ The API container reaches the host through `host.docker.internal`. The
 optional overlay enables the feature. It uses one generation at a time with a
 55-second request timeout. To try the smaller model, pull `qwen3.5:0.8b` and
 set `SUMMARY_MODEL=qwen3.5:0.8b` on the Compose command. This is an interactive
-prototype and regenerates on request. Source numbering and existence are
-checked, but a source can still fail to support the model's interpretation.
+prototype and regenerates on request. Check important claims against the original discussion.
+
+In a local Apple M5 run with the same 12 fictional haunted-house posts, the
+short format took 4.89 s with Qwen3.5 4B (39 output tokens) and 2.14 s with
+Qwen3.5 0.8B (38 output tokens). These are single runs, including model loading
+when needed. The smaller model described praise of the actors as criticism.
+The 4B remains the default.

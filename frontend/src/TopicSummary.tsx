@@ -5,8 +5,7 @@ type Report = {
   total_posts: number;
   posts_read: number;
   elapsed_ms?: number;
-  points: { heading: string; views: string; sources: number[] }[];
-  sources: { number: number; id: string; text: string }[];
+  bullets: string[];
 };
 
 export function TopicSummary({ topicId }: { topicId: string }) {
@@ -99,25 +98,15 @@ export function TopicSummary({ topicId }: { topicId: string }) {
               The summary covers the newest posts that fit in this run.
             </p>
           )}
-          {report.points.length === 0 && (
+          {report.bullets.length ? (
+            <ul className="topic-summary-bullets">
+              {report.bullets.map((bullet, i) => (
+                <li key={i}>{bullet}</li>
+              ))}
+            </ul>
+          ) : (
             <p>No clear discussion points were found.</p>
           )}
-          {report.points.map((point, i) => (
-            <article key={i} className="topic-summary-point">
-              <h3>{point.heading}</h3>
-              <p>{point.views}</p>
-              <details>
-                <summary>Source posts</summary>
-                {report.sources
-                  .filter((s) => point.sources.includes(s.number))
-                  .map((s) => (
-                    <blockquote key={s.id}>
-                      <strong>Post {s.number}</strong> · {s.text}
-                    </blockquote>
-                  ))}
-              </details>
-            </article>
-          ))}
         </div>
       )}
     </section>
