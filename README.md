@@ -2,7 +2,7 @@
 
 An English campus discussion forum with two independent CPU classifiers: multi-label emotion and three-class sentiment. React + TypeScript, FastAPI, PostgreSQL, ONNX Runtime CPU, PyTorch CPU, and Docker Compose.
 
-[Live Jetstream2 demo](https://sentiment-analysis.cis240466.projects.jetstream-cloud.org/) · [Cloud deployment and measurements](docs/jetstream-dual-validation.md)
+[Live Jetstream2 demo](https://sentiment-analysis.cis240466.projects.jetstream-cloud.org/) · [Cloud deployment and measurements](docs/jetstream-dual-validation.md) · [Changelog](CHANGELOG.md)
 
 ## Product
 
