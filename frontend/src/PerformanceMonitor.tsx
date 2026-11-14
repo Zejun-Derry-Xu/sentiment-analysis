@@ -67,28 +67,16 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return body;
 }
 
-function LatencyChart({
-  samples,
-  mode,
+export function LatencyChart({
+  measurements,
   pick,
 }: {
-  samples: Sample[];
-  mode: Mode;
+  measurements: { sample: number; ms: number }[];
   pick: (id: number) => void;
 }) {
-  const rows = samples
-    .flatMap((s) => {
-      const ms =
-        mode === "http"
-          ? s.submit_error
-            ? null
-            : s.http_ms
-          : completed(s)
-            ? s.completion_ms
-            : null;
-      return ms === null ? [] : [{ sample: s.sample, ms }];
-    })
-    .sort((a, b) => a.ms - b.ms || a.sample - b.sample);
+  const rows = [...measurements].sort(
+    (a, b) => a.ms - b.ms || a.sample - b.sample,
+  );
   if (!rows.length)
     return <p className="muted">Waiting for measured samples…</p>;
 
@@ -528,7 +516,20 @@ export function PerformanceMonitor() {
                 <option value="http">HTTP submit (browser measured)</option>
               </select>
             </label>
-            <LatencyChart samples={rows} mode={mode} pick={pick} />
+            <LatencyChart
+              measurements={rows.flatMap((s) => {
+                const ms =
+                  mode === "http"
+                    ? s.submit_error
+                      ? null
+                      : s.http_ms
+                    : completed(s)
+                      ? s.completion_ms
+                      : null;
+                return ms === null ? [] : [{ sample: s.sample, ms }];
+              })}
+              pick={pick}
+            />
             <p className="muted">
               Select a sample to see its trace. Throughput is measured from run
               start through the last completed sample.

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Report = {
   model: string;
@@ -6,6 +6,7 @@ type Report = {
   posts_read: number;
   elapsed_ms?: number;
   bullets: string[];
+  cached: boolean;
 };
 
 export function TopicSummary({ topicId }: { topicId: string }) {
@@ -13,7 +14,7 @@ export function TopicSummary({ topicId }: { topicId: string }) {
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState("");
   const [working, setWorking] = useState(false);
-  const request = useRef<AbortController | null>(null);
+  const [attempt, retry] = useState(0);
 
   useEffect(() => {
     const config = new AbortController();
@@ -23,41 +24,57 @@ export function TopicSummary({ topicId }: { topicId: string }) {
       .catch(() => {});
     return () => {
       config.abort();
-      request.current?.abort();
     };
   }, []);
 
-  async function run() {
-    if (request.current) return;
+  useEffect(() => {
+    if (!enabled) return;
     const controller = new AbortController();
-    request.current = controller;
+    let timer: number | undefined;
+    const deadline = Date.now() + 180_000;
     setWorking(true);
     setError("");
-    try {
-      const response = await fetch(
-        `/api/events/${encodeURIComponent(topicId)}/summary`,
-        {
-          method: "POST",
-          signal: controller.signal,
-        },
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          typeof data.detail === "string"
-            ? data.detail
-            : "Summary unavailable.",
+
+    async function run() {
+      try {
+        const response = await fetch(
+          `/api/events/${encodeURIComponent(topicId)}/summary`,
+          {
+            method: "POST",
+            signal: controller.signal,
+          },
         );
-      }
-      setReport(data);
-    } catch (e) {
-      if (!controller.signal.aborted)
+        if (controller.signal.aborted) return;
+        if (response.status === 202) {
+          if (Date.now() >= deadline)
+            throw new Error("The model is busy. Please try again.");
+          timer = window.setTimeout(() => void run(), 2000);
+          return;
+        }
+        const data = await response.json();
+        if (controller.signal.aborted) return;
+        if (!response.ok) {
+          throw new Error(
+            typeof data.detail === "string"
+              ? data.detail
+              : "Summary unavailable.",
+          );
+        }
+        setReport(data);
+        setWorking(false);
+      } catch (e) {
+        if (controller.signal.aborted) return;
         setError(e instanceof Error ? e.message : "Summary unavailable.");
-    } finally {
-      request.current = null;
-      if (!controller.signal.aborted) setWorking(false);
+        setWorking(false);
+      }
     }
-  }
+
+    void run();
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [enabled, topicId, attempt]);
 
   if (!enabled) return null;
   return (
@@ -67,14 +84,15 @@ export function TopicSummary({ topicId }: { topicId: string }) {
     >
       <div className="section-title">
         <h2>Discussion summary</h2>
-        <button
-          className="primary"
-          type="button"
-          disabled={working}
-          onClick={() => void run()}
-        >
-          {working ? "Summarizing…" : report ? "Refresh summary" : "Summarize"}
-        </button>
+        {error && (
+          <button
+            className="text-button"
+            type="button"
+            onClick={() => retry((n) => n + 1)}
+          >
+            Retry summary
+          </button>
+        )}
       </div>
       {working && <p role="status">Reading the posts in this topic…</p>}
       {error && (
@@ -90,8 +108,10 @@ export function TopicSummary({ topicId }: { topicId: string }) {
           <p className="muted">
             AI summary · {report.posts_read} of {report.total_posts} posts ·{" "}
             {report.model}
-            {report.elapsed_ms !== undefined &&
-              ` · ${(report.elapsed_ms / 1000).toFixed(1)} s`}
+            {report.cached
+              ? " · Cached"
+              : report.elapsed_ms !== undefined &&
+                ` · ${(report.elapsed_ms / 1000).toFixed(1)} s`}
           </p>
           {report.posts_read < report.total_posts && (
             <p className="muted">

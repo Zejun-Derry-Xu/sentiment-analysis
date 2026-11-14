@@ -2595,3 +2595,7 @@ td b {
 .topic-summary-panel .section-title { margin-top: 0; gap: 1rem; flex-wrap: wrap; }
 .topic-summary-bullets { margin: .6rem 0 0; padding-left: 1.25rem; }
 .topic-summary-bullets li + li { margin-top: .3rem; }
+
+.llm-monitor { margin-top: 1rem; }
+.llm-monitor .section-title { margin-top: 0; }
+.llm-monitor .primary + .text-button { margin-left: .75rem; }

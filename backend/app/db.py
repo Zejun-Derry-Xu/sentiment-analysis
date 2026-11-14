@@ -89,6 +89,9 @@ def initialize():
         if not c.execute("SELECT 1 FROM schema_migrations WHERE version=5").fetchone():
             c.execute(Path(__file__).with_name("load_demo.sql").read_text())
             c.execute("INSERT INTO schema_migrations(version) VALUES (5)")
+        if not c.execute("SELECT 1 FROM schema_migrations WHERE version=6").fetchone():
+            c.execute(Path(__file__).with_name("topic_summary.sql").read_text())
+            c.execute("INSERT INTO schema_migrations(version) VALUES (6)")
 
 
 def enqueue(c, kind, comment_id=None, payload=None):

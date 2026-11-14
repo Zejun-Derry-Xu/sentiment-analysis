@@ -200,11 +200,12 @@ The browser demo uses your administrator session. Set `LOAD_DEMO_ENABLED=false` 
 
 Back up PostgreSQL before upgrading an existing deployment. The account migration ends anonymous sessions and preserves their posts and model outputs. The load-run migration adds isolated test records.
 
-## Topic summary experiment
+## Automatic topic summaries
 
-The experimental topic page offers **Summarize** to any signed-in reader. It uses
-the original post text, returns up to three short bullets about what users discussed,
-and displays the number of posts covered. Small topics are read in full. For
+The topic page automatically loads up to three short discussion bullets with emoji
+for signed-in readers. Results are saved in PostgreSQL and shared between users.
+New posts invalidate the cached summary on the next visit. The page displays
+the number of posts covered. Small topics are read in full. For
 larger topics it reads the newest 30 posts within a 10 KB text budget. The
 classifier workers and their persisted outputs continue to operate separately.
 
@@ -224,11 +225,22 @@ docker compose -f compose.yaml -f compose.summary.yaml up -d --build --no-deps a
 The API container reaches the host through `host.docker.internal`. The
 optional overlay enables the feature. It uses one generation at a time with a
 55-second request timeout. To try the smaller model, pull `qwen3.5:0.8b` and
-set `SUMMARY_MODEL=qwen3.5:0.8b` on the Compose command. This is an interactive
-prototype and regenerates on request. Check important claims against the original discussion.
+set `SUMMARY_MODEL=qwen3.5:0.8b` on the Compose command. Check important claims against the original discussion.
 
 In a local Apple M5 run with the same 12 fictional haunted-house posts, the
 short format took 4.89 s with Qwen3.5 4B (39 output tokens) and 2.14 s with
 Qwen3.5 0.8B (38 output tokens). These are single runs, including model loading
 when needed. The smaller model described praise of the actors as criticism.
 The 4B remains the default.
+
+
+**Performance Monitor → LLM performance** shows cache hits, successful
+generations, and failures from the last 100 recorded topic requests in this API
+process. **Run LLM Load Test** submits eight requests using fictional posts and
+a maximum concurrency of two over a single inference slot. Each sample
+bypasses the application cache. Ollama can still reuse the loaded model and
+prompt cache. The chart uses nearest-rank p50, p95, and p99, so p95 and p99
+both select the slowest request in an eight-sample run. Select a bar to inspect
+queue wait, model load, prompt processing, and token generation. Results are
+kept in memory. **Clear LLM Run** removes the finished test only. The original
+dual-classifier load test remains available in the same monitor.

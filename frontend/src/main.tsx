@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 import { TopicSummary } from "./TopicSummary";
+import { SummaryMonitor } from "./SummaryMonitor";
 import { PerformanceMonitor } from "./PerformanceMonitor";
 
 type User = { id: string; username: string; role: "admin" | "student" };
@@ -1470,7 +1471,10 @@ function App() {
           </div>
         )}
         {view === "monitor" ? (
-          <PerformanceMonitor />
+          <>
+            <PerformanceMonitor />
+            <SummaryMonitor />
+          </>
         ) : view === "event" && !selected ? (
           <div className="page-heading">
             <h1>{eventsLoaded ? "Topic not found" : "Loading topic…"}</h1>
