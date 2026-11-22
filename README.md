@@ -240,7 +240,7 @@ process. **Run LLM Load Test** submits eight requests using fictional posts and
 a maximum concurrency of two over a single inference slot. Each sample
 bypasses the application cache. Ollama can still reuse the loaded model and
 prompt cache. The chart colors each sample by adjustable response-time limits.
-Defaults are 100/500 ms for HTTP submission, 1/3 s for both classifier
+Defaults are 100/500 ms for HTTP submission, 2.5/6 s for both classifier
 results, and 5/10 s for LLM requests. The first limit is inclusive for
 excellent, the second inclusive for good, and higher delays are poor.
 These are demo display defaults and can be adjusted in each chart.

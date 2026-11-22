@@ -70,7 +70,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export function LatencyChart({
   measurements,
   pick,
-  defaults = [1000, 3000],
+  defaults = [2500, 6000],
 }: {
   measurements: { sample: number; ms: number }[];
   pick: (id: number) => void;
@@ -608,7 +608,7 @@ export function PerformanceMonitor() {
             </label>
             <LatencyChart
               key={mode}
-              defaults={mode === "http" ? [100, 500] : [1000, 3000]}
+              defaults={mode === "http" ? [100, 500] : [2500, 6000]}
               measurements={rows.flatMap((s) => {
                 const ms =
                   mode === "http"
