@@ -8,3 +8,5 @@ assets/
 reports/
 *.pyc
 .DS_Store
+.pnpm-store/
+test-artifacts/

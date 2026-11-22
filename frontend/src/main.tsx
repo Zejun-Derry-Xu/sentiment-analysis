@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./style.css";
 import { TopicSummary } from "./TopicSummary";
 import { MonitorPage } from "./MonitorPage";
+import { HoyaWall, type WallCategory } from "./HoyaWall";
 
 type User = { id: string; username: string; role: "admin" | "student" };
 type Event = {
@@ -729,6 +730,10 @@ function App() {
   const selected = events.find((e) => e.id === route.topic);
   const draftStorageKey =
     user && route.topic ? `campus-draft:${user.id}:${route.topic}` : "";
+  const [wallCategory, setWallCategory] = useState<WallCategory>("All");
+  const [flyerForm, setFlyerForm] = useState(false);
+  const flyerDialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => { if (flyerForm) flyerDialog.current?.showModal(); }, [flyerForm]);
   const [topicForm, setTopicForm] = useState(false);
   const [topicTitle, setTopicTitle] = useState("");
   const [topicDescription, setTopicDescription] = useState("");
@@ -1005,6 +1010,8 @@ function App() {
       })
     ) {
       setTopicForm(false);
+      setFlyerForm(false);
+      flyerDialog.current?.close();
       setTopicTitle("");
       setTopicDescription("");
       setNotice("Topic published.");
@@ -1267,7 +1274,7 @@ function App() {
     return (
       <div className="loading">
         <Mark />
-        <p>Opening Campus Forum…</p>
+        <p>Opening The Hoya Wall…</p>
       </div>
     );
   if (!user)
@@ -1276,36 +1283,34 @@ function App() {
         <section className="welcome-art">
           <div className="wordmark">
             <Mark />
-            <span>CAMPUS FORUM</span>
+            <span>THE HOYA<br />WALL</span>
           </div>
           <div className="welcome-copy">
-            <span className="eyebrow">LISTEN TO YOUR CAMPUS</span>
+            <span className="eyebrow">GEORGETOWN’S STUDENT POSTER WALL</span>
             <h1>
-              Your voice,
+              Big things happening.
               <br />
-              your campus<span>.</span>
+              Right around the Hilltop.
             </h1>
             <p>
-              Share what campus life feels like,
-              <br />
-              one conversation at a time.
+              Find free food, campus plans, and your next academic adventure—all on one wall.
             </p>
           </div>
           <div className="welcome-decoration">
             <div className="floating-note one">
-              <span>HALLOWEEN NIGHT</span>
+              <span>GOT PLANS?</span>
               <p>
-                “The haunted house was incredible.
-                <br />I loved every spooky moment!”
+                Bring a friend.
+                <br />Find out who screams first.
               </p>
-              <small>joy · admiration · love</small>
+              <small>Sample event · Halloween Haunted House</small>
             </div>
             <div className="floating-note two">
-              <span>A LITTLE FEEDBACK GOES A LONG WAY</span>
-              <div className="sound-bars">▂ ▅ ▃ █ ▆ ▃ ▅ ▂</div>
+              <span>FREE FOOD RADAR</span>
+              <div className="sound-bars">GOOD FOOD. ZERO DOLLARS.</div>
             </div>
           </div>
-          <span className="welcome-bottom">A SMALL CAMPUS. A LOT TO SAY.</span>
+          <span className="welcome-bottom">PINNED BY HOYAS. FOR HOYAS.</span>
         </section>
         <section className="login-panel">
           <span className="edition">DML COURSE PROJECT / 01</span>
@@ -1393,33 +1398,19 @@ function App() {
         >
           <Mark small />
           <span>
-            CAMPUS
+            THE HOYA
             <br />
-            <b>FORUM</b>
+            <b>WALL</b>
           </span>
         </a>
         <nav aria-label="Main navigation">
-          {(
-            [
-              ["events", "Forum"],
-              ["mine", "My Posts"],
-              ["evaluation", "Evaluation"],
-            ] as [View, string][]
-          ).map(([v, t]) => (
-            <button
-              key={v}
-              className={
-                view === v || (view === "event" && v === "events")
-                  ? "active"
-                  : ""
-              }
-              onClick={() => navigate(v)}
-            >
-              {t}
-            </button>
-          ))}
+          {([['Free Food', 'Free Food Radar'], ['Activities', 'Activities'], ['Academics', 'Academics']] as [WallCategory, string][]).map(([c, title]) => <button key={c} className={view === 'events' && wallCategory === c ? 'active' : ''} onClick={() => { setWallCategory(c); navigate('events'); setTimeout(() => document.getElementById('forum-boards')?.scrollIntoView({ behavior: 'smooth' }), 0); }}>{title}</button>)}
+          <button className={view === 'evaluation' ? 'active' : ''} onClick={() => navigate('evaluation')}>Evaluation</button>
         </nav>
+        <button className="header-post" onClick={() => setFlyerForm(true)}>Post a flyer +</button>
+        <details className="account-menu"><summary>{user.username}</summary>
         <div className="user">
+          <button className="text-button" onClick={() => navigate("mine")}>My Posts</button>
           {admin && (
             <button className="admin-switch" onClick={() => navigate("board")}>
               Admin Dashboard
@@ -1449,7 +1440,7 @@ function App() {
           >
             Sign out
           </button>
-        </div>
+        </div></details>
       </header>
       <div className="demo-banner">
         <span>
@@ -1461,7 +1452,7 @@ function App() {
           Not a mental-health or moderation decision
         </span>
       </div>
-      <main className="container">
+      <main className={"container" + (view === "events" ? " wall-container" : "")}>
         {error && (
           <div className="error global-error" role="alert">
             {error}
@@ -1480,119 +1471,16 @@ function App() {
             </button>
           </div>
         ) : view === "events" ? (
-          <>
-            <section className="hero">
-              <div>
-                <span className="eyebrow">YOUR CAMPUS, IN YOUR WORDS</span>
-                <h1>
-                  Your campus.
-                  <br />
-                  Your conversation<span>.</span>
-                </h1>
-                <p>
-                  Talk about Halloween, campus food, and DSAN.
-                  <br />
-                  Share an experience. Ask a question. Start something better.
-                </p>
-                <button
-                  className="secondary"
-                  onClick={() =>
-                    document
-                      .getElementById("forum-boards")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  Explore the boards <span>↗</span>
-                </button>
-              </div>
-              <div className="hero-art" aria-hidden="true">
-                <div className="orbit orbit-one" />
-                <div className="orbit orbit-two" />
-                <div className="orbit-center">
-                  <Mark />
-                  <span>
-                    GOOD VIBES.
-                    <br />
-                    HONEST FEEDBACK.
-                  </span>
-                </div>
-                <span className="orbit-label ol1">curiosity</span>
-                <span className="orbit-label ol2">excitement</span>
-                <span className="orbit-label ol3">gratitude</span>
-                <span className="art-spark">✳</span>
-              </div>
-            </section>
-            <div className="section-title">
-              <div>
-                <span className="eyebrow">WHAT'S HAPPENING</span>
-                <h2>Find your conversation</h2>
-              </div>
-              <span className="muted">03 demo boards · Real analysis</span>
-            </div>
-            <div
-              className="event-grid"
-              id="forum-boards"
-              aria-label="Forum boards"
-            >
-              {events.map((e, i) => (
-                <button
-                  className="event-card"
-                  key={e.id}
-                  onClick={() => navigate("event", e.id)}
-                >
-                  <div className={"event-art art-" + (i % 3)}>
-                    <span className="event-number">0{i + 1}</span>
-                    <span className="event-date">DISCUSS</span>
-                    <div className="event-shape" />
-                    <span className="event-art-title">
-                      {(
-                        {
-                          "spring-sounds": "AFTER\nDARK.",
-                          "campus-makers": "CAMPUS\nBITES.",
-                          "night-run": "DSAN\nVOICE.",
-                        } as Record<string, string>
-                      )[e.id] || "CAMPUS\nTOPIC."}
-                    </span>
-                  </div>
-                  <div className="event-info">
-                    <span className="eyebrow">{e.category}</span>
-                    <h3>{e.title}</h3>
-                    <p>{e.description}</p>
-                    <div className="event-meta">
-                      <span>{e.location}</span>
-                      <span>
-                        {e.comment_count} posts <b>↗</b>
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-            <section className="principles">
-              <span className="eyebrow">A NOTE ON EMOTION</span>
-              <h3>A little context goes a long way.</h3>
-              <p>
-                Models identify emotions expressed in English text, not a
-                person’s inner state. Multiple emotions may appear together, and
-                no label may exceed the threshold.
-              </p>
-            </section>
-          </>
+          <HoyaWall boards={events} category={wallCategory} setCategory={setWallCategory} onDiscuss={id => navigate("event", id)} onPost={() => setFlyerForm(true)} />
         ) : view === "evaluation" ? (
           <>
             <div className="page-heading">
-              <span className="eyebrow">MEASURE, DON'T GUESS</span>
-              <h1>Results you can inspect.</h1>
-              <p>
-                Emotion scores come from the GoEmotions test split. Sentiment
-                scores come from the TweetEval sentiment test split. Forum posts
-                and human reviews are excluded from these scores.
-              </p>
-              <p className="fineprint muted">
-                Emotion and sentiment use different official datasets and tasks.
-                Their scores are not directly comparable; live forum
-                distributions are not accuracy measurements.
-              </p>
+              <span className="eyebrow">BEHIND THE WALL</span>
+              <h1>How our models perform.</h1>
+              <div className="evaluation-intro">
+                <p>See how our emotion and sentiment models perform on benchmark test sets.</p>
+                <p className="fineprint muted">Emotion: GoEmotions · Sentiment: TweetEval. These benchmarks use different tasks, so scores are not directly comparable. Forum posts and human reviews are excluded; live post distributions do not measure accuracy.</p>
+              </div>
             </div>
             <SentimentEvaluationReport report={sentimentEvaluation} />
             <div className="section-title emotion-evaluation-heading">
@@ -2279,7 +2167,7 @@ function App() {
       <footer className="footer">
         <div>
           <Mark small />
-          <span>CAMPUS FORUM</span>
+          <span>THE HOYA WALL</span>
         </div>
         <span className={"worker-state " + (ready ? "online" : "")}>
           <i />
@@ -2287,6 +2175,17 @@ function App() {
         </span>
         <span className="muted">DML · PUBLIC DEMO · 2026</span>
       </footer>
+      <dialog ref={flyerDialog} className="wall-dialog" onClose={() => setFlyerForm(false)} aria-labelledby="post-flyer-title" onClick={e => { if (e.target === e.currentTarget && !creatingTopic) flyerDialog.current?.close(); }}>
+        <button className="wall-dialog-close" disabled={creatingTopic} aria-label="Close post flyer" onClick={() => flyerDialog.current?.close()}>×</button>
+        <span className="wall-kicker">MAKE A LITTLE CAMPUS NOISE</span><h2 id="post-flyer-title">Post a flyer.</h2>
+        {admin ? <form className="topic-create" onSubmit={createTopic}>
+          <p>Start a community discussion. Include verified dates, location, conditions, and your source in the description.</p>
+          <label htmlFor="flyer-title">Title</label><input id="flyer-title" value={topicTitle} maxLength={80} required onChange={e => setTopicTitle(e.target.value)} />
+          <label htmlFor="flyer-description">Description & details</label><textarea id="flyer-description" value={topicDescription} rows={5} maxLength={500} required onChange={e => setTopicDescription(e.target.value)} />
+          {error && <p role="alert">{error}</p>}
+          <button className="wall-button" disabled={creatingTopic}>{creatingTopic ? 'Posting…' : 'Post a flyer +'}</button>
+        </form> : <><p>New flyers are posted by campus admins in this course demo. Have a tip or a question? Share it in an existing discussion.</p><button className="wall-button" onClick={() => { flyerDialog.current?.close(); navigate('events'); setTimeout(() => document.getElementById('forum-boards')?.scrollIntoView({ behavior: 'smooth' }), 0); }}>Find a discussion ↗</button></>}
+      </dialog>
       {notice && (
         <div className="toast" role="status">
           ✓ {notice}
