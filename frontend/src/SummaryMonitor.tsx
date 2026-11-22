@@ -179,6 +179,7 @@ export function SummaryMonitor() {
             </select>
           </label>
           <LatencyChart
+            defaults={[5000, 10000]}
             measurements={rows
               .filter((s) => s.status === "completed")
               .map((s) => ({ sample: s.sample, ms: s[mode] }))}

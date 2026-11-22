@@ -2570,8 +2570,6 @@ td b {
 .latency-green { fill: #6ba34b; }
 .latency-yellow { fill: #dea407; }
 .latency-red { fill: #bc3336; }
-.latency-marker line { stroke: #285c93; stroke-width: 1.5; }
-.latency-marker text { fill: #285c93; font-size: 17px; font-weight: 700; }
 .trace-events time { margin-right: .5rem; }
 
 .topic-sentiment-chart {
@@ -2606,3 +2604,14 @@ td b {
 .model-latency { margin-block: 1rem; overflow-x: auto; }
 .model-latency table { width: 100%; border-collapse: collapse; }
 .model-latency th, .model-latency td { padding: .45rem; text-align: left; border-bottom: 1px solid #dce1d8; }
+
+
+.latency-limits { display: flex; flex-wrap: wrap; gap: 1rem; margin-block: .8rem; }
+.latency-limits label { display: grid; gap: .3rem; }
+.latency-limits input { max-width: 12rem; }
+.latency-legend { display: flex; flex-wrap: wrap; gap: 1rem; }
+.latency-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.latency-dot { width: .7rem; height: .7rem; border-radius: 50%; display: inline-block; }
+.latency-dot.green { background: #6ba34b; }
+.latency-dot.yellow { background: #dea407; }
+.latency-dot.red { background: #bc3336; }

@@ -70,10 +70,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export function LatencyChart({
   measurements,
   pick,
+  defaults = [1000, 3000],
 }: {
   measurements: { sample: number; ms: number }[];
   pick: (id: number) => void;
+  defaults?: [number, number];
 }) {
+  const [limits, setLimits] = useState<[number, number]>(defaults);
+  const [excellent, maximum] = limits;
   const rows = [...measurements].sort(
     (a, b) => a.ms - b.ms || a.sample - b.sample,
   );
@@ -90,29 +94,69 @@ export function LatencyChart({
   );
   const left = 86,
     right = 930,
-    top = 128,
+    top = 24,
     bottom = 395;
   const x = (i: number) => left + ((i + 0.5) * (right - left)) / rows.length;
   const y = (ms: number) =>
     bottom -
     (Math.max(0, Math.log10(Math.max(0.001, ms)) - low) / (high - low)) *
       (bottom - top);
-  const percentiles = [50, 95, 99].map((p) => {
-    const rank = Math.ceil((rows.length * p) / 100);
-    return { p, rank, ...rows[rank - 1] };
-  });
   return (
     <>
       <p className="muted">
-        {rows.length} valid samples · nearest-rank percentiles · logarithmic
-        scale
+        {rows.length} measured samples · Logarithmic scale
+      </p>
+      <div className="latency-limits">
+        <label>
+          Excellent up to (ms)
+          <input
+            type="number"
+            min="1"
+            max={maximum}
+            step="1"
+            value={excellent}
+            onChange={(e) => {
+              const value = e.currentTarget.valueAsNumber;
+              if (Number.isFinite(value) && value > 0 && value <= maximum)
+                setLimits([value, maximum]);
+            }}
+          />
+        </label>
+        <label>
+          Tolerable up to (ms)
+          <input
+            type="number"
+            min={excellent}
+            step="1"
+            value={maximum}
+            onChange={(e) => {
+              const value = e.currentTarget.valueAsNumber;
+              if (Number.isFinite(value) && value >= excellent)
+                setLimits([excellent, value]);
+            }}
+          />
+        </label>
+      </div>
+      <p className="latency-legend">
+        <span>
+          <i className="latency-dot green" />
+          Excellent ≤ {duration(excellent)}
+        </span>
+        <span>
+          <i className="latency-dot yellow" />
+          Good &gt; {duration(excellent)} to {duration(maximum)}
+        </span>
+        <span>
+          <i className="latency-dot red" />
+          Poor &gt; {duration(maximum)}
+        </span>
       </p>
       <div className="latency-scroll">
         <svg
           viewBox="0 0 960 442"
           className="latency-chart"
           role="group"
-          aria-label="Latency from fastest to slowest with p50, p95 and p99 markers"
+          aria-label="Latency from fastest to slowest, colored by response time"
         >
           {ticks.map((val) => (
             <g key={val}>
@@ -133,10 +177,15 @@ export function LatencyChart({
             className="latency-axis"
           />
           {rows.map((row, i) => {
-            const rank = (i + 1) / rows.length;
             const width = (right - left) / rows.length;
             const height = Math.max(2, bottom - y(row.ms));
-            const title = `Sample ${row.sample} · rank ${i + 1} · ${duration(row.ms)}`;
+            const rating =
+              row.ms <= excellent
+                ? "Excellent"
+                : row.ms <= maximum
+                  ? "Good"
+                  : "Poor";
+            const title = `Sample ${row.sample} · ${duration(row.ms)} · ${rating}`;
             return (
               <rect
                 key={row.sample}
@@ -145,9 +194,9 @@ export function LatencyChart({
                 width={width * 0.9}
                 height={height}
                 className={
-                  rank >= 0.98
+                  row.ms > maximum
                     ? "latency-red"
-                    : rank >= 0.94
+                    : row.ms > excellent
                       ? "latency-yellow"
                       : "latency-green"
                 }
@@ -166,23 +215,6 @@ export function LatencyChart({
               </rect>
             );
           })}
-          {percentiles.map(({ p, rank, ms }, i) => (
-            <g key={p} className="latency-marker" pointerEvents="none">
-              <line
-                x1={x(rank - 1)}
-                x2={x(rank - 1)}
-                y1={92 - i * 26}
-                y2={Math.min(bottom - 3, y(ms) - 4)}
-              />
-              <text
-                x={x(rank - 1) < 360 ? x(rank - 1) + 8 : x(rank - 1) - 8}
-                y={88 - i * 26}
-                textAnchor={x(rank - 1) < 360 ? "start" : "end"}
-              >
-                {`p${p} = ${duration(ms)} · rank ${rank} of ${rows.length}`}
-              </text>
-            </g>
-          ))}
           <text x={(left + right) / 2} y={428} textAnchor="middle">
             Samples ordered fastest to slowest
           </text>
@@ -561,7 +593,7 @@ export function PerformanceMonitor() {
           </section>
           <ModelLatencyTable samples={rows} />
           <section className="distribution-panel">
-            <h2>Percentile latency</h2>
+            <h2>Response latency</h2>
             <label>
               Measure{" "}
               <select
@@ -575,6 +607,8 @@ export function PerformanceMonitor() {
               </select>
             </label>
             <LatencyChart
+              key={mode}
+              defaults={mode === "http" ? [100, 500] : [1000, 3000]}
               measurements={rows.flatMap((s) => {
                 const ms =
                   mode === "http"

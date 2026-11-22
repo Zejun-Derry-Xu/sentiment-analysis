@@ -195,7 +195,7 @@ The browser demo uses your administrator session. Set `LOAD_DEMO_ENABLED=false` 
 
 1. Sign in as admin and open **Performance Monitor**. Click **Run Load Demo**.
 2. The browser submits 100 fixed English posts with at most 16 outstanding requests. The server accepts one run at a time, with a two-minute submission window and cooldown. The run uses the same database insert and worker queues as forum posts.
-3. Switch between **Database insert to both model results** and **HTTP submit (browser measured)**. Read p50, p95, and p99 on the logarithmic rank chart. Click a bar to inspect that sample's event log and per-model queue and inference timings. Failed HTTP requests and timeouts are counted separately.
+3. Switch between **Database insert to both model results** and **HTTP submit (browser measured)**. Adjust the response-time limits on the logarithmic chart. Green means excellent, yellow means good, and red means above the tolerable limit. Click a bar to inspect that sample's event log and per-model queue and inference timings. Failed HTTP requests and timeouts are counted separately.
 4. Click **Clear Run**. The cleaner cancels queued work, waits for processing attempts to finish, then deletes the run's test posts, jobs, analyses and measurements. Ordinary posts and previous benchmark or evaluation reports are preserved.
 
 Back up PostgreSQL before upgrading an existing deployment. The account migration ends anonymous sessions and preserves their posts and model outputs. The load-run migration adds isolated test records.
@@ -239,8 +239,12 @@ generations, and failures from the last 100 recorded topic requests in this API
 process. **Run LLM Load Test** submits eight requests using fictional posts and
 a maximum concurrency of two over a single inference slot. Each sample
 bypasses the application cache. Ollama can still reuse the loaded model and
-prompt cache. The chart uses nearest-rank p50, p95, and p99, so p95 and p99
-both select the slowest request in an eight-sample run. Select a bar to inspect
+prompt cache. The chart colors each sample by adjustable response-time limits.
+Defaults are 100/500 ms for HTTP submission, 1/3 s for both classifier
+results, and 5/10 s for LLM requests. The first limit is inclusive for
+excellent, the second inclusive for good, and higher delays are poor.
+These are demo display defaults and can be adjusted in each chart.
+Select a bar to inspect
 queue wait, model load, prompt processing, and token generation. Results are
 kept in memory. **Clear LLM Run** removes the finished test only. The **Post Classifiers** tab is the default view and shows queue and inference
 percentiles for both classifiers alongside the original end-to-end chart.
