@@ -2615,3 +2615,6 @@ td b {
 .latency-dot.green { background: #6ba34b; }
 .latency-dot.yellow { background: #dea407; }
 .latency-dot.red { background: #bc3336; }
+
+.my-post-boards { display: flex; flex-wrap: wrap; gap: .65rem; margin-block: 1.2rem 1.8rem; }
+.my-post-boards button[aria-pressed="true"] { background: #286f5b; border-color: #286f5b; color: white; }

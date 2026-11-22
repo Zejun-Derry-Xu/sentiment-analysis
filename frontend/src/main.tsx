@@ -857,8 +857,9 @@ function App() {
           });
           if (view === "event" && selected) q.set("event_id", selected.id);
           if (view === "mine") q.set("mine", "true");
-          if (["board", "mine"].includes(view)) {
-            if (filterEvent) q.set("event_id", filterEvent);
+          if (["board", "mine"].includes(view) && filterEvent)
+            q.set("event_id", filterEvent);
+          if (view === "board") {
             if (filterLabel) q.set("label", filterLabel);
             if (filterSentiment) q.set("sentiment", filterSentiment);
             if (filterSentimentStatus)
@@ -2080,127 +2081,153 @@ function App() {
                     </div>
                   </>
                 )}
-                <section className="filters" aria-label="Post filters">
-                  <label>
-                    Board
-                    <select
-                      value={filterEvent}
-                      onChange={(e) => setFilterEvent(e.target.value)}
-                    >
-                      <option value="">All boards</option>
-                      {events.map((e) => (
-                        <option key={e.id} value={e.id}>
-                          {e.title}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Emotion
-                    <select
-                      value={filterLabel}
-                      onChange={(e) => setFilterLabel(e.target.value)}
-                    >
-                      <option value="">All emotions</option>
-                      {labels.map((l) => (
-                        <option key={l} value={l}>
-                          {labelName(l)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Emotion status
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                    >
-                      <option value="">All statuses</option>
-                      {["pending", "processing", "completed", "failed"].map(
-                        (s) => (
+                {view === "mine" ? (
+                  <nav
+                    className="my-post-boards"
+                    aria-label="Filter my posts by board"
+                  >
+                    {[{ id: "", title: "All boards" }, ...events].map(
+                      (topic) => (
+                        <button
+                          type="button"
+                          className="secondary"
+                          key={topic.id}
+                          aria-pressed={filterEvent === topic.id}
+                          onClick={() => {
+                            setFilterEvent(topic.id);
+                            setPage(1);
+                          }}
+                        >
+                          {topic.title}
+                        </button>
+                      ),
+                    )}
+                  </nav>
+                ) : (
+                  <section className="filters" aria-label="Post filters">
+                    <label>
+                      Board
+                      <select
+                        value={filterEvent}
+                        onChange={(e) => setFilterEvent(e.target.value)}
+                      >
+                        <option value="">All boards</option>
+                        {events.map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.title}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Emotion
+                      <select
+                        value={filterLabel}
+                        onChange={(e) => setFilterLabel(e.target.value)}
+                      >
+                        <option value="">All emotions</option>
+                        {labels.map((l) => (
+                          <option key={l} value={l}>
+                            {labelName(l)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Emotion status
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                      >
+                        <option value="">All statuses</option>
+                        {["pending", "processing", "completed", "failed"].map(
+                          (s) => (
+                            <option key={s} value={s}>
+                              {statusName[s]}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </label>
+                    <label>
+                      Sentiment
+                      <select
+                        value={filterSentiment}
+                        onChange={(e) => setFilterSentiment(e.target.value)}
+                      >
+                        <option value="">All sentiments</option>
+                        {Object.entries(sentiments).map(([l, n]) => (
+                          <option key={l} value={l}>
+                            {n}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Sentiment status
+                      <select
+                        value={filterSentimentStatus}
+                        onChange={(e) =>
+                          setFilterSentimentStatus(e.target.value)
+                        }
+                      >
+                        <option value="">All statuses</option>
+                        {["pending", "processing", "completed", "failed"].map(
+                          (l) => (
+                            <option key={l} value={l}>
+                              {statusName[l]}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </label>
+                    <label>
+                      Handling status
+                      <select
+                        value={filterHandling}
+                        onChange={(e) => setFilterHandling(e.target.value)}
+                      >
+                        <option value="">All handling statuses</option>
+                        {["unread", "viewed", "processed"].map((s) => (
                           <option key={s} value={s}>
                             {statusName[s]}
                           </option>
-                        ),
-                      )}
-                    </select>
-                  </label>
-                  <label>
-                    Sentiment
-                    <select
-                      value={filterSentiment}
-                      onChange={(e) => setFilterSentiment(e.target.value)}
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      From date
+                      <input
+                        type="date"
+                        value={after}
+                        onChange={(e) => setAfter(e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      To date
+                      <input
+                        type="date"
+                        value={before}
+                        onChange={(e) => setBefore(e.target.value)}
+                      />
+                    </label>
+                    <button
+                      className="text-button"
+                      onClick={() => {
+                        setFilterEvent("");
+                        setFilterLabel("");
+                        setFilterSentiment("");
+                        setFilterSentimentStatus("");
+                        setFilterStatus("");
+                        setFilterHandling("");
+                        setAfter("");
+                        setBefore("");
+                      }}
                     >
-                      <option value="">All sentiments</option>
-                      {Object.entries(sentiments).map(([l, n]) => (
-                        <option key={l} value={l}>
-                          {n}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Sentiment status
-                    <select
-                      value={filterSentimentStatus}
-                      onChange={(e) => setFilterSentimentStatus(e.target.value)}
-                    >
-                      <option value="">All statuses</option>
-                      {["pending", "processing", "completed", "failed"].map(
-                        (l) => (
-                          <option key={l} value={l}>
-                            {statusName[l]}
-                          </option>
-                        ),
-                      )}
-                    </select>
-                  </label>
-                  <label>
-                    Handling status
-                    <select
-                      value={filterHandling}
-                      onChange={(e) => setFilterHandling(e.target.value)}
-                    >
-                      <option value="">All handling statuses</option>
-                      {["unread", "viewed", "processed"].map((s) => (
-                        <option key={s} value={s}>
-                          {statusName[s]}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    From date
-                    <input
-                      type="date"
-                      value={after}
-                      onChange={(e) => setAfter(e.target.value)}
-                    />
-                  </label>
-                  <label>
-                    To date
-                    <input
-                      type="date"
-                      value={before}
-                      onChange={(e) => setBefore(e.target.value)}
-                    />
-                  </label>
-                  <button
-                    className="text-button"
-                    onClick={() => {
-                      setFilterEvent("");
-                      setFilterLabel("");
-                      setFilterSentiment("");
-                      setFilterSentimentStatus("");
-                      setFilterStatus("");
-                      setFilterHandling("");
-                      setAfter("");
-                      setBefore("");
-                    }}
-                  >
-                    Reset
-                  </button>
-                </section>
+                      Reset
+                    </button>
+                  </section>
+                )}
                 <div className="section-title">
                   <h2>{view === "mine" ? "My Posts" : "Posts & follow-up"}</h2>
                   <span className="muted">
