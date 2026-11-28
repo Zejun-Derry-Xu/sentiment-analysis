@@ -36,7 +36,7 @@ def reset(monkeypatch):
             "TRUNCATE users,runtimes,sentiment_runtimes,evaluations,benchmarks,load_runs CASCADE"
         )
         c.execute(
-            "DELETE FROM events WHERE id NOT IN ('spring-sounds','campus-makers','night-run','benchmark')"
+            "DELETE FROM events WHERE id NOT IN ('spring-sounds','campus-makers','night-run','campus-community','benchmark')"
         )
     yield
 

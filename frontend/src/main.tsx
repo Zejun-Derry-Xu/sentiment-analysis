@@ -718,6 +718,7 @@ function App() {
     [checking, setChecking] = useState(true),
     [username, setUsername] = useState(""),
     [password, setPassword] = useState(""),
+    [showPassword, setShowPassword] = useState(false),
     [registering, setRegistering] = useState(false),
     [loginBusy, setLoginBusy] = useState(false);
   const [route, setRoute] = useState(readRoute);
@@ -757,6 +758,7 @@ function App() {
     [before, setBefore] = useState("");
   const [text, setText] = useState(""),
     [sending, setSending] = useState(false),
+    [postError, setPostError] = useState(""),
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [revision, setRevision] = useState(0),
@@ -915,6 +917,7 @@ function App() {
   }, [notice]);
   function resetNavigation() {
     setError("");
+    setPostError("");
     setNotes([]);
     setTotal(0);
     setFilterEvent("");
@@ -943,6 +946,21 @@ function App() {
   }
   async function login(e: React.FormEvent) {
     e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    if (!form.checkValidity()) {
+      const invalid = form.querySelector<HTMLInputElement>("input:invalid");
+      setError(
+        invalid
+          ? `${invalid.labels?.[0]?.textContent}: ${invalid.validationMessage}`
+          : "Check your username and password.",
+      );
+      invalid?.focus();
+      return;
+    }
+    if (!username.trim()) {
+      setError("Enter a username with visible text.");
+      return;
+    }
     setLoginBusy(true);
     setError("");
     try {
@@ -953,6 +971,7 @@ function App() {
         }),
       );
       setPassword("");
+      setShowPassword(false);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -977,14 +996,18 @@ function App() {
     e.preventDefault();
     if (!selected || sending || !hasVisibleText(text) || hasCjk) return;
     setSending(true);
+    setPostError("");
     const submittedKey = draftKey.current;
-    if (
-      await act("/api/comments", "POST", {
-        event_id: selected.id,
-        text,
-        idempotency_key: draftKey.current,
-      })
-    ) {
+    try {
+      await api("/api/comments", {
+        method: "POST",
+        body: JSON.stringify({
+          event_id: selected.id,
+          text,
+          idempotency_key: submittedKey,
+        }),
+      });
+      setRevision((x) => x + 1);
       if (loadDraft(draftStorageKey) === text) saveDraft(draftStorageKey, "");
       if (draftKey.current === submittedKey) {
         setText("");
@@ -992,10 +1015,14 @@ function App() {
       }
       setNotice("Post saved. Both analyses are queued.");
       setPage(1);
+    } catch (e) {
+      setPostError((e as Error).message);
+    } finally {
+      setSending(false);
     }
-    setSending(false);
   }
   function editText(value: string) {
+    setPostError("");
     saveDraft(draftStorageKey, value);
     setText(value);
     draftKey.current = uuid();
@@ -1286,39 +1313,28 @@ function App() {
             <span>THE HOYA<br />WALL</span>
           </div>
           <div className="welcome-copy">
-            <span className="eyebrow">GEORGETOWN’S STUDENT POSTER WALL</span>
             <h1>
-              Big things happening.
+              Hoyas leading the Georgetown community.
               <br />
-              Right around the Hilltop.
+              Let our words make a difference.
             </h1>
             <p>
               Find free food, campus plans, and your next academic adventure—all on one wall.
             </p>
           </div>
-          <div className="welcome-decoration">
-            <div className="floating-note one">
-              <span>GOT PLANS?</span>
-              <p>
-                Bring a friend.
-                <br />Find out who screams first.
-              </p>
-              <small>Sample event · Halloween Haunted House</small>
-            </div>
-            <div className="floating-note two">
-              <span>FREE FOOD RADAR</span>
-              <div className="sound-bars">GOOD FOOD. ZERO DOLLARS.</div>
-            </div>
-          </div>
-          <span className="welcome-bottom">PINNED BY HOYAS. FOR HOYAS.</span>
         </section>
         <section className="login-panel">
           <span className="edition">DML COURSE PROJECT / 01</span>
-          <form onSubmit={login}>
-            <span className="eyebrow">WELCOME IN</span>
+          <form
+            onSubmit={login}
+            noValidate
+            aria-describedby={error ? "login-error" : undefined}
+          >
             <h2>Join the conversation.</h2>
             <p className="muted">
-              Sign in with your account to keep your post history.
+              {registering
+                ? "Create your own account. Sign in again to return to your posts."
+                : "Sign in with your account to keep your post history."}
             </p>
             <label htmlFor="username">Username</label>
             <input
@@ -1331,18 +1347,30 @@ function App() {
               autoComplete="username"
             />
             <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              required
-              maxLength={128}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete={registering ? "new-password" : "current-password"}
-            />
+            <div className="password-field">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                maxLength={128}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={registering ? "new-password" : "current-password"}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                aria-controls="password"
+                aria-label="Show password"
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             <button
               className="primary"
-              disabled={loginBusy || !username.trim() || !password}
+              disabled={loginBusy}
             >
               {loginBusy
                 ? "Please wait…"
@@ -1357,23 +1385,17 @@ function App() {
               disabled={loginBusy}
               onClick={() => {
                 setRegistering(!registering);
+                setShowPassword(false);
                 setError("");
               }}
             >
               {registering ? "Back to sign in" : "Register a new account"}
             </button>
             {error && (
-              <p className="error" role="alert">
+              <p id="login-error" className="error" role="alert">
                 {error}
               </p>
             )}
-            <div className="demo-notice">
-              <strong>Course demo</strong>
-              <p>
-                Shared demo accounts share the same post history. Register your
-                own account to keep your history separate.
-              </p>
-            </div>
             <p className="fineprint muted">
               English posts only. Models analyze text, not mental health. No
               automatic moderation.
@@ -1388,6 +1410,7 @@ function App() {
   return (
     <>
       <header className="header">
+        <div className="header-top">
         <a
           className="wordmark"
           href="#"
@@ -1396,19 +1419,12 @@ function App() {
             navigate("events");
           }}
         >
-          <Mark small />
-          <span>
-            THE HOYA
-            <br />
-            <b>WALL</b>
-          </span>
+          <span>THE HOYA WALL</span>
         </a>
-        <nav aria-label="Main navigation">
-          {([['Free Food', 'Free Food Radar'], ['Activities', 'Activities'], ['Academics', 'Academics']] as [WallCategory, string][]).map(([c, title]) => <button key={c} className={view === 'events' && wallCategory === c ? 'active' : ''} onClick={() => { setWallCategory(c); navigate('events'); setTimeout(() => document.getElementById('forum-boards')?.scrollIntoView({ behavior: 'smooth' }), 0); }}>{title}</button>)}
-          <button className={view === 'evaluation' ? 'active' : ''} onClick={() => navigate('evaluation')}>Evaluation</button>
-        </nav>
-        <button className="header-post" onClick={() => setFlyerForm(true)}>Post a flyer +</button>
-        <details className="account-menu"><summary>{user.username}</summary>
+        <div className="header-actions">
+          <button className="header-post" onClick={() => setFlyerForm(true)}>Post a flyer +</button>
+          <details className="account-menu">
+            <summary aria-label="Account menu">{Array.from(user.username)[0]?.toUpperCase()}</summary>
         <div className="user">
           <button className="text-button" onClick={() => navigate("mine")}>My Posts</button>
           {admin && (
@@ -1421,10 +1437,6 @@ function App() {
               Performance Monitor
             </button>
           )}
-          <span className="avatar">
-            {user.username.slice(0, 1).toUpperCase()}
-          </span>
-          <span className="user-name">{user.username}</span>
           <button
             title="Sign back in to recover your post history."
             className="text-button"
@@ -1441,17 +1453,13 @@ function App() {
             Sign out
           </button>
         </div></details>
+        </div>
+        </div>
+        <nav aria-label="Main navigation">
+          {([['Campus', 'Campus'], ['Free Food', 'Free Food Radar'], ['Activities', 'Activities'], ['Academics', 'Academics']] as [WallCategory, string][]).map(([c, title]) => <button key={c} className={view === 'events' && wallCategory === c ? 'active' : ''} onClick={() => { setWallCategory(c); navigate('events'); setTimeout(() => document.getElementById('forum-boards')?.scrollIntoView({ behavior: 'smooth' }), 0); }}>{title}</button>)}
+          <button className={"nav-evaluation" + (view === "evaluation" ? " active" : "")} onClick={() => navigate('evaluation')}>Evaluation</button>
+        </nav>
       </header>
-      <div className="demo-banner">
-        <span>
-          <i />
-          Course demo · Posts are visible to signed-in users
-        </span>
-        <span>
-          English text analysis only <span className="banner-divider">/</span>{" "}
-          Not a mental-health or moderation decision
-        </span>
-      </div>
       <main className={"container" + (view === "events" ? " wall-container" : "")}>
         {error && (
           <div className="error global-error" role="alert">
@@ -1471,7 +1479,7 @@ function App() {
             </button>
           </div>
         ) : view === "events" ? (
-          <HoyaWall boards={events} category={wallCategory} setCategory={setWallCategory} onDiscuss={id => navigate("event", id)} onPost={() => setFlyerForm(true)} />
+          <HoyaWall boards={events} category={wallCategory} setCategory={setWallCategory} onDiscuss={id => navigate("event", id)} />
         ) : view === "evaluation" ? (
           <>
             <div className="page-heading">
@@ -1757,6 +1765,10 @@ function App() {
                   </div>
                   <textarea
                     aria-label="English post"
+                    aria-describedby={
+                      postError ? "post-language-help post-error" : "post-language-help"
+                    }
+                    aria-invalid={Boolean(postError)}
                     value={text}
                     onChange={(e) => editText(e.target.value)}
                     maxLength={2000}
@@ -1765,10 +1777,13 @@ function App() {
                     rows={4}
                   />
                   <div className="composer-bottom">
-                    <span className={hasCjk ? "language-warning" : "muted"}>
+                    <span
+                      id="post-language-help"
+                      className={hasCjk ? "language-warning" : "muted"}
+                    >
                       {hasCjk
                         ? "These models support English only. Please write your post in English."
-                        : "The models are designed for English text. Results in other languages may be unreliable."}
+                        : "English only. Posts detected as non-English will not be published or included in charts. Language detection may miss short or mixed-language text."}
                       <small>{text.length} / 2000</small>
                     </span>
                     <button
@@ -1778,6 +1793,11 @@ function App() {
                       {sending ? "Saving…" : "Publish post"} <span>↗</span>
                     </button>
                   </div>
+                  {postError && (
+                    <p id="post-error" className="language-warning" role="alert">
+                      {postError}
+                    </p>
+                  )}
                   <div className="examples">
                     <span>Try a prompt:</span>
                     {(postExamples[selected.id] || []).map((s) => (

@@ -290,7 +290,7 @@ def test_metrics_include_all_28_classes_and_exact_match():
 
 
 def test_benchmark_isolation_and_readiness(client, runtime):
-    assert len(client.get("/api/events").json()) == 3
+    assert len(client.get("/api/events").json()) == 4
     r = client.post(
         "/api/comments",
         json={

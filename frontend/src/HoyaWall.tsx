@@ -1,19 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./hoya-wall.css";
 
-export type WallCategory = "All" | "Free Food" | "Activities" | "Academics";
-type Board = { id: string; title: string; description: string; category: string; comment_count: number };
+export type WallCategory = "All" | "Free Food" | "Activities" | "Academics" | "Campus";
+type Board = { id: string; title: string; description: string; category: string; comment_count: number; starts_at?: string };
 type Flyer = {
   id: string; category: Exclude<WallCategory, "All">; title: string; copy: string;
   tag: string; board: string; fields: [string, string][];
   status?: "Still available" | "All gone" | "Expired";
 };
 const categories = [
+  { category: "Campus", title: "Campus", headline: <>OUR CAMPUS.<br />OUR COMMUNITY.</>, copy: "Share everyday campus life, student resources, and ideas for a better Georgetown community.", aside: "A little help from a fellow Hoya.", icon: "⌂" },
   { category: "Free Food", title: "Free Food Radar", headline: <>GOOD FOOD.<br />ZERO DOLLARS.</>, copy: "Free bites on campus and around Georgetown. Find out where, when, and what you need to claim them.", aside: "Will walk for free food.", icon: "✳" },
   { category: "Activities", title: "Activities", headline: <>GOT<br />PLANS?</>, copy: "Find campus events, club meetups, and something to do beyond your usual routine.", aside: "Your group chat needs a plan.", icon: "✦" },
   { category: "Academics", title: "Academics & Beyond", headline: <>WHAT’S<br />NEXT?</>, copy: "Explore courses, short-term study abroad programs, academic events, and advice from fellow Hoyas.", aside: "Before you register, ask a Hoya.", icon: "↗" },
 ] as const;
 const flyers: Flyer[] = [
+  { id: "campus-life", category: "Campus", title: "Make campus feel like home.", copy: "Ask about study spaces, campus services, getting around, and everyday life on the Hilltop. Share a helpful tip or an idea for our community.", tag: "Campus community", board: "campus-community", fields: [["Community", "Georgetown students"], ["Topics", "Campus life, resources, and student tips"]] },
   { id: "pizza", category: "Free Food", title: "Pizza with a side of campus life.", copy: "The classic campus equation: a club meetup + a slice. An example of what belongs on the radar.", tag: "Sample offer", board: "campus-makers", status: "Still available", fields: [["Where", "Location to be confirmed"], ["When", "Date & pickup window TBD"], ["To claim", "Eligibility to be confirmed"], ["Source", "Illustrative club flyer"], ["Updated", "Not verified · sample only"]] },
   { id: "refreshments", category: "Free Food", title: "Come for the talk. Stay for the snacks.", copy: "Lecture refreshments, while supplies last. This sample shows how a food update appears after the snacks run out.", tag: "Sample offer", board: "campus-makers", status: "All gone", fields: [["Where", "Venue to be confirmed"], ["When", "Event time TBD"], ["To claim", "Attendance requirements TBD"], ["Source", "Illustrative lecture flyer"], ["Updated", "Not verified · sample only"]] },
   { id: "falafel", category: "Free Food", title: "A falafel worth the walk?", copy: "Inspired by a student-shared Falafel Inc flyer. The offer’s dates and terms have not been verified. Check with the merchant before making plans.", tag: "Reference only · unverified", board: "campus-makers", fields: [["Where", "Confirm with Falafel Inc"], ["Valid until", "Unknown · not an active offer"], ["To claim", "Current conditions unverified"], ["Source", "Student-provided reference image"], ["Updated", "No verified update"]] },
@@ -37,23 +39,62 @@ export function PosterPreview() {
   </div>;
 }
 
-export function HoyaWall({ boards, category, setCategory, onDiscuss, onPost }: {
+export function HoyaWall({ boards, category, setCategory, onDiscuss }: {
   boards: Board[]; category: WallCategory; setCategory: (v: WallCategory) => void;
-  onDiscuss: (id: string) => void; onPost: () => void;
+  onDiscuss: (id: string) => void;
 }) {
   const [query, setQuery] = useState("");
+  const [boardFilter, setBoardFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState("all");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [saved, setSaved] = useState(readSaved);
   const [active, setActive] = useState<Flyer | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const [exploreRequested, setExploreRequested] = useState(false);
   useEffect(() => { if (active && !dialog.current?.open) dialog.current?.showModal(); }, [active]);
+  useEffect(() => {
+    if (!exploreRequested || category !== "All" || query !== "" || boardFilter || dateFilter !== "all" || dateFrom || dateTo) return;
+    document.getElementById("forum-boards")?.scrollIntoView({ behavior: "smooth" });
+    setExploreRequested(false);
+  }, [exploreRequested, category, query, boardFilter, dateFilter, dateFrom, dateTo]);
+  function exploreWall() {
+    setCategory("All");
+    setQuery("");
+    setBoardFilter("");
+    setDateFilter("all");
+    setDateFrom("");
+    setDateTo("");
+    setExploreRequested(true);
+  }
   function toggleSave(id: string) {
     const next = saved.includes(id) ? saved.filter(x => x !== id) : [...saved, id];
     setSaved(next);
     try { localStorage.setItem("hoya-saved-flyers", JSON.stringify(next)); } catch { /* Saving still works for this visit. */ }
   }
-  const custom: Flyer[] = boards.filter(b => !["spring-sounds", "campus-makers", "night-run"].includes(b.id)).map(b => ({ id: b.id, category: /food/i.test(b.category) ? "Free Food" : /academic|dsan/i.test(b.category) ? "Academics" : "Activities", title: b.title, copy: b.description, tag: "Community discussion", board: b.id, fields: [["About", "Student discussion · event details unverified"]] }));
+  const custom: Flyer[] = boards.filter(b => !["spring-sounds", "campus-makers", "night-run", "campus-community"].includes(b.id)).map(b => ({ id: b.id, category: /food/i.test(b.category) ? "Free Food" : /academic|dsan/i.test(b.category) ? "Academics" : /campus.*community/i.test(b.category) ? "Campus" : "Activities", title: b.title, copy: b.description, tag: "Community discussion", board: b.id, fields: [["About", "Student discussion · event details unverified"]] }));
   const all = [...flyers, ...custom];
-  const matches = (f: Flyer) => (category === "All" || f.category === category) && [f.title, f.copy, f.tag, f.category, ...f.fields.flat()].join(" ").toLowerCase().includes(query.trim().toLowerCase());
+  const invalidRange = Boolean(dateFrom && dateTo && dateFrom > dateTo);
+  const now = Date.now();
+  function boardDate(f: Flyer): Date | null {
+    const value = boards.find(b => b.id === f.board)?.starts_at;
+    const date = value ? new Date(value) : null;
+    return date && Number.isFinite(date.getTime()) ? date : null;
+  }
+  function matches(f: Flyer) {
+    if (invalidRange || (category !== "All" && f.category !== category) || (boardFilter && f.board !== boardFilter)) return false;
+    if (![f.title, f.copy, f.tag, f.category, ...f.fields.flat()].join(" ").toLowerCase().includes(query.trim().toLowerCase())) return false;
+    const date = boardDate(f);
+    if (dateFilter === "undated" && date) return false;
+    if (dateFilter === "upcoming" && (!date || date.getTime() < now)) return false;
+    if (dateFilter === "past" && (!date || date.getTime() >= now)) return false;
+    if (dateFrom || dateTo) {
+      if (!date) return false;
+      const localDay = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+      if ((dateFrom && localDay < dateFrom) || (dateTo && localDay > dateTo)) return false;
+    }
+    return true;
+  }
   const count = all.filter(matches).length;
   const discussionAvailable = (f: Flyer) => boards.some(b => b.id === f.board);
   return <div className="hoya-home">
@@ -61,26 +102,48 @@ export function HoyaWall({ boards, category, setCategory, onDiscuss, onPost }: {
       <div className="wall-hero-copy"><span className="wall-kicker">GEORGETOWN’S STUDENT POSTER WALL</span>
         <h1>Big things happening.<br /><em>Right around<br className="hero-soft-break" /> the Hilltop.</em></h1>
         <p>Find free food, campus plans, and your next academic adventure—all on one wall.</p>
-        <div className="wall-hero-actions"><button className="wall-button" onClick={() => document.getElementById("forum-boards")?.scrollIntoView({ behavior: "smooth" })}>Explore the wall ↗</button><button className="wall-button wall-button-outline" onClick={onPost}>Post a flyer +</button></div>
+        <div className="wall-hero-actions"><button className="wall-button" onClick={exploreWall}>Explore the wall ↗</button></div>
         <span className="hero-footnote">Pinned by Hoyas. For Hoyas. <span aria-hidden="true">〰</span></span>
       </div><PosterPreview />
     </section>
     <section className="wall-board" id="forum-boards" aria-labelledby="wall-title">
       <div className="wall-section-heading"><div><span className="wall-kicker">A LITTLE BIT OF EVERYTHING</span><h2 id="wall-title">On the wall.</h2></div><p>Good finds travel fast. Pass them on.</p></div>
-      <div className="wall-tools"><div className="wall-filters" aria-label="Filter the wall">{(["All", "Free Food", "Activities", "Academics"] as const).map(c => <button key={c} aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</button>)}</div><label className="wall-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Search the wall" placeholder="Search the wall…" value={query} onChange={e => setQuery(e.target.value)} /></label></div>
+      <div className="wall-tools"><div className="wall-filters" aria-label="Filter the wall">{(["All", "Campus", "Free Food", "Activities", "Academics"] as const).map(c => <button key={c} aria-pressed={category === c} onClick={() => setCategory(c)}>{c}</button>)}</div><label className="wall-search"><span aria-hidden="true">⌕</span><input type="search" aria-label="Search the wall" placeholder="Search the wall…" value={query} onChange={e => setQuery(e.target.value)} /></label></div>
+      <div className="wall-date-filters" aria-label="Board and date filters">
+        <label>Board
+          <select value={boardFilter} onChange={e => setBoardFilter(e.target.value)}>
+            <option value="">All boards</option>
+            {boards.map(b => <option key={b.id} value={b.id}>{b.title}</option>)}
+          </select>
+        </label>
+        <label>Discussion board date
+          <select value={dateFilter} onChange={e => setDateFilter(e.target.value)}>
+            <option value="all">All dates</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="past">Past</option>
+            <option value="undated">Date unknown</option>
+          </select>
+        </label>
+        <label>From<input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} aria-invalid={invalidRange} /></label>
+        <label>Through<input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} aria-invalid={invalidRange} /></label>
+        <button className="wall-button wall-reset" onClick={exploreWall}>Reset filters</button>
+      </div>
+      {invalidRange && <p className="wall-filter-error" role="alert">The end date must be on or after the start date.</p>}
+      <p className="wall-filter-note">Dates refer to the linked discussion board, not verified event or offer times. Date ranges include both days and use your local time.</p>
+      <p className="wall-filter-note" role="status">{count} flyers found.</p>
       <p className="wall-sample-note">A peek at what belongs here. Example offers and events are labeled; confirm details before heading out.</p>
-      <span className="wall-sr-only" role="status">{count} flyers found.</span>
-      {count === 0 ? <div className="wall-empty"><h3>No flyers found.</h3><p>Try another search, or peek at the whole wall.</p><button className="wall-button" onClick={() => { setQuery(""); setCategory("All"); }}>Show all flyers</button></div> : <div className="wall-columns">{categories.filter(c => (category === "All" || c.category === category) && all.some(f => f.category === c.category && matches(f))).map(c => <section className={`wall-column column-${c.category.toLowerCase().replace(" ", "-")}`} key={c.category} aria-label={c.title}>
+      {count === 0 ? <div className="wall-empty"><h3>No flyers found.</h3><p>Try another search, or peek at the whole wall.</p><button className="wall-button" onClick={exploreWall}>Show all flyers</button></div> : <div className="wall-columns">{categories.filter(c => (category === "All" || c.category === category) && all.some(f => f.category === c.category && matches(f))).map(c => <section className={`wall-column column-${c.category.toLowerCase().replace(" ", "-")}`} key={c.category} aria-label={c.title}>
         <header className="category-poster"><div className="poster-topline"><h3>{c.title}</h3><span aria-hidden="true">{c.icon}</span></div><h4>{c.headline}</h4><p>{c.copy}</p><span className="poster-aside">{c.aside}</span></header>
         {c.category === "Academics" && <div className="academic-tags">{["Courses", "Short-Term Study Abroad", "Summer Programs", "Talks & Workshops", "DSAN"].map(t => <span key={t}>{t}</span>)}</div>}
         {all.filter(f => f.category === c.category && matches(f)).map(f => <article className={`wall-flyer ${f.id === "haunted" ? "haunted-flyer" : ""}`} key={f.id}>
           <div className="flyer-body"><div className="flyer-labels"><span>{f.tag}</span>{f.status && <span className={`food-status status-${f.status.toLowerCase().replace(" ", "-")}`}>Sample · {f.status}</span>}</div>
             {f.id === "haunted" && <svg className="ghost-doodle" aria-hidden="true" width="40" height="50" viewBox="0 0 40 50"><path d="M5 43V21a15 15 0 0 1 30 0v22l-7-5-8 6-8-6z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round"/><ellipse cx="15" cy="22" rx="2" ry="3" fill="currentColor"/><ellipse cx="25" cy="22" rx="2" ry="3" fill="currentColor"/><path d="M17 32q3-5 6 0" stroke="currentColor" strokeWidth="2" fill="none"/></svg>}<h4>{f.title}</h4><p>{f.copy}</p>
+            <p className="flyer-board-date">Discussion board date: {boardDate(f)?.toLocaleDateString("en-US") ?? "Unknown"}</p>
             <dl className="flyer-facts">{f.fields.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
           </div><div className="tear-actions"><button onClick={() => setActive(f)}>Details ↗</button><button onClick={() => onDiscuss(f.board)} disabled={!discussionAvailable(f)} title={discussionAvailable(f) ? "Open the existing community board" : "Discussion board unavailable"}>{f.category === "Activities" ? "Who’s going? ↗" : "Discuss ↗"}</button><button aria-pressed={saved.includes(f.id)} aria-label={`${saved.includes(f.id) ? "Unsave" : "Save"} ${f.title}`} onClick={() => toggleSave(f.id)}>{saved.includes(f.id) ? "Saved ✓" : "Save +"}</button></div>
         </article>)}
       </section>)}</div>}
-      <div className="wall-endnote"><span aria-hidden="true">✳</span><p>Found something good?<br /><strong>There’s room on the wall.</strong></p><button className="wall-button" onClick={onPost}>Post a flyer +</button></div>
+      <div className="wall-endnote"><span aria-hidden="true">✳</span><p>Found something good?<br /><strong>There’s room on the wall.</strong></p></div>
     </section>
     <dialog ref={dialog} className="wall-dialog" onClose={() => setActive(null)} onClick={e => { if (e.target === e.currentTarget) dialog.current?.close(); }} aria-labelledby="flyer-dialog-title">
       {active && <><button className="wall-dialog-close" aria-label="Close flyer details" onClick={() => dialog.current?.close()}>×</button><span className="wall-kicker">{active.tag}</span><h2 id="flyer-dialog-title">{active.title}</h2><p>{active.copy}</p>{active.status && <p className="detail-status">Illustrative availability: {active.status}. This is not a live offer.</p>}<dl className="flyer-facts">{active.fields.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl><button className="wall-button" disabled={!discussionAvailable(active)} onClick={() => { dialog.current?.close(); onDiscuss(active.board); }}>Join the discussion ↗</button></>}

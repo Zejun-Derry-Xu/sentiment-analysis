@@ -1527,61 +1527,91 @@ td b {
   color: #a3aa97;
 }
 .login-panel form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
   margin: auto 0;
   max-width: 380px;
 }
-.login-panel .eyebrow {
-  font-size: 9px;
-  color: var(--accent);
-}
 .login-panel h2 {
   font-size: 34px;
-  margin: 13px 0 10px;
+  margin: 0 0 2px;
 }
 .login-panel form > .muted {
   font-size: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 .login-panel label {
   display: block;
   font-size: 11px;
   color: #78886a;
-  margin: 0 0 8px;
+  margin: 0;
+}
+.login-panel input + label {
+  margin-top: 12px;
 }
 .login-panel input {
   width: 100%;
   padding: 13px 16px;
   font-size: 13px;
+  background: #fffdf5;
+}
+.login-panel input:autofill {
+  box-shadow: inset 0 0 0 1000px #fffdf5;
+  color: var(--ink);
+}
+.login-panel input:-webkit-autofill,
+.login-panel input:-webkit-autofill:hover,
+.login-panel input:-webkit-autofill:focus,
+.login-panel input:-webkit-autofill:active {
+  -webkit-box-shadow: inset 0 0 0 1000px #fffdf5;
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
 }
 .login-panel .primary {
   width: 100%;
-  margin: 15px 0 22px;
+  margin: 12px 0 8px;
+}
+.login-panel form > .text-button {
+  justify-self: start;
+  padding: 0;
+  text-align: left;
 }
 .login-panel .error {
-  margin-bottom: 15px;
+  margin: 4px 0 0;
+  color: #b42318;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
 }
-.demo-notice {
-  border: 1px solid #dce3d0;
-  border-radius: 6px;
-  padding: 15px 17px;
-  background: #eef1e5;
+.password-field {
+  position: relative;
 }
-.demo-notice strong {
-  font-size: 10px;
-  color: #7c8d68;
-  font-weight: 550;
+.login-panel .password-field input {
+  padding-right: 76px;
 }
-.demo-notice p {
-  font-size: 10px;
-  color: #99a38c;
-  line-height: 1.9;
-  margin-top: 6px;
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px;
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.password-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 .login-panel form > .fineprint {
   font-size: 9px;
   color: #a9b09d;
   line-height: 1.9;
-  margin-top: 18px;
+  margin-top: 8px;
   margin-bottom: 0;
 }
 .login-footer {
@@ -2116,17 +2146,11 @@ td b {
     font-size: 27px;
   }
   .login-panel form > .muted {
-    margin-bottom: 23px;
+    margin-bottom: 16px;
     font-size: 11px;
-  }
-  .login-panel .primary {
-    margin-bottom: 17px;
   }
   .login-footer {
     font-size: 7px;
-  }
-  .demo-notice p {
-    font-size: 9px;
   }
   .login-panel form > .fineprint {
     font-size: 8px;

@@ -20,6 +20,7 @@ from .load_monitor import check_code, cleanup_loop, routes as monitor_routes
 from .topic_summary import monitor_routes as summary_monitor_routes
 from .topic_summary import routes as summary_routes
 from .accounts import DEMO_ACCOUNTS, create_account, verify_password
+from .language import LANGUAGE_NOTICE, requires_english
 from .config import LABELS, MODEL_REV, MODEL_REPO, DATA_REV, REPORT_DIR
 
 
@@ -139,7 +140,10 @@ class NewComment(BaseModel):
     @field_validator("text")
     @classmethod
     def validate_text(cls, v):
-        return clean_text(v)
+        v = clean_text(v)
+        if requires_english(v):
+            raise ValueError(LANGUAGE_NOTICE)
+        return v
 
 
 class Handling(BaseModel):

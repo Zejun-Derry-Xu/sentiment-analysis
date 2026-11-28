@@ -73,8 +73,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 .wall-search { display: flex; align-items: center; padding-left: 12px; background: #fffcf5; border-radius: 2px; color: #78382c; }
 .wall-search > span { font-size: 25px; line-height: 1; }
 .wall-search input { width: 235px; border: 0; background: transparent; font-size: 14px; padding: 10px; }
+.wall-date-filters { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; padding: 16px; background: #78382c; border: 1px solid #f7f1e723; border-radius: 3px; }
+.wall-date-filters label { display: grid; gap: 6px; flex: 1 1 150px; min-width: 0; color: #fffcf5; font-size: 12px; }
+.wall-date-filters select, .wall-date-filters input { width: 100%; min-width: 0; padding: 10px; background: #fffcf5; color: #292622; font-size: 13px; }
+.wall-date-filters .wall-reset { background: #fffcf5; color: #78382c; padding: 10px 16px; }
+.wall-filter-note { color: #f7e3d4; font-size: 12px; margin: 8px 0; }
+.wall-filter-error { color: #fff; font-size: 13px; margin: 8px 0; }
+.wall-flyer .flyer-board-date { font-size: 12px; margin-top: 16px; color: #78382c; }
 .wall-sample-note { color: #f7e3d4; font-size: 12px; margin: 0 0 34px; }
-.wall-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 27px; align-items: start; }
+.wall-columns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 27px; align-items: start; }
 .wall-column { display: grid; gap: 25px; min-width: 0; }
 .wall-column:nth-child(2) { padding-top: 22px; }
 .wall-column:nth-child(3) { padding-top: 7px; }
@@ -157,7 +164,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 24px; }
   .preview-plans strong { font-size: 41px; }
   .preview-next strong { font-size: 32px; }
   .mini-tears { margin-left: -16px; margin-right: -16px; margin-bottom: -16px; }
-  .wall-columns { gap: 18px; }
+  .wall-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
   .category-poster { padding: 20px; }
   .category-poster h4 { font-size: 40px; }
   .flyer-body { padding: 22px 18px; }
@@ -192,7 +199,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 24px; }
   .wall-section-heading h2 { font-size: 38px; }
   .wall-section-heading > p { padding-bottom: 0; }
   .wall-tools { flex-direction: column; align-items: stretch; gap: 12px; }
-  .wall-filters { flex-wrap: nowrap; justify-content: space-between; gap: 2px; }
+  .wall-filters { flex-wrap: wrap; justify-content: flex-start; gap: 2px; }
   .wall-filters button { padding: 8px 10px; font-size: 12px; }
   .wall-search input { width: 100%; }
   .wall-columns { grid-template-columns: 1fr; gap: 38px; }
@@ -224,3 +231,106 @@ html { scroll-behavior: smooth; scroll-padding-top: 24px; }
   .wall-board { padding-inline: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .wall-flyer, .wall-button { transition: none; } .wall-flyer:hover, .wall-button:hover { transform: none; } }
+
+/* Two-tier masthead: Georgetown blue above a spacious text navigation. */
+.header {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: #fffcf5;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  min-height: 90px;
+  padding: 19px max(32px, calc((100vw - 1260px) / 2));
+  background: #041e42;
+  color: #fff;
+}
+.header .wordmark {
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+  letter-spacing: .035em;
+  word-spacing: .1em;
+  white-space: nowrap;
+}
+.header-actions { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.header .header-actions .header-post,
+.header .account-menu summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 10px 20px;
+  border: 1px solid #ffffff99;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.header .header-actions .header-post:hover,
+.header .account-menu summary:hover { background: #ffffff18; }
+.header .header-actions .account-menu { margin: 0; color: #fff; }
+.header .account-menu summary { min-width: 46px; padding-inline: 14px; list-style: none; }
+.header .account-menu summary::-webkit-details-marker { display: none; }
+.header .account-menu summary:focus-visible,
+.header .header-post:focus-visible,
+.header .wordmark:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.account-menu[open] .user { top: calc(100% + 12px); color: #041e42; }
+.header nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  min-height: 67px;
+  margin: 0;
+  padding: 11px max(32px, calc((100vw - 1260px) / 2));
+  gap: clamp(24px, 4vw, 64px);
+  background: #fffcf5;
+  border-bottom: 1px solid #e6e8ed;
+}
+.header nav button {
+  position: relative;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #78382c;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.header nav .nav-evaluation { margin-left: auto; }
+.header nav button.active { color: #78382c; background: transparent; }
+.header nav button.active::after { display: block; bottom: 0; height: 2px; background: #a34f3d; }
+.header nav button:hover { color: #a34f3d; }
+@media (max-width: 760px) {
+  .header-top { min-height: 77px; gap: 16px; padding: 14px 20px; }
+  .header .wordmark { font-size: 28px; letter-spacing: .015em; word-spacing: .04em; }
+  .header-actions { gap: 10px; }
+  .header .header-actions .header-post { padding: 9px 12px; font-size: 13px; }
+  .header nav { order: initial; flex-wrap: nowrap; justify-content: flex-start; gap: 26px; min-height: 61px; padding: 8px 20px; overflow-x: auto; }
+  .header nav button { font-size: 14px; flex-shrink: 0; }
+}
+@media (max-width: 480px) {
+  .header-top { padding-inline: 16px; gap: 10px; }
+  .header .wordmark { font-size: 21px; letter-spacing: 0; word-spacing: 0; }
+  .header-actions { gap: 8px; }
+  .header .header-actions .header-post { padding-inline: 9px; font-size: 12px; }
+  .header .account-menu summary { min-width: 40px; padding-inline: 10px; }
+}

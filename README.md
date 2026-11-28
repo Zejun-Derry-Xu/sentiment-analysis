@@ -6,7 +6,7 @@ An English campus discussion forum with two independent CPU classifiers: multi-l
 
 ## Product
 
-Three discussion boards: **Halloween Haunted House**, **Campus Food**, and **DSAN Feedback**.
+Four discussion boards: **Campus**, **Halloween Haunted House**, **Campus Food**, and **DSAN Feedback**.
 
 Register a username and password or sign in with a provisioned demo account. Browse topics, publish English posts, and check **My Posts**. The same account retains its history after signing in again, including from another browser. Admins have **Admin Dashboard** and **Performance Monitor** links in the header.
 
@@ -123,6 +123,16 @@ Human reviews do not overwrite model outputs, alter official test labels, or tri
 - [Detailed provenance, full local evaluation, license boundaries](docs/cardiff-cpu-validation.md).
 
 Models use different tasks and test sets. Scores are uncalibrated model scores, not psychological measurements. Campus-domain text, sarcasm, context, and rare emotions can cause errors. English models do not reliably analyze Chinese.
+
+Post submission includes a local language check using `langid==1.1.6` and its
+embedded weights. Clearly non-Latin text and longer text confidently identified
+as non-English are rejected before saving or creating either inference job.
+The composer displays an English-only notice and retains the draft for editing.
+Rejected posts therefore do not enter dashboard charts. Short or ambiguous text
+and some mixed-language posts may pass; this is a heuristic, not a guarantee.
+Existing posts and their analyses are retained and are not retroactively filtered.
+Language-gate regression checks run without a database:
+`PYTHONPATH=backend pytest backend/unit_tests`.
 
 ## Official quality evaluation
 

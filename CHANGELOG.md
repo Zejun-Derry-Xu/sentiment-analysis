@@ -1,5 +1,14 @@
 # Campus Forum changelog
 
+## 2026-11-28 — Hoya Wall navigation, filters, and English-only submissions
+
+- Restyle the signed-in header with a compact Georgetown-blue masthead, serif italic wordmark, adjacent flyer/account controls, and a cream navigation row. Keep Evaluation on the right and show only the account initial.
+- Refine the welcome page headline and spacing, remove decorative posters and demo notices, add password visibility controls, and display validation errors as plain red text. Keep both inputs cream, including browser autofill.
+- Add a Campus category and independent discussion board through migration 7 without changing existing posts or analyses.
+- Combine category, discussion-board, search, and date filters on the poster wall. Dates describe linked discussion boards, not verified event times. Explore the wall and Reset filters restore all posters.
+- Reject clearly non-English submissions before database writes or inference queues, display an inline notice, and preserve drafts. Detection is conservative; short or mixed-language text may pass. Existing records are not retroactively filtered.
+- Verify the frontend production build and 17 database-independent language regression tests. PostgreSQL integration tests were not run for this update.
+
 ## 2026-11-14 — Accounts, monitoring, and automatic topic summaries
 
 Application revision deployed to Jetstream2: [`295357f`](https://github.com/Zejun-Derry-Xu/sentiment-analysis/commit/295357f7c3415e6b9724d2b9f3d26941ccad9496).
